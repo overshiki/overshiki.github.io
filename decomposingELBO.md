@@ -15,7 +15,7 @@ p(x) = \int p(x, z) dz = \int p_{\theta}(x|z) p_{\theta}(z) dz
 $$
 
 A good generative model should maximize this marginal distribution, i.e. place most of the mass on observed data.
-However, searching for $\theta$ which maximize this marginal distribution require integral over all the possible values of $z$, thus is inefficient.
+However, searching for $\theta$ which maximize this marginal distribution require integral over all the possible values of $$z$$, thus is inefficient.
 
 A possible solution of this problem is to use an inference model $$q_{\phi}(z|x)$$ to narrow the search region thus resulting more effecient sampling
 $$
@@ -29,7 +29,7 @@ logP(x) & = log \int p_{\theta}(x|z) p_{\theta}(z) dz \\
 \end{align*}
 $$
 
-This yeilds the ELBO, i.e. evidence lower bound
+This yeilds the ELBO, i.e. evidence lower bound. The inequality is due to the Jensen's inequality for convex function(log function in this case).
 
 
 
