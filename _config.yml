@@ -3,5 +3,4 @@ description: Le Niu's special posts on statistical learning
 show_downloads: False
 google_analytics:
 theme: jekyll-theme-slate
-kramdown:
-  math_engine: mathjax
+markdown: kramdown
