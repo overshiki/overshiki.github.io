@@ -4,12 +4,12 @@ layout: default
 
 ## Still under development
 
-Given the joint distribution between observe $x$ and latent variable $z$, provided by a generative model:
+Given the joint distribution between observe $$x$$ and latent variable $$z$$, provided by a generative model:
 $$
 p(x, z) = p_{\theta}(x|z) \dot p_{\theta}(z)
 $$
 
-We start with the marginal distribution of $x$ for the model:
+We start with the marginal distribution of $$x$$ for the model:
 $$
 p(x) = \int p(x, z) dz = \int p_{\theta}(x|z) \dot p_{\theta}(z) dz
 $$
@@ -23,7 +23,7 @@ $$
 logP(x) & = log \int p_{\theta}(x|z) \dot p_{\theta}(z) dz \\
 		& = log \int \frac{p_{\theta}(x|z) \dot p_{\theta}(z)}{q_{\phi}(z|x)} \dot q_{\phi}(z|x) dz \\
 		&>= \int log \{ \frac{p_{\theta}(x|z) \dot p_{\theta}(z)}{q_{\phi}(z|x)} \} \dot q_{\phi}(z|x) dz \\
-		& = \int log(p_{\theta}(x|z)) q_{\phi}(z|x) dz + \int log \{ \brac{p_{\theta}(z)}{q_{\phi}(z|x)} \} q_{\phi}(z|x) dz \\
+		& = \int log(p_{\theta}(x|z)) q_{\phi}(z|x) dz + \int log \{ \frac{p_{\theta}(z)}{q_{\phi}(z|x)} \} q_{\phi}(z|x) dz \\
 \end{align*}
 $$
 
