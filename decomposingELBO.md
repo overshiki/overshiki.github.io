@@ -24,9 +24,13 @@ logP(x) & = log \int p_{\theta}(x|z) p_{\theta}(z) dz \\
 		& = log \int \frac{p_{\theta}(x|z) p_{\theta}(z)}{q_{\phi}(z|x)} q_{\phi}(z|x) dz \\
 		&>= \int log \{ \frac{p_{\theta}(x|z) p_{\theta}(z)}{q_{\phi}(z|x)} \} q_{\phi}(z|x) dz \\
 		& = \int log(p_{\theta}(x|z)) q_{\phi}(z|x) dz + \int log \{ \frac{p_{\theta}(z)}{q_{\phi}(z|x)} \} q_{\phi}(z|x) dz \\
+		& = \mathbb{E}_{q_{\phi}(z|x)} log(p_{\theta}(x|z)) - \mathbb{KL}(q_{\phi}(z|x) || p_{\theta}(z))\\
+		& = \mathbb{ELBO}
 \end{align*}
 $$
 
-$$\mathbb{E}$$
+This yeilds the ELBO, i.e. evidence lower bound
+
+
 
 [back](./)
