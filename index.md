@@ -2,7 +2,7 @@
 layout: default
 ---
 
-# [All about decomposing ELBO](./_decomposingELBO.html).
+# [All about decomposing ELBO](./decomposingELBO.html).
 
 
 <!-- ---
