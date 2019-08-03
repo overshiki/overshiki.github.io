@@ -1,6 +1,8 @@
+---
+layout: default
+---
 
-# Still under development
-# [All about decomposing ELBO](./another-page.html).
+# [All about decomposing ELBO](./decomposingELBO.html).
 
 
 <!-- ---
