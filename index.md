@@ -4,6 +4,7 @@ layout: default
 
 # [All about decomposing ELBO](./decomposingELBO.html).
 
+# [All about fairness](./fairness.html)
 
 <!-- ---
 layout: default
