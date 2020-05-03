@@ -3,4 +3,4 @@ description: Le Niu's special posts on statistical learning
 show_downloads: False
 google_analytics:
 theme: jekyll-theme-slate
-markdown: kramdown
+markdown: GFM

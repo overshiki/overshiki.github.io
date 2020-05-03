@@ -18,7 +18,7 @@ $$
 A good generative model should maximize this marginal distribution, i.e. place most of the mass on observed data.
 However, searching for $$\theta$$ which maximize this marginal distribution require integral over all the possible values of $$z$$, thus is inefficient.
 
-A possible solution of this problem is to use an inference model $$q_{\phi}(z|x)$$ to narrow the search region thus resulting more effecient sampling
+A possible solution of this problem is to use an inference model $$q_{\phi}(z\|x)$$ to narrow the search region thus resulting more effecient sampling
 
 
 $$
