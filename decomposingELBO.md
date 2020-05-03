@@ -5,7 +5,7 @@ layout: default
 ## Generative model point of view
 
 ### The definition
-Given the joint distribution between observe \$$x$$ and latent variable $$z$$, provided by a generative model:
+Given the joint distribution between observe $$x$$ and latent variable $$z$$, provided by a generative model:
 $$
 p(x, z) = p_{\theta}(x|z) p_{\theta}(z)
 $$
