@@ -4,11 +4,11 @@
 
 Given the joint distribution between observe $x$  and latent variable $z$, provided by a generative model:
 
-$p(x, z)=p_{\theta}(x \mid z) p_{\theta}(z)$
+$$p(x, z)=p_{\theta}(x \mid z) p_{\theta}(z)$$
 
 We start with the marginal distribution of $x$  for the model:
 
-$p(x)=\int p(x, z) d z=\int p_{\theta}(x \mid z) p_{\theta}(z) d z$
+$$p(x)=\int p(x, z) d z=\int p_{\theta}(x \mid z) p_{\theta}(z) d z$$
 
 A good generative model should maximize this marginal distribution, i.e. place most of the mass on observed data.
 
@@ -16,7 +16,7 @@ However, searching for $\theta$ which maximize this marginal distribution requir
 
 A possible solution of this problem is to use an inference model $q_{\phi}(z \| x)$  to narrow the search region thus resulting in more efficient sampling
 
-$\begin{aligned} \log p(x) &=\log \int p_{\theta}(x \mid z) p_{\theta}(z) d z \\ &=\log \int \frac{p_{\theta}(x \mid z) p_{\theta}(z)}{q_{\phi}(z \mid x)} q_{\phi}(z \mid x) d z \\ &>=\int \log \left\{\frac{p_{\theta}(x \mid z) p_{\theta}(z)}{q_{\phi}(z \mid x)}\right\} q_{\phi}(z \mid x) d z \\ &=\mathbb{E} \mathbb{L} {\mathbb{B}} \mathbb{O} \end{aligned}$
+$$\begin{aligned} \log p(x) &=\log \int p_{\theta}(x \mid z) p_{\theta}(z) d z \\ &=\log \int \frac{p_{\theta}(x \mid z) p_{\theta}(z)}{q_{\phi}(z \mid x)} q_{\phi}(z \mid x) d z \\ &>=\int \log \left\{\frac{p_{\theta}(x \mid z) p_{\theta}(z)}{q_{\phi}(z \mid x)}\right\} q_{\phi}(z \mid x) d z \\ &=\mathbb{E} \mathbb{L} {\mathbb{B}} \mathbb{O} \end{aligned}$$
 
 This yields the ELBO, i.e. evidence lower bound. The inequality is due to the Jensen's inequality for convex function(log function in this case). The name of the evidence lower bound comes from another name of marginal distribution of observation $x \sim p(x)$: the evidence, thus its lower bound is the so called evidence lower bound.
 
@@ -28,7 +28,7 @@ The first intuitive way to decompose ELBO is through analyzing how tight the low
 
 it turns out
 
-$\begin{aligned} \log p(x)-\mathbb{E} \mathbb{L} \mathbb{B} \mathbb{O} &=\operatorname{logp}(x)-\mathbb{E}_{q_{\phi}(z \mid x)} \log \left(p_{\theta}(x \mid z) p_{\theta}(z)\right)+\mathbb{E}_{q_{\phi}(z \mid x)} \log \left(q_{\phi}(z \mid x)\right) \\ &=\log p(x)-\mathbb{E}_{q_{\phi}(z \mid x)} \log \left(p_{\theta}(x, z)\right)+\mathbb{E}_{q_{\phi}(z \mid x)} \log \left(q_{\phi}(z \mid x)\right) \\ &=\mathbb{E}_{q_{\phi}(z \mid x)}\left(\log p(x)-\log \left(p_{\theta}(x, z)\right)+\log \left(q_{\phi}(z \mid x)\right)\right) \\ &=\mathbb{E}_{q_{\phi}(z \mid x)}\left(-\log \frac{p_{\theta}(x, z)}{p(x)}+\log \left(q_{\phi}(z \mid x)\right)\right) \\ &=\mathbb{K} \mathbb{L}\left(q_{\phi}(z \mid x)\left|p_{\theta}(z \mid x)\right)\right.\end{aligned}$
+$$\begin{aligned} \log p(x)-\mathbb{E} \mathbb{L} \mathbb{B} \mathbb{O} &=\operatorname{logp}(x)-\mathbb{E}_{q_{\phi}(z \mid x)} \log \left(p_{\theta}(x \mid z) p_{\theta}(z)\right)+\mathbb{E}_{q_{\phi}(z \mid x)} \log \left(q_{\phi}(z \mid x)\right) \\ &=\log p(x)-\mathbb{E}_{q_{\phi}(z \mid x)} \log \left(p_{\theta}(x, z)\right)+\mathbb{E}_{q_{\phi}(z \mid x)} \log \left(q_{\phi}(z \mid x)\right) \\ &=\mathbb{E}_{q_{\phi}(z \mid x)}\left(\log p(x)-\log \left(p_{\theta}(x, z)\right)+\log \left(q_{\phi}(z \mid x)\right)\right) \\ &=\mathbb{E}_{q_{\phi}(z \mid x)}\left(-\log \frac{p_{\theta}(x, z)}{p(x)}+\log \left(q_{\phi}(z \mid x)\right)\right) \\ &=\mathbb{K} \mathbb{L}\left(q_{\phi}(z \mid x)\left|p_{\theta}(z \mid x)\right)\right.\end{aligned}$$
 
 the intuition here is that the difference between the log evidence and the evidence lower bound is the KL divergence between the variational posterior and the true posterior of the hidden variable $z$. Thus maximizing the evidence lower bound will bring the KL divergence as small as possible, which means bringing the variational posterior as close as possible to the true posterior distribution. Note that since:
 
@@ -48,7 +48,7 @@ This is another point of view of how ELBO is related to the log evidence.
 
 The second intuitive way to decompose ELBO is[1]:
 
-$\begin{aligned} \mathbb{E} \mathbb{L} \mathbb{B} \mathbb{O} &=\int \log \left(p_{\theta}(x \mid z) p_{\theta}(z)\right) q_{\phi}(z \mid x) d z-\int \log \left(q_{\phi}(z \mid x)\right) q_{\phi}(z \mid x) d z \\ &=\mathbb{E}_{q_{\phi}(z \mid x)} \log \left(p_{\theta}(x \mid z) p_{\theta}(z)\right)-\mathbb{E}_{q_{\phi}(z \mid x)} \log \left(q_{\phi}(z \mid x)\right) \\ &=\mathbb{E}_{q_{\phi}(z \mid x)} \log \left(p_{\theta}(x \mid z) p_{\theta}(z)\right)+\mathbb{E} \operatorname{ntropy}\left(q_{\phi}(z \mid x)\right) \\ &=\mathbb{E}_{q_{\phi}(z \mid x)} \log \left(p_{\theta}(x, z)\right)+\mathbb{E} \operatorname{ntropy}\left(q_{\phi}(z \mid x)\right) \end{aligned}$
+$$\begin{aligned} \mathbb{E} \mathbb{L} \mathbb{B} \mathbb{O} &=\int \log \left(p_{\theta}(x \mid z) p_{\theta}(z)\right) q_{\phi}(z \mid x) d z-\int \log \left(q_{\phi}(z \mid x)\right) q_{\phi}(z \mid x) d z \\ &=\mathbb{E}_{q_{\phi}(z \mid x)} \log \left(p_{\theta}(x \mid z) p_{\theta}(z)\right)-\mathbb{E}_{q_{\phi}(z \mid x)} \log \left(q_{\phi}(z \mid x)\right) \\ &=\mathbb{E}_{q_{\phi}(z \mid x)} \log \left(p_{\theta}(x \mid z) p_{\theta}(z)\right)+\mathbb{E} \operatorname{ntropy}\left(q_{\phi}(z \mid x)\right) \\ &=\mathbb{E}_{q_{\phi}(z \mid x)} \log \left(p_{\theta}(x, z)\right)+\mathbb{E} \operatorname{ntropy}\left(q_{\phi}(z \mid x)\right) \end{aligned}$$
 
 The first term on the right is the expect complete likelihood in the literature of EM algorithm. The idea is that to find the maximum likelihood estimates in models with latent variables $z$, a computing heuristic alternates between a E-step and a M-step could be used. The E-step is to compute the likelihood under the expectation of auxiliary distribution $q_{\phi}(z \mid x)$, while the M-step is to optimize the expectation with respect to model parameters $\theta$, $\phi$. And through time, the auxiliary distribution would become closer and closer to true posterior distribution, given the fact that ELBO is equal to the log evidence when $q_{\phi}(z \mid x) \stackrel{d}{=} p_{\theta}(z \mid x)$ in the above section.
 
@@ -58,7 +58,7 @@ The second term on the right is the entropy of the auxiliary distribution. Maxim
 
 The third intuitive way to decompose ELBO is:
 
-$\begin{aligned} \mathbb{E} \mathbb{L} \mathbb{B} \mathbb{O} &=\int \log \left(p_{\theta}(x \mid z)\right) q_{\phi}(z \mid x) d z+\int \log \left\{\frac{p_{\theta}(z)}{q_{\phi}(z \mid x)}\right\} q_{\phi}(z \mid x) d z \\ &=\mathbb{E}_{q_{\phi}(z \mid x)} \log \left(p_{\theta}(x \mid z)\right)-\mathbb{K} \mathbb{L}\left(q_{\phi}(z \mid x) \| p_{\theta}(z)\right) \end{aligned}$
+$$\begin{aligned} \mathbb{E} \mathbb{L} \mathbb{B} \mathbb{O} &=\int \log \left(p_{\theta}(x \mid z)\right) q_{\phi}(z \mid x) d z+\int \log \left\{\frac{p_{\theta}(z)}{q_{\phi}(z \mid x)}\right\} q_{\phi}(z \mid x) d z \\ &=\mathbb{E}_{q_{\phi}(z \mid x)} \log \left(p_{\theta}(x \mid z)\right)-\mathbb{K} \mathbb{L}\left(q_{\phi}(z \mid x) \| p_{\theta}(z)\right) \end{aligned}$$
 
 which means maximizing ELBO is equivalently to maximizing the likelihood of the generative model given observation when sampling from the inference model, and to minimize the KL divergence between the variational posterior distribution of latent variable given by the inference model and the known prior distribution.
 
