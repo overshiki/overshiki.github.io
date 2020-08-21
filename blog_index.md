@@ -6,4 +6,4 @@ layout: default
 
 ### [Decomposing ELBO, the general ideas](./decomposingELBO.html).
 
-### [All about fairness](./fairness.html)
+<!-- ### [All about fairness](./fairness.html) -->
