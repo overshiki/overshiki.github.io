@@ -14,11 +14,11 @@ A good generative model should maximize this marginal distribution, i.e. place m
 
 However, searching for $$\theta$$ which maximize this marginal distribution require integral over all the possible values of $$z$$, thus is inefficient.
 
-A possible solution of this problem is to use an inference model $$q_{\phi}(z \| x)$$  to narrow the search region thus resulting in more efficient sampling
+A possible solution of this problem is to use an inference model $$q_{\phi}(z | x)$$  to narrow the search region thus resulting in more efficient sampling
 
 $$\begin{aligned} \log p(x) &=\log \int p_{\theta}(x \mid z) p_{\theta}(z) d z \\ &=\log \int \frac{p_{\theta}(x \mid z) p_{\theta}(z)}{q_{\phi}(z \mid x)} q_{\phi}(z \mid x) d z \\ &>=\int \log \left\{\frac{p_{\theta}(x \mid z) p_{\theta}(z)}{q_{\phi}(z \mid x)}\right\} q_{\phi}(z \mid x) d z \\ &=\mathbb{E} \mathbb{L} {\mathbb{B}} \mathbb{O} \end{aligned}$$
 
-This yields the ELBO, i.e. evidence lower bound. The inequality is due to the Jensen's inequality for convex function(log function in this case). The name of the evidence lower bound comes from another name of marginal distribution of observation $$x \sim p(x)$$: the evidence, thus its lower bound is the so called evidence lower bound.
+This yields the ELBO, i.e. evidence lower bound. The inequality is due to the Jensen's inequality for convex function(log function in this case), and only when $$q_{\phi}(z \mid x) \stackrel{d}{=} p_{\theta}(z \mid x)$$ the equality holds. The name of the evidence lower bound comes from another name of marginal distribution of observation $$x \sim p(x)$$: the evidence, thus its lower bound is the so called evidence lower bound.
 
 ### The intuitive decomposition of ELBO
 
@@ -44,7 +44,7 @@ $$q_{\phi}(z \mid x) \stackrel{d}{=} p_{\theta}(z \mid x)$$
 
 This is another point of view of how ELBO is related to the log evidence.
 
-#### 2. Maximizing the expect complete likelihood with entropy regularization
+#### 2. Maximizing the expected complete likelihood with entropy regularization
 
 The second intuitive way to decompose ELBO is[1]:
 
