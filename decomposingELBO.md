@@ -1,4 +1,4 @@
-## Generative model point of view
+## Decomposing ELBO: Generative model point of view
 
 ### The definition
 
@@ -71,6 +71,50 @@ A possible solution is to impose a limit on the capacity of the latent informati
 $$\mathbb{E} \mathbb{L} \mathbb{B} \mathbb{O}_{\beta V A E}=\mathbb{E}_{q_{\phi}(z \mid x)} \log \left(p_{\theta}(x \mid z)\right)-\beta \mathbb{K} \mathbb{L}\left(q_{\phi}(z \mid x) \| p_{\theta}(z)\right)$$
 
 Initially $$\beta$$ is high, thus introducing strong constraints on the variational posterior around a simple factorial form of true prior, then a simulated annealing technique is used to gradually decrease $$\beta$$ to 1, thus return to the original ELBO[3].
+
+#### 4. minimizing Gibbs free energy to approach Helmholz free energy, second law of thermodynamics
+
+recall in section 1, maximizing ELBO is in equivalent to minimizing KL divergence between true posteriors and variational posteriors
+
+$$\begin{aligned} \log p(x)-\mathbb{E} \mathbb{L} \mathbb{B} \mathbb{O} &=\operatorname{logp}(x)-\mathbb{E}_{q_{\phi}(z \mid x)} \log \left(p_{\theta}(x \mid z) p_{\theta}(z)\right)+\mathbb{E}_{q_{\phi}(z \mid x)} \log \left(q_{\phi}(z \mid x)\right) \\ &=\log p(x)-\mathbb{E}_{q_{\phi}(z \mid x)} \log \left(p_{\theta}(x, z)\right)+\mathbb{E}_{q_{\phi}(z \mid x)} \log \left(q_{\phi}(z \mid x)\right) \\ &=\mathbb{E}_{q_{\phi}(z \mid x)}\left(\log p(x)-\log \left(p_{\theta}(x, z)\right)+\log \left(q_{\phi}(z \mid x)\right)\right) \\ &=\mathbb{E}_{q_{\phi}(z \mid x)}\left(-\log \frac{p_{\theta}(x, z)}{p(x)}+\log \left(q_{\phi}(z \mid x)\right)\right) \\ &=\mathbb{K} \mathbb{L}\left(q_{\phi}(z \mid x)\left|p_{\theta}(z \mid x)\right)\right.\end{aligned}$$
+
+consider a general case of KL divergence between $$b\{x\}$$ and $$p\{x\}$$:
+$$
+\mathbb{KL}(b(\{x\}) \| p(\{x\})=\sum_{\{x\}} b(\{x\}) \ln \frac{b(\{x\})}{p(\{x\})}.
+$$
+since probability distribution $$p\{x\} \in (0, 1)$$, an expression of  $$p\{x\}$$ into Bolzmann distribution is available:
+$$
+p(\{x\})=\frac{1}{Z} e^{-E_p(\{x\}) / T}
+$$
+where $$Z = \int e^{-E_p(\{x\})/T} dx$$ is the partition function
+
+and  $$E(\{x\}) = - T \cdot log(Z \cdot p_p(\{x\}))$$ is easily holds for general cases.
+
+In statistical physics literature, $$E(\{x\})$$ stands for potential energy the system obtained, and $$T$$ stands for temperature. Since temperature is just a parameter that defines a scale of units for the energy, for simplicity, we can choose our units so that $$T=1$$ 
+
+Substitute Bolzmann distribution into the KL divergence, the KL divergence thus can be transformed into an energy based term:
+$$
+\mathbb{KL}(b\{x\}|| p(\{x\})=\sum_{\{x\}} b(\{x\}) E_p(\{x\})+\sum_{\{x\}} b(\{x\}) \ln b(\{x\})+\ln Z.
+$$
+The right hand side term consists an energy term, an entropy term, and a partition function term, and not surprisedly, The first two term is just equivalent to the Gibbs free energy in statistical physics literature:
+$$
+G_p(b(\{x\})) \equiv \sum_{\{x\}} b(\{x\}) E_p(\{x\})+\sum_{\{x\}} b(\{x\}) \ln b(\{x\})=U(b\{x\})-S(b\{x\})
+$$
+and the third term is equivalent to Helmholz free energy:
+$$
+F \equiv-\ln Z
+$$
+thus we have 
+$$
+\mathbb{KL}(b(\{x\}) \| p(\{x\})= G_p(b(\{x\})) - F.
+$$
+minimizing KL divergence is in equilivent to minimizing Gibbs free energy, and KL divergence reaches zero only if Gibbs free energy is minimized to be equal to Helmholz free energy.
+
+This is the second law of thermodynamics!
+
+and the ELBO could be decomposed into the following expression:
+
+$$\mathbb{ELBO} = logp_{\theta}(x) +F_{q_{\phi}}(x) - G_{q_{\phi}, p_{\theta}}(x)$$
 
 ## Reference
 
