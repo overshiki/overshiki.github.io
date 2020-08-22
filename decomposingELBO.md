@@ -14,7 +14,7 @@ A good generative model should maximize this marginal distribution, i.e. place m
 
 However, searching for $$\theta$$ which maximize this marginal distribution require integral over all the possible values of $$z$$, thus is inefficient.
 
-A possible solution of this problem is to use an inference model $$q_{\phi}(z | x)$$  to narrow the search region thus resulting in more efficient sampling
+A possible solution of this problem is to use an inference model $$q_{\phi}(z|x)$$  to narrow the search region thus resulting in more efficient sampling
 
 $$\begin{aligned} \log p(x) &=\log \int p_{\theta}(x \mid z) p_{\theta}(z) d z \\ &=\log \int \frac{p_{\theta}(x \mid z) p_{\theta}(z)}{q_{\phi}(z \mid x)} q_{\phi}(z \mid x) d z \\ &>=\int \log \left\{\frac{p_{\theta}(x \mid z) p_{\theta}(z)}{q_{\phi}(z \mid x)}\right\} q_{\phi}(z \mid x) d z \\ &=\mathbb{E} \mathbb{L} {\mathbb{B}} \mathbb{O} \end{aligned}$$
 
@@ -79,10 +79,14 @@ recall in section 1, maximizing ELBO is in equivalent to minimizing KL divergenc
 $$\begin{aligned} \log p(x)-\mathbb{E} \mathbb{L} \mathbb{B} \mathbb{O} &=\operatorname{logp}(x)-\mathbb{E}_{q_{\phi}(z \mid x)} \log \left(p_{\theta}(x \mid z) p_{\theta}(z)\right)+\mathbb{E}_{q_{\phi}(z \mid x)} \log \left(q_{\phi}(z \mid x)\right) \\ &=\log p(x)-\mathbb{E}_{q_{\phi}(z \mid x)} \log \left(p_{\theta}(x, z)\right)+\mathbb{E}_{q_{\phi}(z \mid x)} \log \left(q_{\phi}(z \mid x)\right) \\ &=\mathbb{E}_{q_{\phi}(z \mid x)}\left(\log p(x)-\log \left(p_{\theta}(x, z)\right)+\log \left(q_{\phi}(z \mid x)\right)\right) \\ &=\mathbb{E}_{q_{\phi}(z \mid x)}\left(-\log \frac{p_{\theta}(x, z)}{p(x)}+\log \left(q_{\phi}(z \mid x)\right)\right) \\ &=\mathbb{K} \mathbb{L}\left(q_{\phi}(z \mid x)\left|p_{\theta}(z \mid x)\right)\right.\end{aligned}$$
 
 consider a general case of KL divergence between $$b\{x\}$$ and $$p\{x\}$$:
+
+
 $$
 \mathbb{KL}(b(\{x\}) \| p(\{x\})=\sum_{\{x\}} b(\{x\}) \ln \frac{b(\{x\})}{p(\{x\})}.
 $$
 since probability distribution $$p\{x\} \in (0, 1)$$, an expression of  $$p\{x\}$$ into Bolzmann distribution is available:
+
+
 $$
 p(\{x\})=\frac{1}{Z} e^{-E_p(\{x\}) / T}
 $$
@@ -93,18 +97,26 @@ and  $$E(\{x\}) = - T \cdot log(Z \cdot p_p(\{x\}))$$ is easily holds for genera
 In statistical physics literature, $$E(\{x\})$$ stands for potential energy the system obtained, and $$T$$ stands for temperature. Since temperature is just a parameter that defines a scale of units for the energy, for simplicity, we can choose our units so that $$T=1$$ 
 
 Substitute Bolzmann distribution into the KL divergence, the KL divergence thus can be transformed into an energy based term:
+
+
 $$
 \mathbb{KL}(b\{x\}|| p(\{x\})=\sum_{\{x\}} b(\{x\}) E_p(\{x\})+\sum_{\{x\}} b(\{x\}) \ln b(\{x\})+\ln Z.
 $$
 The right hand side term consists an energy term, an entropy term, and a partition function term, and not surprisedly, The first two term is just equivalent to the Gibbs free energy in statistical physics literature:
+
+
 $$
 G_p(b(\{x\})) \equiv \sum_{\{x\}} b(\{x\}) E_p(\{x\})+\sum_{\{x\}} b(\{x\}) \ln b(\{x\})=U(b\{x\})-S(b\{x\})
 $$
 and the third term is equivalent to Helmholz free energy:
+
+
 $$
 F \equiv-\ln Z
 $$
 thus we have 
+
+
 $$
 \mathbb{KL}(b(\{x\}) \| p(\{x\})= G_p(b(\{x\})) - F.
 $$
