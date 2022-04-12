@@ -1,8 +1,8 @@
 ---
 layout: default
 ---
-# Learning & Inference
-## Le Niu's special posts on statistical learning
+# Learning & Inference & Computation
+## Le Niu's special posts on statistical learning & Quantum computation
 
 ### [Decomposing ELBO, the general ideas](./decomposingELBO.html).
 
