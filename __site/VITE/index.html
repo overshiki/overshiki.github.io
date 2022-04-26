@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+  
+    <link rel="stylesheet" href="/css/jtd.css">
+  <link rel="icon" href="/assets/favicon.ico">
+
+   <title>Brief Introduction: </title>  
+</head>
+<body>                      <!-- closed in foot.html -->
+<div class="page-wrap">   <!-- closed in foot.html -->
+  <!-- SIDE BAR -->
+  <div class="side-bar">
+    <div class="header">
+      <a href="/" class="title">
+        Le Niu's forge
+      </a>
+    </div>
+    <label for="show-menu" class="show-menu">MENU</label>
+    <input type="checkbox" id="show-menu" role="button">
+    <div class="menu" id="side-menu">
+      <ul class="menu-list">
+        <li class="menu-list-item "><a href="/" class="menu-list-link ">Home</a>
+        <li><a href="/Decomposing_ELBO/">Decomposing ELBO</a></li>
+        <li><a href="/VITE/">VITE</a></li>
+        <!-- <li class="menu-list-item {{ispage menu1/*}}active{{end}}"><a href="/menu1/" class="menu-list-link {{ispage menu1}}active{{end}}">Code blocks</a>
+        <li class="menu-list-item {{ispage menu2/*}}active{{end}}"><a href="/menu2/" class="menu-list-link {{ispage menu2}}active{{end}}">More goodies</a>
+        <li class="menu-list-item {{ispage menu3/*}}active{{end}}"><a href="/menu3/" class="menu-list-link {{ispage menu3}}active{{end}}">Tags</a>
+          <ul class="menu-list-child-list ">
+            <li class="menu-list-item "><a href="#" class="menu-list-link">Submenu</a>
+          </ul> -->
+      </ul>
+    </div>
+    <div class="footer">
+      This is <em>Just the docs</em>, adapted from the <a href="https://github.com/pmarsceill/just-the-docs" target="_blank">Jekyll theme</a>.
+    </div>
+  </div>
+  <!-- CONTENT -->
+  <div class="main-content-wrap"> <!-- closed in foot.html -->
+    <div class="main-content">    <!-- closed in foot.html -->
+
+      <!-- <div class="main-header">
+        <a id="github" href="//github.com/overshiki">Le Niu on GitHub</a>
+      </div> -->
+
+
+
+<!-- Content appended here (in class franklin-content) -->
+<div class="franklin-content"><h3 id="brief_introduction"><a href="#brief_introduction" class="header-anchor">Brief Introduction: </a></h3>
+<p>Variational ansatz-based imaginary time evolution&#40;VITE&#41;, or imaginary-time Ansatz optimization&#40;as refered in <a href="https://www.nature.com/articles/s41567-019-0704-4">Ref</a>&#41; is a method to project the trajectory of imaginary time evolution onto the ansatz manifold. The basic idea is to solve the imaginary time evolution equation&#40;McLachlan’s variational principle&#41;: </p>
+\[\frac{\partial |\psi(\tau)\rangle}{\partial \tau} = -(H - E_{\tau})|\psi(\tau)\rangle\]
+<p>Where </p>
+\[E_{\tau} = \langle \psi(\tau)|H|\psi(\tau) \rangle\]
+<p>What makes it different from conventional imaginary time evolution method is that it uses the function space of ansatz \(\theta \mapsto |\psi_{\theta}(\tau)\rangle\) as the solution space. By doing so, the evolution of state vector \(|\psi \rangle\) is transformed into evolution of parameters \(\theta\). For more details, please refer to the Appendix of the <a href="https://www.nature.com/articles/s41534-019-0187-2">paper</a>.</p>
+<p>In short, the VITE is to obey the following update rule:</p>
+\[\theta(\tau + \delta \tau) = \theta(\tau) + A^{-1}(\tau) \cdot C(\tau)\delta \tau\]
+<p>Where </p>
+\[A_{ij}(\tau) = \mathrm{Real}\left(\frac{\partial \langle \phi(\tau)|}{\partial \theta_i} \frac{\partial |\phi(\tau) \rangle}{\partial \theta_j}\right)\]
+\[C_{i}(\tau) = -\mathrm{Real} \left(\frac{\partial \langle \phi(\tau)|}{\partial \theta_i} H  |\phi(\tau) \rangle \right)\]
+<p>This is actually equivalent to applying a preconditioner \(A^{-1}\) to the gradient descent method:</p>
+\[\theta(\tau + \delta \tau) = \theta(\tau) - A^{-1}(\tau) \cdot \mathrm{grad}(\theta(\tau))\delta \tau\]
+<p>Recent <a href="https://arxiv.org/pdf/1909.02108.pdf">propose</a> of quantum natural gradient descent&#40;QNGD&#41; also connects to the precontitioner \(A\) of VITE. In QNGD, the update rule is as follows:</p>
+\[\theta(\tau + \delta \tau) = \theta(\tau) - F^{-1}(\tau) \cdot \mathrm{grad}(\theta(\tau))\delta \tau\]
+<p>Where </p>
+\[F_{ij}(\tau) = 4 \mathrm{Real}\left(\frac{\partial \langle \phi(\tau)|}{\partial \theta_i} \frac{\partial |\phi(\tau) \rangle}{\partial \theta_j} - \frac{\partial \langle \phi(\tau)|}{\partial \theta_i} |\phi(\tau)\rangle \langle \phi(\tau)|  \frac{\partial |\phi(\tau)\rangle}{\partial \theta_j}\right)\]
+<p>We see that both VITE and QNGD can be seen as cases for applying Hessian-like preconditioner to the gradient descent method.</p>
+<h3 id="calculation_of_hessian-like_matrix"><a href="#calculation_of_hessian-like_matrix" class="header-anchor">Calculation of Hessian-like matrix</a></h3>
+<p>The calculation of the form \(\mathrm{Real}\left(\frac{\partial \langle \phi(\tau)|}{\partial \theta_i} \frac{\partial |\phi(\tau) \rangle}{\partial \theta_j}\right)\), from the viewpoint of the physical implementation of quantum computation, requires doing hadamard test at both side of the circuit, i.e. the left circuit with parameter \(\theta_i\) and the right circuit with parameter \(\theta_j\). From the viewpoint of the numerical simulation, it becomes a little bit interesting, since forward mode differetiation&#40;including forward mode numerical differetiation method and hadamard test method&#41; has a complexity of \(O(N^2)\), which is not efficient enough. Since most numerical simulator use a more efficient&#40;complexity of \(O(N)\)&#41; differetiation method, i.e. reverse mode or backpropogation, here is the question that, if reverse mode could be used in the calculation of the Hessian-like matrix defined above.</p>
+<p>It is actually possible, just do the hybrid mode&#33;</p>
+<p>In a forward-reverse hybrid mode, we firstly do forward-mode symbolic rewriting of the left circuit, such that the new circuit has the \(\langle A|B\rangle\) form:</p>
+\[ \langle A|B\rangle = \mathrm{Real}\left( \frac{\partial \langle \phi(\tau)| \phi(\tau)  \rangle}{\partial \theta_i} \right)\]
+<p>and then using backpropogation to calculate the gradient with respect to each \(\theta_j\) in the right circuit. That&#39;s it&#33;</p>
+<p>The only thing left is to proof that this is mathematically solid, that is, we need to prove:</p>
+\[
+\mathrm{Real}\left(\frac{\partial \langle \phi(\tau)|}{\partial \theta_i} \frac{\partial |\phi(\tau) \rangle}{\partial \theta_j}\right) = \partial \mathrm{Real}\left( \frac{\partial \langle \phi(\tau)| \phi(\tau)  \rangle}{\partial \theta_i} \right) / \partial \theta_j
+\]
+<p>It is actually straightforward, let&#39;s firstly define </p>
+\[f(\theta_j) = \frac{\partial \langle \phi(\tau)| \phi(\tau)  \rangle}{\partial \theta_i}\]
+<p>without of loss of generality, we can also say:</p>
+\[
+f(\theta_j) = u(\theta_j) + i v(\theta_j)
+\]
+<p>where \(u\) and \(v\) are real function, and \(\theta_j\) is a real variable. Thus we easily have:</p>
+\[
+\frac{\partial f(\theta_j)}{\partial \theta_j} = \frac{\partial u(\theta_j)}{\partial \theta_j} + i \frac{\partial v(\theta_j)}{\partial \theta_j}
+\]
+<p>thus</p>
+\[
+\mathrm{Real}\left( \frac{\partial f(\theta_j)}{\partial \theta_j}\right) = \frac{\partial u(\theta_j)}{\partial \theta_j} = \frac{\partial \mathrm{Real}\left( f(\theta_j) \right) }{\partial \theta_j}
+\]
+<p>expanding \(f\) into \(\frac{\partial \langle \phi(\tau)| \phi(\tau)  \rangle}{\partial \theta_i}\) we imediately have </p>
+\[
+\mathrm{Real}\left(\frac{\partial \langle \phi(\tau)|}{\partial \theta_i} \frac{\partial |\phi(\tau) \rangle}{\partial \theta_j}\right) = \partial \mathrm{Real}\left( \frac{\partial \langle \phi(\tau)| \phi(\tau)  \rangle}{\partial \theta_i} \right) / \partial \theta_j
+\]
+<div class="page-foot">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Le Niu. Last modified: April 26, 2022.
+    Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div> <!-- end of class main-content -->
+    </div> <!-- end of class main-content-wrap -->
+    </div> <!-- end of class page-wrap-->
+    
+      <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+  </body>
+</html>
