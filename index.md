@@ -4,7 +4,7 @@ layout: default
 
 # [Decomposing ELBO, the general ideas](./decomposingELBO.md).
 
-### [Variational ansatz-based imaginary time evolution for quantum computing](./VITE.md)
+# [Variational ansatz-based imaginary time evolution for quantum computing](./VITE.md)
 
 <!-- # [All about fairness](./fairness.html) -->
 
