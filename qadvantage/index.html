@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+  
+    <link rel="stylesheet" href="/css/jtd.css">
+  <link rel="icon" href="/assets/favicon.ico">
+
+   <title>Quantum advantage: entanglement or interference?</title>  
+</head>
+<body>                      <!-- closed in foot.html -->
+<div class="page-wrap">   <!-- closed in foot.html -->
+  <!-- SIDE BAR -->
+  <div class="side-bar">
+    <div class="header">
+      <a href="/" class="title">
+        Le Niu's forge
+      </a>
+    </div>
+    <label for="show-menu" class="show-menu">MENU</label>
+    <input type="checkbox" id="show-menu" role="button">
+    <div class="menu" id="side-menu">
+      <ul class="menu-list">
+        <li class="menu-list-item "><a href="/" class="menu-list-link ">Home</a>
+        <!-- <li><a href="/Decomposing_ELBO/">Decomposing ELBO</a></li>
+        <li><a href="/VITE/">VITE</a></li> -->
+        <!-- <li class="menu-list-item {{ispage menu1/*}}active{{end}}"><a href="/menu1/" class="menu-list-link {{ispage menu1}}active{{end}}">Code blocks</a>
+        <li class="menu-list-item {{ispage menu2/*}}active{{end}}"><a href="/menu2/" class="menu-list-link {{ispage menu2}}active{{end}}">More goodies</a>
+        <li class="menu-list-item {{ispage menu3/*}}active{{end}}"><a href="/menu3/" class="menu-list-link {{ispage menu3}}active{{end}}">Tags</a>
+          <ul class="menu-list-child-list ">
+            <li class="menu-list-item "><a href="#" class="menu-list-link">Submenu</a>
+          </ul> -->
+      </ul>
+    </div>
+    <div class="footer">
+      This is <em>Just the docs</em>, adapted from the <a href="https://github.com/pmarsceill/just-the-docs" target="_blank">Jekyll theme</a>.
+    </div>
+  </div>
+  <!-- CONTENT -->
+  <div class="main-content-wrap"> <!-- closed in foot.html -->
+    <div class="main-content">    <!-- closed in foot.html -->
+
+      <!-- <div class="main-header">
+        <a id="github" href="//github.com/overshiki">Le Niu on GitHub</a>
+      </div> -->
+
+
+
+<!-- Content appended here (in class franklin-content) -->
+<div class="franklin-content"><h1 id="quantum_advantage_entanglement_or_interference"><a href="#quantum_advantage_entanglement_or_interference" class="header-anchor">Quantum advantage: entanglement or interference?</a></h1>
+<p>Today I attended a workshop introducing quantum computing, and it only covers interference, no entanglement... It looks weird to me, since a qc introductory workshop without quantum entanglement is just like baking a cake and forgeting to add eggs in it. Then I realized that actually the speaker considers quantum interference to be a main source of quantum advantage&#40;exponential speedup power&#41;. Well, Well, Well.</p>
+<p>Later on, I searched the internet, and found out that it seems there were some debate around this topic: Entanglement or Interference, which one is the source of quantum advantages?</p>
+<p>For example, this <a href="https://pages.cs.wisc.edu/~jvangael/pubs/msthesis.pdf">paper</a> claims that interference actually results in quantum advantages, the discussion is interesting and I actually learned a lot through it, but I disagree with the conclusion. Am I agree with the idea that the quantum entanglement are the source? Not exactly. Both? That&#39;s correct but that&#39;s a boring answer.</p>
+<p>My claim is that entanglement and interference are just results from different viewpoint of the same system. To me, the source of the power of the quantum computing is simple: We only need to operate on \(N\) qubits in order to operate \(2^N\) amplitudes of them. That&#39;s it.  </p>
+<ul>
+<li><p>What about entanglement? The state of \(N\) qubits is a tensor with \(2^N\) components, and only \(2N\) components of them are tensor product states, all others are entangled states. Of course it is correct that from this viewpoint, the exponential computing power comes from quantum entanglement.</p>
+</li>
+<li><p>What about interference? In order to realize some computation, we need to operate those \(N\) qubits. Naturally, the quantum systems we are operating on obeys Born rule, so that interference is a natural phenomena we will observe during the operation&#40;computation&#41;. Such phenomena allows us to do operations such as amplitude amplification which is a foundation of many quantum algorithms. OK, from this point of view, the interference do contribute to exponential computing power.</p>
+</li>
+</ul>
+<p>I&#39;m not a physics and I&#39;m just nobody. This is only my personal view, but I believe that many researchers have exactly the same idea. </p>
+<p>The last thing I want to stress in this post is this: there should be no qc introductory workshop without introducing quantum entanglement. Exactly&#33;</p>
+<p><br/> <br/> <br/> <br/> <br/></p>
+<div class="page-foot">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Le Niu. Last modified: May 26, 2022.
+    Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div> <!-- end of class main-content -->
+    </div> <!-- end of class main-content-wrap -->
+    </div> <!-- end of class page-wrap-->
+    
+      <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+  </body>
+</html>

@@ -3,13 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+  
     <link rel="stylesheet" href="/css/jtd.css">
   <link rel="icon" href="/assets/favicon.ico">
 
-  <title>Tag: syntax</title>
+   <title></title>  
 </head>
-<body>
-  <div class="page-wrap">   <!-- closed in foot.html -->
+<body>                      <!-- closed in foot.html -->
+<div class="page-wrap">   <!-- closed in foot.html -->
   <!-- SIDE BAR -->
   <div class="side-bar">
     <div class="header">
@@ -44,18 +47,39 @@
         <a id="github" href="//github.com/overshiki">Le Niu on GitHub</a>
       </div> -->
 
-  <div class="">
-    <h1>Tag: syntax</h1>
-    <ul><li><a href="/__menu1/">Code blocks</a></li><li><a href="/__menu2/">More goodies</a></li><li><a href="/backup_/">Franklin Example</a></li></ul>
-    <div class="page-foot">
-    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Le Niu. 
+
+
+<!-- Content appended here (in class franklin-content) -->
+<div class="franklin-content">\[XY = -YZ = iZ\]
+\[YZ = -ZY = iX\]
+\[ZX = -ZX = iY\]
+\[XYZ = iI\]
+\[HXH = Z\]
+\[HYH = -Y\]
+\[HZH = X\]
+\[HR_x(\theta)H = R_z(\theta)\]
+\[HR_y(\theta)H = R_y(-\theta)\]
+\[HR_z(\theta)H = R_x(\theta)\]
+\[T^4 = S^2 = Z\]
+\[
+XX = YY = ZZ = HH = I
+\]
+<p><img src="/CNOT_T_commute.png" alt="image" /></p>
+<p><img src="/cnot.png" alt="image" /></p>
+<div class="page-foot">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Le Niu. Last modified: April 27, 2022.
     Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
 </div>
+</div><!-- CONTENT ENDS HERE -->
+    </div> <!-- end of class main-content -->
+    </div> <!-- end of class main-content-wrap -->
+    </div> <!-- end of class page-wrap-->
+    
+      <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
 
-  </div>
-  <!-- close what is opened in pgwrap.html -->
-  </div> <!-- end of class main-content -->
-  </div> <!-- end of class main-content-wrap -->
-  </div> <!-- end of class page-wrap-->
-</body>
+    
+    
+  </body>
 </html>

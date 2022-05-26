@@ -2,25 +2,43 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/__menu2/index.html</loc>
+    <lastmod>2022-04-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/index.html</loc>
+    <lastmod>2022-05-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/qadvantage/index.html</loc>
+    <lastmod>2022-05-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/backup/Reblo/index.html</loc>
+    <lastmod>2022-05-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/backup/_trial/index.html</loc>
+    <lastmod>2022-05-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/VITE/index.html</loc>
+    <lastmod>2022-04-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/Decomposing_ELBO/index.html</loc>
-    <lastmod>2022-04-26</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-</url>
-<url>
-    <loc>https://tlienart.github.io/FranklinTemplates.jl/_trial/index.html</loc>
-    <lastmod>2022-04-26</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-</url>
-<url>
-    <loc>https://tlienart.github.io/FranklinTemplates.jl/backup_index/index.html</loc>
-    <lastmod>2022-04-26</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-</url>
-<url>
-    <loc>https://tlienart.github.io/FranklinTemplates.jl/__menu3/index.html</loc>
     <lastmod>2022-04-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
@@ -32,19 +50,7 @@
     <priority>0.5</priority>
 </url>
 <url>
-    <loc>https://tlienart.github.io/FranklinTemplates.jl/index.html</loc>
-    <lastmod>2022-04-26</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-</url>
-<url>
-    <loc>https://tlienart.github.io/FranklinTemplates.jl/__menu2/index.html</loc>
-    <lastmod>2022-04-26</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-</url>
-<url>
-    <loc>https://tlienart.github.io/FranklinTemplates.jl/VITE/index.html</loc>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/backup_index/index.html</loc>
     <lastmod>2022-04-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
@@ -52,6 +58,18 @@
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/__menu1/index.html</loc>
     <lastmod>2022-04-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/__menu3/index.html</loc>
+    <lastmod>2022-04-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/backup/qc_rule/index.html</loc>
+    <lastmod>2022-04-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>

@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+    <link rel="stylesheet" href="/css/jtd.css">
+  <link rel="icon" href="/assets/favicon.ico">
+
+   <title>Relbo: rewriting ELBO -variational inference using symbolic rewriting techniques</title>  
+</head>
+<body>                      <!-- closed in foot.html -->
+<div class="page-wrap">   <!-- closed in foot.html -->
+  <!-- SIDE BAR -->
+  <div class="side-bar">
+    <div class="header">
+      <a href="/" class="title">
+        Le Niu's forge
+      </a>
+    </div>
+    <label for="show-menu" class="show-menu">MENU</label>
+    <input type="checkbox" id="show-menu" role="button">
+    <div class="menu" id="side-menu">
+      <ul class="menu-list">
+        <li class="menu-list-item "><a href="/" class="menu-list-link ">Home</a>
+        <!-- <li><a href="/Decomposing_ELBO/">Decomposing ELBO</a></li>
+        <li><a href="/VITE/">VITE</a></li> -->
+        <!-- <li class="menu-list-item {{ispage menu1/*}}active{{end}}"><a href="/menu1/" class="menu-list-link {{ispage menu1}}active{{end}}">Code blocks</a>
+        <li class="menu-list-item {{ispage menu2/*}}active{{end}}"><a href="/menu2/" class="menu-list-link {{ispage menu2}}active{{end}}">More goodies</a>
+        <li class="menu-list-item {{ispage menu3/*}}active{{end}}"><a href="/menu3/" class="menu-list-link {{ispage menu3}}active{{end}}">Tags</a>
+          <ul class="menu-list-child-list ">
+            <li class="menu-list-item "><a href="#" class="menu-list-link">Submenu</a>
+          </ul> -->
+      </ul>
+    </div>
+    <div class="footer">
+      This is <em>Just the docs</em>, adapted from the <a href="https://github.com/pmarsceill/just-the-docs" target="_blank">Jekyll theme</a>.
+    </div>
+  </div>
+  <!-- CONTENT -->
+  <div class="main-content-wrap"> <!-- closed in foot.html -->
+    <div class="main-content">    <!-- closed in foot.html -->
+
+      <!-- <div class="main-header">
+        <a id="github" href="//github.com/overshiki">Le Niu on GitHub</a>
+      </div> -->
+
+
+
+<!-- Content appended here (in class franklin-content) -->
+<div class="franklin-content"><h3 id="relbo_rewriting_elbo_-variational_inference_using_symbolic_rewriting_techniques"><a href="#relbo_rewriting_elbo_-variational_inference_using_symbolic_rewriting_techniques" class="header-anchor">Relbo: rewriting ELBO -variational inference using symbolic rewriting techniques</a></h3>
+<p><code>Relbo.jl</code> uses expression tree to represent computational graph of variational inference, doing this, symbolic rewriting technique based on <code>Metatheory.jl</code> could be used to manipulate the computation procedure at compile time. Rao-Blackwellization rewriting for variance reduction could be easily implemented. It also takes advantages of codegen&#40;meta programming&#41; and automatic differentiation techniques&#40;<code>Zygote.jl</code>&#41; to handle the numerical calculation, in an efficient way.</p>
+<h4 id="motivations"><a href="#motivations" class="header-anchor">Motivations</a></h4>
+<p>This project is motivated by projects in JuliaSymbolic comminities&#40;<code>Metatheory.jl</code>, <code>Symbolics.jl</code>&#41; for symbolic rewriting ideas; <code>pyro</code> for the variational inference as PPL idea. Related projects include <code>Turing.jl</code> and <code>Soss.jl</code>. The difference between <code>Relbo.jl</code> and <code>Turing.jl</code>|<code>Soss.jl</code> is that <code>Turing.jl</code>|<code>Soss.jl</code> focuses on <code>HMC</code> based posterial sampling while <code>Relbo.jl</code> focuses on variational inference&#40;currently it is a very small trial project&#41;.  </p>
+<h4 id="quick_show_case"><a href="#quick_show_case" class="header-anchor">Quick show case</a></h4>
+<p>The easest way of using <code>Relbo.jl</code> is through the dsl and the provided helper functions:  </p>
+<pre><code class="language-julia">using Relbo 
+using Relbo: train
+
+
+grad_elbo &#61; @ELBO ga, gb begin 
+    &#40;i, j, k, l&#41;::Index
+    data::Observe&#40;q&#41;
+    &#40;a, b&#41;::Param 
+
+    a | i 
+    b | i
+    data | i
+    ga | i 
+    gb | i 
+
+    z ~ Beta&#40;a, b&#41;
+    q ~ InverseGaussian&#40;z&#41;
+    obsq &#61; q&#40;data&#41;
+    guide ~ Beta&#40;ga, gb&#41; ≈ z
+
+    
+    # return 𝔼_guide&#40;obsq&#41;
+    return Expectation&#40;guide, obsq&#41;
+
+end
+
+sf_grad_elbo_eval &#61; grad_elbo |&gt; sf_grad_rule |&gt; integral2sampler_rule #|&gt; cgen
+data &#61; rand&#40;100&#41; 
+g &#61; GD&#40;sf_grad_elbo_eval, :data; ga&#61;12.0, gb&#61;4.0&#41;
+train&#40;g::GD, data, 10&#41;</code></pre>
+<h4 id="what_does_the_expression_tree_of_relbojl_looks_like"><a href="#what_does_the_expression_tree_of_relbojl_looks_like" class="header-anchor">What does the expression tree of <code>Relbo.jl</code> looks like?</a></h4>
+<p>The expression tree of <code>sf_grad_elbo_eval</code> could be ploted using AbstractTrees:</p>
+<pre><code class="language-julia">using Relbo 
+using AbstractTrees
+print_tree&#40;sf_grad_elbo_eval |&gt; to_tree; maxdepth&#61;20&#41;</code></pre>
+<p>The result is as below:</p>
+<pre><code class="language-julia">&quot;ExprTerm_*&quot;
+└─ Dict&#123;Any, Any&#125;
+   ├─ &quot;&quot;
+   │  └─ &quot;ExprTerm_observe&quot;
+   │     └─ Dict&#123;Any, Any&#125;
+   │        ├─ &quot;&quot;
+   │        │  └─ &quot;Atom_q_InverseGaussian_observe&quot;
+   │        │     └─ &quot;&quot;
+   │        │        └─ &quot;Atom_z_Beta_sampling&quot;
+   │        │           └─ Dict&#123;Any, Any&#125;
+   │        │              ├─ &quot;&quot;
+   │        │              │  └─ &quot;Param_a&quot;
+   │        │              │     └─ &quot;&quot;
+   │        │              │        └─ &quot;nothing&quot;
+   │        │              └─ &quot;&quot;
+   │        │                 └─ &quot;Param_b&quot;
+   │        │                    └─ &quot;&quot;
+   │        │                       └─ &quot;nothing&quot;
+   │        └─ &quot;&quot;
+   │           └─ &quot;Atom_q_data_observe&quot;
+   │              └─ &quot;&quot;
+   │                 └─ &quot;Param_data&quot;
+   │                    └─ &quot;&quot;
+   │                       └─ &quot;nothing&quot;
+   └─ &quot;&quot;
+      └─ &quot;ExprTerm_grad&quot;
+         └─ &quot;&quot;
+            └─ &quot;ExprTerm_log&quot;
+               └─ &quot;&quot;
+                  └─ &quot;ExprTerm_observe&quot;
+                     └─ Dict&#123;Any, Any&#125;
+                        ├─ &quot;&quot;
+                        │  └─ &quot;Atom_z_data_observe&quot;
+                        │     └─ &quot;&quot;
+                        │        └─ &quot;Param_z&quot;
+                        │           └─ &quot;&quot;
+                        │              └─ &quot;Atom_z_Beta_sampling&quot;
+                        │                 └─ Dict&#123;Any, Any&#125;
+                        │                    ├─ &quot;&quot;
+                        │                    │  └─ &quot;Param_gb&quot;
+                        │                    │     └─ &quot;&quot;
+                        │                    │        └─ &quot;nothing&quot;
+                        │                    └─ &quot;&quot;
+                        │                       └─ &quot;Param_ga&quot;
+                        │                          └─ &quot;&quot;
+                        │                             └─ &quot;nothing&quot;
+                        └─ &quot;&quot;
+                           └─ &quot;Atom_z_Beta_observe&quot;
+                              └─ Dict&#123;Any, Any&#125;
+                                 ├─ &quot;&quot;
+                                 │  └─ &quot;Param_ga&quot;
+                                 │     └─ &quot;&quot;
+                                 │        └─ &quot;nothing&quot;
+                                 └─ &quot;&quot;
+                                    └─ &quot;Param_gb&quot;
+                                       └─ &quot;&quot;
+                                          └─ &quot;nothing&quot;</code></pre>
+<h4 id="how_does_relbojl_handle_the_rewriting"><a href="#how_does_relbojl_handle_the_rewriting" class="header-anchor">How does <code>Relbo.jl</code> handle the rewriting</a></h4>
+<p>It just use the term rewriting functions provided by <code>Metatheory.jl</code>. Below shows how to define a <code>score function estimator rewriter</code> to transform a gradient over intergal into a score function version, which has smaller variance. </p>
+<pre><code class="language-julia">function sf_estimator&#40;x::ExprTerm&#41;
+    grad_op &#61; x.op
+    @assert is_single_arg&#40;x&#41;
+    elbo &#61; get_single_arg&#40;x&#41;
+
+    guide &#61; elbo.args&#91;1&#93;
+
+    nelbo, nguide &#61; copy&#40;elbo&#41;, copy&#40;guide&#41;
+    # nelbo &#61; similarterm&#40;elbo, operation&#40;elbo&#41;, arguments&#40;elbo&#41;&#41;
+    # nguide &#61; similarterm&#40;guide, operation&#40;guide&#41;, arguments&#40;guide&#41;&#41;
+
+    log_guide &#61; ExprTerm&#40;FunctorOperation&#40;:log&#41;, nguide&#41;
+    grad_log_guide &#61; ExprTerm&#40;grad_op, log_guide&#41;
+    push&#33;&#40;nelbo.args, grad_log_guide&#41;
+    return nelbo
+end
+
+function sf_estimator_2expr&#40;x::ExprTerm&#41;
+    elbo &#61; sf_estimator&#40;x&#41;
+    return :&#40;&#36;elbo&#41;
+end
+
+sf_grad_rule &#61; @rule x x::ExprTerm &#61;&gt; sf_estimator_2expr&#40;x&#41; where is_sf_grad&#40;x&#41;
+sf_grad_rule &#61; Postwalk&#40;PassThrough&#40;sf_grad_rule&#41;&#41;</code></pre>
+<p>Fow more informations of how to manipulate the expression tree, see <code>src/rewrite.jl</code></p>
+<h4 id="code_generation"><a href="#code_generation" class="header-anchor">code generation</a></h4>
+<p>The expression tree of <code>Relbo.jl</code> could be easily transformed into runnable code using <code>cgen</code> functions provided in <code>src/codegen.jl</code>, the code for gradients are generated using <code>Zygote.jl</code>. The resulting code is easily broadcastable along batch dimension, which allows it to be scaled up easily.</p>
+<pre><code class="language-julia">code &#61; cgen&#40;sf_grad_elbo_eval&#41;
+grad_func &#61; sampling_fun_generator&#40;code, var, true; ga&#61;12, gb&#61;4&#41;
+ga &#61; 12
+gb &#61; 4
+
+data &#61; rand&#40;100&#41; 
+@time grad_func.&#40;data, Ref&#40;ga&#41;, Ref&#40;gb&#41;&#41;
+
+grad &#61; sum&#40;grad_func.&#40;data, Ref&#40;ga&#41;, Ref&#40;gb&#41;&#41;&#41;
+@show size&#40;grad&#41;</code></pre>
+<p>For more information, see <code>test/test_terms.jl</code></p>
+<div class="page-foot">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Le Niu. Last modified: May 10, 2022.
+    Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div> <!-- end of class main-content -->
+    </div> <!-- end of class main-content-wrap -->
+    </div> <!-- end of class page-wrap-->
+    
+    
+      <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>
