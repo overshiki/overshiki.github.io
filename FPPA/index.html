@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+  
+    <link rel="stylesheet" href="/css/jtd.css">
+  <link rel="icon" href="/assets/favicon.ico">
+
+   <title>Could functional programming helps achieving </title>  
+</head>
+<body>                      <!-- closed in foot.html -->
+<div class="page-wrap">   <!-- closed in foot.html -->
+  <!-- SIDE BAR -->
+  <div class="side-bar">
+    <div class="header">
+      <a href="/" class="title">
+        Le Niu's forge
+      </a>
+    </div>
+    <label for="show-menu" class="show-menu">MENU</label>
+    <input type="checkbox" id="show-menu" role="button">
+    <div class="menu" id="side-menu">
+      <ul class="menu-list">
+        <li class="menu-list-item "><a href="/" class="menu-list-link ">Home</a>
+        <!-- <li><a href="/Decomposing_ELBO/">Decomposing ELBO</a></li>
+        <li><a href="/VITE/">VITE</a></li> -->
+        <!-- <li class="menu-list-item {{ispage menu1/*}}active{{end}}"><a href="/menu1/" class="menu-list-link {{ispage menu1}}active{{end}}">Code blocks</a>
+        <li class="menu-list-item {{ispage menu2/*}}active{{end}}"><a href="/menu2/" class="menu-list-link {{ispage menu2}}active{{end}}">More goodies</a>
+        <li class="menu-list-item {{ispage menu3/*}}active{{end}}"><a href="/menu3/" class="menu-list-link {{ispage menu3}}active{{end}}">Tags</a>
+          <ul class="menu-list-child-list ">
+            <li class="menu-list-item "><a href="#" class="menu-list-link">Submenu</a>
+          </ul> -->
+      </ul>
+    </div>
+    <div class="footer">
+      This is <em>Just the docs</em>, adapted from the <a href="https://github.com/pmarsceill/just-the-docs" target="_blank">Jekyll theme</a>.
+    </div>
+  </div>
+  <!-- CONTENT -->
+  <div class="main-content-wrap"> <!-- closed in foot.html -->
+    <div class="main-content">    <!-- closed in foot.html -->
+
+      <!-- <div class="main-header">
+        <a id="github" href="//github.com/overshiki">Le Niu on GitHub</a>
+      </div> -->
+
+
+
+<!-- Content appended here (in class franklin-content) -->
+<div class="franklin-content"><h1 id="could_functional_programming_helps_achieving"><a href="#could_functional_programming_helps_achieving" class="header-anchor">Could functional programming helps achieving </a></h1>
+<h1 id="pure_algorithm"><a href="#pure_algorithm" class="header-anchor">pure algorithm?</a></h1>
+<p>Why are there so many programming languages, like <code>C&#43;&#43;</code>, <code>python</code>, <code>Julia</code>, <code>Haskell</code>? Why <code>C</code> or <code>Fortran</code> is not enough for people in the field of scientific computing? Why <code>OOP</code> or <code>FP</code>? The reason is obviously simple: the way computer thinks is totally different from the way &#40;mathmatical minding&#41; human-being thinks. For computers, state-machine or also called Turing machine is the main engine of thinking. Because of this, just a lot of details emerges: the memory limit, variables representing the current states, functions representing the operation on the states, and so on. There are even more details to be considered, when people care about the performance. However, the way a mathematical minding man/woman thinks is totally different, it is actually a combination of operations. For example, when we teach others to cook, what we are always saying is: Do this, do that, and then do that ... From mathematical point of view, what an algorithm is? Just formulars&#33; Formulars just declare something, using the composition of other formulars. However, when programming, we always need to translate the formular into a state-machine, that is troublesome.</p>
+<p>People may struggle on the balance between the programming minding and the mathematical minding, just as what I am suffering from. Here in this post, I will show that how functional programming could help me avoid such suffer as much as possible. Actually, <code>FP</code> allows me to mathmatically understand and practically program some algorithms/mathmatical definition at the same level of abstract, that is amazing&#33;</p>
+<p>The first example I presented here is the defination of <code>tensor</code>. As you may know, the tensor is actually a multilinear function. In more details, it means it has several auguments&#40;slots&#41;, and output a value, the function is linear in each of its auguments. For example, the two dimensional tensor could be defined in this way:</p>
+\[T(v + cw) = T(v) + cT(w) \forall c\]
+\[T(cv + w) = cT(v) + T(w) \forall c\]
+<p>When the auguments/variables is in a discrete set of values, the tensor then will become the form what we normally know: the multi-dimensional array. </p>
+<p>The <code>N</code>-dimensional array just contains all the possible outcomes given all possible combination of income auguments of a <code>N</code>-dimensional tensor. </p>
+<p><br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/> –end–</p>
+<div class="page-foot">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Le Niu. Last modified: October 07, 2022.
+    Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div> <!-- end of class main-content -->
+    </div> <!-- end of class main-content-wrap -->
+    </div> <!-- end of class page-wrap-->
+    
+      <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+  </body>
+</html>
