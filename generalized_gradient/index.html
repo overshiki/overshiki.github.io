@@ -53,7 +53,7 @@
 <div class="franklin-content"><p>Problem definition:</p>
 <p>Given two Hilbert space \((X, \bra{\cdot} \ket{\cdot}_{X})\), \((Y, \bra{\cdot} \ket{\cdot}_{Y})\), and let \(F: X \to Y\) be a function that is differentiable at \(x_0 \in X\), then how could we define gradient?</p>
 <h3 id="derivative_and_gradient"><a href="#derivative_and_gradient" class="header-anchor">Derivative and Gradient</a></h3>
-<p>In Hilbert space, the derivative and gradient have different definitions. A quick way to understand this is through their types&#40;or type signature as in <code>Ocaml</code>&#41;:</p>
+<p>In Hilbert space, the derivative and gradient have different definitions. A quick way to understand this is through their types&#40;or type signature as in <code>Haskell</code>&#41;:</p>
 <p>Suppose we have a function \(F: X \to \mathbb{R}\) where \(X\) is a Hilber space, i.e. equiped with a inner product: \((X, \bra{\cdot} \ket{\cdot}_{X})\)</p>
 <p>The derivative of \(F\), let&#39;s say \(F^{\prime}\), has the type of \(X \to X^*\) where \(X^*\) is the dual of the Hilbert space \(X\). More specifically, we can write \(X \to  \mathcal{L}(X;\mathbb{R})\).</p>
 <p>To interprete this, suppose we have implemented a derivative function \(F^{\prime}\) in computers&#40;in <code>Haskell/Ocaml/julia/python</code> or any language you like&#41;, given a point \(x_0\) on \(X\), we ouput \(F^{\prime}(x_0) \in \mathcal{L}(X;\mathbb{R})\), where \(\mathcal{L}(X;\mathbb{R})\) means the space of linear map between space \(X\) and \(\mathbb{R}\). In other word, the ouput of \(F^{\prime}(x_0)\) is itself a function, which the input is a small change in space \(X\), the ouput is a corresponding change in space \(\mathbb{R}\), i.e. derivative function \(F^{\prime}\) is indeed a higher order function. This makes sense and is what we exactly observed in any valid implementation of derivative functions.  </p>
@@ -68,7 +68,7 @@
 <p>How to interprete the functionality of \(\Phi^{-1}\)? Again, we can use variational rule: Suppose \(y \in X\) is any vector with unit norm: \(\bra{y} \ket{y} = 1\). Suppose \(\bra{z}\) also has unit norm in dual space. Then the maximize value the function \(\bra{z}\) could obtain is \(1\), and the corresponding input value is unique: it is just \(z\). Which means that the gradient is the unit-normed vector in space \(X\) that provides the geatest value change of function \(F\).   </p>
 <p>Why \(F^{\prime}(x_0)\) always corresponds to a point in dual space: \(\bra{z}\)? Just refer to the Riesz representation theorem&#33; </p>
 <h3 id="reference"><a href="#reference" class="header-anchor">Reference:</a></h3>
-<p>&#91;This one&#93;&#40;http://www.individual.utoronto.ca/jordanbell/notes/gradienthilbert.pdf&#41;</p>
+<p>&#91;1&#93; http://www.individual.utoronto.ca/jordanbell/notes/gradienthilbert.pdf</p>
 <p><br/> <br/> <br/> <br/> <br/></p>
 <div class="page-foot">
     <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Le Niu. Last modified: April 29, 2023.
