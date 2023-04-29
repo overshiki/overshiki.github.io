@@ -52,9 +52,9 @@
 
 <!-- Content appended here (in class franklin-content) -->
 <div class="franklin-content"><p>Here in this post, I would like to demonstrate how type signature in <code>Haskell</code> could help understanding functions &amp; function compositions. </p>
-<p>As a <code>Haskell</code> learner and lover, the most enjoyable part of programming in <code>Haskell</code>, is that whenever I wrote a function, I could aways start with a type signature. For example, imaging I want to write a factory function which given a input ternary function, outputs a function that flip the order of the function inputs. The description above is a little bit ambiguous, but if I write the type signature down, you could easily understand what I meant:</p>
+<p>As a <code>Haskell</code> learner and lover, the most enjoyable part of programming in <code>Haskell</code>, is that whenever I wrote a function, I could aways start with a type signature. For example, imaging I want to write a factory function which recieves a input ternary function, outputs a function that flip the order of the function inputs. The description above is a little bit ambiguous, but if I write down the type signature, you could easily understand what I meant:</p>
 <pre><code class="language-haskell">flip :: &#40;a -&gt; b -&gt; c&#41; -&gt; &#40;b -&gt; a -&gt; c&#41;</code></pre>
-<p>As you can see, the <code>flip</code> function just recieve a ternary function &#40;a -&gt; b -&gt; c&#41; as input, and output another ternary function: &#40;b -&gt; a -&gt; c&#41;. The implementation of the function definition becomes clear just by reading the type signature&#33;</p>
+<p>As you can see, the <code>flip</code> function just recieves a ternary function &#40;a -&gt; b -&gt; c&#41; as input, and outputs another ternary function: &#40;b -&gt; a -&gt; c&#41;. The implementation of the function definition becomes clear just by reading the type signature&#33;</p>
 <h3 id="more_appealing_example"><a href="#more_appealing_example" class="header-anchor">More appealing example</a></h3>
 <p>Here is another more appealing example: suppose you have a function that just do nothing, then how could you build new nontrivial functions based on this trivial function?</p>
 <p>The function I mentioned is the famous <code>id</code> function: </p>
@@ -71,11 +71,11 @@
 <pre><code class="language-haskell">nflip &#61; flip id</code></pre>
 <p>What does this function do? Let&#39;s firstly check its type signature:</p>
 <pre><code class="language-haskell">nflip :: b -&gt; &#40;b -&gt; c&#41; -&gt; c</code></pre>
-<p>Wow, what happened? We just see such an unexpected type signature. According to this type signature, what the <code>nflip</code> function does is, given an input of type <code>b</code>, and a function of <code>b -&gt; c</code>, then return an object of type <code>c</code>. This is indeed an apply function:</p>
+<p>Wow, what happened? We just see such an unexpected type signature. According to this type signature, what the <code>nflip</code> function does is, given an input of type <code>b</code>, and a function of <code>b -&gt; c</code>, then return an value of type <code>c</code>. This is indeed an apply function:</p>
 <pre><code class="language-haskell">apply :: b -&gt; &#40;b -&gt; c&#41; -&gt; c
 apply x f &#61; f x</code></pre>
 <p>That is, apply the function <code>f</code>&#40;the second input argument&#41; onto the input <code>x</code>&#40;the first input argument&#41;, and return the resulting value.</p>
-<p>So how could we derive such as type signature? As we have mentioned, the <code>id</code> function bind the input and output to be the same type, then since <code>flip</code> function recieve a function as its input argument, the evaluation of <code>flip id</code> should satisfy the type binding of both <code>flip</code> and <code>id</code>:</p>
+<p>So how could we derive such a type signature? As we have mentioned, the <code>id</code> function bind the input and output to be the same type, then since <code>flip</code> function recieves a function as its input argument, the evaluation of <code>flip id</code> should satisfy the type binding of both <code>flip</code> and <code>id</code>:</p>
 <pre><code class="language-haskell">id :: a -&gt; a 
 flip :: &#40;a -&gt; b -&gt; c&#41; -&gt; &#40;b -&gt; a -&gt; c&#41;
 
@@ -90,7 +90,7 @@ id :: a -&gt; &#40;b -&gt; c&#41;
 flip id :: b -&gt; a -&gt; c 
 -- a should be replace with b -&gt; c 
 flip id :: b -&gt; &#40;b -&gt; c&#41; -&gt; c</code></pre>
-<p>We just infer all above result only using the type signature&#33; That is actually where the power of <code>type theory</code> lie in.</p>
+<p>We just infer all above result only using the type signature&#33; That is actually where the power of <code>type theory</code> lies in.</p>
 <h3 id="more_complex_example"><a href="#more_complex_example" class="header-anchor">More complex example</a></h3>
 <p>Let&#39;s discuss a more complex type inference example, a real world one. The inference happened in a famous <code>Haskell</code> package called <a href="https://github.com/haskell-numerics/hmatrix"><code>hmatix</code></a>. It is a <code>Haskell</code> binding to <code>CLAPACK</code>, with interface for common linear algebra functions used in most of the numerical applications. What we will talk about is the two function&#40;operator&#41; in its <a href="https://github.com/haskell-numerics/hmatrix/blob/master/packages/base/src/Internal/Matrix.hs">source code</a>  </p>
 <pre><code class="language-haskell">infixr 1 #
@@ -119,7 +119,7 @@ instance Storable t &#61;&gt; TransArray &#40;Matrix t&#41;
 <p>given the definition:</p>
 <pre><code class="language-haskell">&#40;#&#41; :: TransArray c &#61;&gt; c -&gt; &#40;b -&gt; IO r&#41; -&gt; Trans c b -&gt; IO r
 a #&#33; b &#61; a # b # id</code></pre>
-<p>Aha, the <code>id</code> function again&#33; So we just need to follow the derivation step in the previous section, and apply it in this more complex situation. And it will turn out that it is not complex indeed.</p>
+<p>Aha, the <code>id</code> function again&#33; So we just need to follow the deriving step in the previous section, and apply it in this more complex situation. It will turn out that indeed it is not that complex.</p>
 <pre><code class="language-haskell">-- since we have
 id :: a -&gt; a 
 -- and id is the second input argument of &#40;#&#41; in &#40;b # id&#41;
@@ -128,11 +128,11 @@ id :: IO r -&gt; IO r
 -- b # id will be 
 b # id :: Trans c &#40;IO r&#41; -&gt; IO r
 
--- a # &#40;b # id&#41; will be &#40;the association rule is given in &#40;infixr 1 #&#41; definition&#41;
 -- suppose we have type bind a :: c1
+-- a # &#40;b # id&#41; will be &#40;the association rule is given in &#40;infixr 1 #&#41; definition&#41;
 a # b # id :: Trans c1 &#40;Trans c &#40;IO r&#41;&#41; -&gt; IO r
 
--- that is, the operator &#40;#&#33;&#41; should have the signature
+-- that&#39;s it&#33; the operator &#40;#&#33;&#41; should have the signature
 &#40;#&#33;&#41; :: c1 -&gt; c -&gt; Trans c1 &#40;Trans c &#40;IO r&#41;&#41; -&gt; IO r</code></pre>
 <p>As you have seen, inference of type signature make it easier for understanding the behaviour of complex function compositions&#33;</p>
 <p><br/> <br/> <br/> <br/> <br/></p>
