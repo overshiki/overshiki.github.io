@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+    <link rel="stylesheet" href="/css/jtd.css">
+  <link rel="icon" href="/assets/favicon.ico">
+
+   <title>So, let&#39;s start&#33;</title>  
+</head>
+<body>                      <!-- closed in foot.html -->
+<div class="page-wrap">   <!-- closed in foot.html -->
+  <!-- SIDE BAR -->
+  <div class="side-bar">
+    <div class="header">
+      <a href="/" class="title">
+        Le Niu's forge
+      </a>
+    </div>
+    <label for="show-menu" class="show-menu">MENU</label>
+    <input type="checkbox" id="show-menu" role="button">
+    <div class="menu" id="side-menu">
+      <ul class="menu-list">
+        <li class="menu-list-item "><a href="/" class="menu-list-link ">Home</a>
+        <!-- <li><a href="/Decomposing_ELBO/">Decomposing ELBO</a></li>
+        <li><a href="/VITE/">VITE</a></li> -->
+        <!-- <li class="menu-list-item {{ispage menu1/*}}active{{end}}"><a href="/menu1/" class="menu-list-link {{ispage menu1}}active{{end}}">Code blocks</a>
+        <li class="menu-list-item {{ispage menu2/*}}active{{end}}"><a href="/menu2/" class="menu-list-link {{ispage menu2}}active{{end}}">More goodies</a>
+        <li class="menu-list-item {{ispage menu3/*}}active{{end}}"><a href="/menu3/" class="menu-list-link {{ispage menu3}}active{{end}}">Tags</a>
+          <ul class="menu-list-child-list ">
+            <li class="menu-list-item "><a href="#" class="menu-list-link">Submenu</a>
+          </ul> -->
+      </ul>
+    </div>
+    <div class="footer">
+      This is <em>Just the docs</em>, adapted from the <a href="https://github.com/pmarsceill/just-the-docs" target="_blank">Jekyll theme</a>.
+    </div>
+  </div>
+  <!-- CONTENT -->
+  <div class="main-content-wrap"> <!-- closed in foot.html -->
+    <div class="main-content">    <!-- closed in foot.html -->
+
+      <!-- <div class="main-header">
+        <a id="github" href="//github.com/overshiki">Le Niu on GitHub</a>
+      </div> -->
+
+
+
+<!-- Content appended here (in class franklin-content) -->
+<div class="franklin-content"><p>It may look like a very old topic&#40;around 2015&#41;. But I do spend some time on it, and it really helps me understanding better about <code>GADT</code>, its advantages in handling transformations, which we always encountering in a lot of tasks, including Bayesian inference.</p>
+<p>The key point is that, why do we need <code>GADT</code>, as we already have ADT, what the benefit it may bring us? It takes me some time to fully understand this. And with the example of <code>GADT</code> in Bayesian inference, it really makes it clear&#33;</p>
+<p>Before we get started, I should mention all the materials this post is based on. This is important, since it looks like there happened to be a discussion and practice of this idea around 2015&#40;8 years earlier&#33;&#41;, and currently the technique is not used anymore by those people&#40;may be there are some drawbacks of <code>GADT</code> which I haven&#39;t figure it out&#41;. So remember, it may be an old/discrepancy thing&#33; </p>
+<ul>
+<li><p>The first document I need to mention is the paper: <a href="https://dl.acm.org/doi/10.1145/2804302.2804317">Practical Probabilistic Programming with Monads</a>, published in 2015, written by Adam  ́Scibior, Zoubin Ghahramani and Andrew D. Gordon. Please refer to section 3.3.</p>
+</li>
+<li><p>The second document is the github repository <a href="https://github.com/tweag/monad-bayes">monad-bayes</a>, by the same people of the 2015 paper. But <code>GADT</code> implementation is replaced by monad transformer in 2016. So you need to checkout the <code>5c1f926b6f1b8fdd382c74c0922b21817897faf2</code> commit to retrieve the original code. &#40;you may also want to check the <a href="https://github.com/tweag/monad-bayes/pull/7">pr</a> to see what&#39;s the reason of replacing <code>GADTs</code> with monad transformer&#41;.</p>
+</li>
+<li><p>The third document is the <a href="https://www.youtube.com/watch?v&#61;qZ4O-1VYv4c">talk</a> given by Tikhon Jelvis, exactly following the original idea of the 2015 paper.</p>
+</li>
+</ul>
+<h3 id="so_lets_start"><a href="#so_lets_start" class="header-anchor">So, let&#39;s start&#33;</a></h3>
+<p>The basic idea is to define a probability monad in the following ways:</p>
+<pre><code class="language-haskell">data Dist a where
+    Return      :: a -&gt; Dist a
+    Bind        :: Dist b -&gt; &#40;b -&gt; Dist a&#41; -&gt; Dist a
+    Primitive   :: &#40;Sampleable d&#41; &#61;&gt; d a -&gt; Dist a
+    Conditional :: &#40;a -&gt; Prob&#41; -&gt; Dist a -&gt; Dist a</code></pre>
+<p>Here, using <code>GADT</code>, 4 types of constructors are built.</p>
+<ul>
+<li><p>The first one is <code>Return :: a -&gt; Dist a</code>, that is, provided a data of type <code>a</code>, and wrapped it with <code>Return</code>. This is what we will see in a normal ADT definition like <code>data Dist a &#61; Dist a</code>. </p>
+</li>
+<li><p>The second one is <code>Bind :: Dist b -&gt; &#40;b -&gt; Dist a&#41; -&gt; Dist a</code>, this really is where the trick lies. What the <code>Bind</code> does, is register a data of type <code>Dist b</code>, and a function of type <code>b -&gt; Dist a</code>, and wrapping them into the data type <code>Dist a</code>. So an instance of <code>Dist a</code> could be another instance of type <code>Dist b</code> combined with a function of type <code>b -&gt; Dist a</code>. This, together with <code>Return :: a -&gt; Dist a</code>, build a tree structure for probability graph model.</p>
+</li>
+<li><p>The third one is <code>Primitive :: &#40;Sampleable d&#41; &#61;&gt; d a -&gt; Dist a</code>. This is wrapping a data of type <code>&#40;Sampleable d&#41; &#61;&gt; d a</code> into <code>Dist a</code>, for the primitive distributions, such as categorical, multinomial, Gaussian, etc.</p>
+</li>
+<li><p>The final one is <code>Conditional :: &#40;a -&gt; Prob&#41; -&gt; Dist a -&gt; Dist a</code>. Just like in <code>Bind</code> and <code>Primitive</code>, it wraps a function <code>a -&gt; Prob</code> and a data of type <code>Dist a</code> into <code>Dist a</code>.</p>
+</li>
+</ul>
+<p>As you can see, all about <code>GADT</code> is registering. It registers values and functions&#40;of certain type&#41; into a single type signature. And all the values and functions will not be evaluated until necessary&#40;thanks to the lazy evaluation&#33;&#41; So this way, you define a probability graph most conveniently.</p>
+<p>So let&#39;s take a look at how and when it will be evaluated:</p>
+<pre><code class="language-haskell">instance Sampleable Dist where
+    sample g &#40;Return x&#41;     &#61; x
+    sample g &#40;Primitive d&#41;     &#61; sample g d
+    sample g &#40;Bind d f&#41;        &#61; sample g1 &#36; f &#36; sample g2 d where
+        &#40;g1, g2&#41; &#61; split g
+    sample g &#40;Conditional c d&#41; &#61; error &quot;Attempted to sample from a conditional distribution.&quot;</code></pre>
+<p>Here, the parameter <code>g</code> refers to some random number generator, such as <code>StdGen</code> provided in <code>System.Random</code>. Let&#39;s explain sample function of each case:</p>
+<ul>
+<li><p><code>sample g &#40;Return x&#41; &#61; x</code> for <code>Return</code> case just gives us the wrapped value in <code>Return</code> case of <code>Dist a</code>. This is the most common case we may encountered in <code>ADT</code> definitions.</p>
+</li>
+<li><p><code>sample g &#40;Primitive d&#41; &#61; sample g d</code> triggered the sample function binded to data <code>d</code>, which is <code>Sampleable</code>. &#40;the data <code>d a</code> is registered in <code>Dist a</code> through <code>GADT</code>&#41;</p>
+</li>
+<li><p><code>sample g &#40;Bind d f&#41; &#61; sample g1 &#36; f &#36; sample g2 d where &#40;g1, g2&#41; &#61; split g</code> is the most interesting one. It firstly triggers the sample function binded to data <code>d</code>, obtains a data <code>x</code> of type <code>b</code>. And then triggers the function <code>f</code> by <code>f x</code>, obtains a data <code>y</code> of type <code>Dist a</code>. And finally, triggered the sample function binded to <code>Dist a</code>&#40;this is a recursive call&#41;, return the samples obtained. The behavior is what we will always see in any probabilistic programming languages&#40;PPL&#41;. Indeed, this is the essential of <code>PPL</code>. Again, the data <code>d</code>, function <code>f</code> is registered in <code>Dist a</code> through <code>GADT</code>.</p>
+</li>
+<li><p><code>sample g &#40;Conditional c d&#41; &#61; error &quot;Attempted to sample from a conditional distribution.&quot;</code> just warns you that conditional declaration does not support sample function. Actually, during any inference, the original <code>Dist a</code> data which contains <code>conditional block</code> should be transformed into ones without <code>conditional block</code>, using algorithms such as <code>MCMC</code>, variational inference and so on. The kind of <code>optimization before launch</code> behavior could be easily realized through <code>GADT</code>&#40;with lazy evaluation&#41; in <code>haskell</code>&#33;</p>
+</li>
+</ul>
+<h3 id="summary"><a href="#summary" class="header-anchor">Summary:</a></h3>
+<p>Compared with <code>ADT</code>, what <code>GADT</code> provides you, is a flexible way to wrap more types of data into you data type. You can not only register some type of data or function, but also register a combination of data and functions together, where the behaviors of these combination could be defined later in some trigger function. By doing this, you immediately obtain the power of expressing any computational graph into your single data type. That is amazing&#33;</p>
+<p><br/> <br/> <br/> <br/> <br/></p>
+<div class="page-foot">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Le Niu. Last modified: May 22, 2023.
+    Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div> <!-- end of class main-content -->
+    </div> <!-- end of class main-content-wrap -->
+    </div> <!-- end of class page-wrap-->
+    
+    
+      <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

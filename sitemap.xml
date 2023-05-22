@@ -8,6 +8,12 @@
     <priority>0.5</priority>
 </url>
 <url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/Bayesian_GADT/index.html</loc>
+    <lastmod>2023-05-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/backup/_trial/index.html</loc>
     <lastmod>2022-05-07</lastmod>
     <changefreq>monthly</changefreq>
@@ -15,7 +21,7 @@
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/__menu2/index.html</loc>
-    <lastmod>2023-05-10</lastmod>
+    <lastmod>2023-05-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
@@ -44,6 +50,12 @@
     <priority>0.5</priority>
 </url>
 <url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/Diffusion/index.html</loc>
+    <lastmod>2023-05-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/backup/Reblo/index.html</loc>
     <lastmod>2022-05-10</lastmod>
     <changefreq>monthly</changefreq>
@@ -63,7 +75,7 @@
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/index.html</loc>
-    <lastmod>2023-05-10</lastmod>
+    <lastmod>2023-05-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
@@ -81,7 +93,7 @@
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/Decomposing_ELBO/index.html</loc>
-    <lastmod>2023-04-29</lastmod>
+    <lastmod>2023-05-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
