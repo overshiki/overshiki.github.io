@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   
+    <link rel="stylesheet" href="/css/jtd.css">
+  <link rel="icon" href="/assets/favicon.ico">
+
+   <title></title>  
+</head>
+<body>                      <!-- closed in foot.html -->
+<div class="page-wrap">   <!-- closed in foot.html -->
+  <!-- SIDE BAR -->
+  <div class="side-bar">
+    <div class="header">
+      <a href="/" class="title">
+        Le Niu's forge
+      </a>
+    </div>
+    <label for="show-menu" class="show-menu">MENU</label>
+    <input type="checkbox" id="show-menu" role="button">
+    <div class="menu" id="side-menu">
+      <ul class="menu-list">
+        <li class="menu-list-item "><a href="/" class="menu-list-link ">Home</a>
+        <!-- <li><a href="/Decomposing_ELBO/">Decomposing ELBO</a></li>
+        <li><a href="/VITE/">VITE</a></li> -->
+        <!-- <li class="menu-list-item {{ispage menu1/*}}active{{end}}"><a href="/menu1/" class="menu-list-link {{ispage menu1}}active{{end}}">Code blocks</a>
+        <li class="menu-list-item {{ispage menu2/*}}active{{end}}"><a href="/menu2/" class="menu-list-link {{ispage menu2}}active{{end}}">More goodies</a>
+        <li class="menu-list-item {{ispage menu3/*}}active{{end}}"><a href="/menu3/" class="menu-list-link {{ispage menu3}}active{{end}}">Tags</a>
+          <ul class="menu-list-child-list ">
+            <li class="menu-list-item "><a href="#" class="menu-list-link">Submenu</a>
+          </ul> -->
+      </ul>
+    </div>
+    <div class="footer">
+      This is <em>Just the docs</em>, adapted from the <a href="https://github.com/pmarsceill/just-the-docs" target="_blank">Jekyll theme</a>.
+    </div>
+  </div>
+  <!-- CONTENT -->
+  <div class="main-content-wrap"> <!-- closed in foot.html -->
+    <div class="main-content">    <!-- closed in foot.html -->
+
+      <!-- <div class="main-header">
+        <a id="github" href="//github.com/overshiki">Le Niu on GitHub</a>
+      </div> -->
+
+
+
+<!-- Content appended here (in class franklin-content) -->
+<div class="franklin-content"><p>Previously we have discussed how to use GADT to conveniently build computational graph for Bayesian models. Today, we discuss another topic related to GADT: Suppose we have already build a GADT, how could we make it an instance of Monad typeclass?</p>
+<p>The reason we ask this question is as follows: </p>
+<p>In conventional ADT, we can view a data type like <code>data ADist a &#61; ADist a</code> as a simple wrapper about type variable <code>a</code>. Then a Monad could be easily defined as this:</p>
+<pre><code class="language-julia">instance Monad ADist where 
+    return &#61; ADist 
+    &#40;&gt;&gt;&#61;&#41; &#40;ADist a&#41; f &#61; f a</code></pre>
+<p>That is, the bind function <code>&#40;&gt;&gt;&#61;&#41;</code> just need to fetch the content in the <code>ADist</code> wrapper, and then apply function <code>f</code> on it.</p>
+<p>However, when we see the case of GADT, it is not so apparently what kind of data it wraps inside&#40;Or there are so many wrapped in it, which one do we really refer to when doing <code>&#40;&gt;&gt;&#61;&#41;</code>?&#41;. For example:</p>
+<pre><code class="language-julia">data Dist a where
+    Return      :: a -&gt; Dist a
+    Bind        :: Dist b -&gt; &#40;b -&gt; Dist a&#41; -&gt; Dist a
+    Primitive   :: &#40;Sampleable d&#41; &#61;&gt; d a -&gt; Dist a
+    Conditional :: &#40;a -&gt; Prob&#41; -&gt; Dist a -&gt; Dist a</code></pre>
+<p>The <code>Bind</code> and <code>Conditional</code> constructor just wrapps multiple things&#40;values or functions&#41; inside, which one should be correponding to value of type <code>a</code>?</p>
+<p>The answer is still related to the idea we have demonstrated in previous post: GADT just do registering job, and all the function/operation registed in are in lazy evaluation mode. We can decide what kind of operaton for <code>&#40;&gt;&gt;&#61;&#41;</code> later in typeclass, and viewing GADT as a thunk. More specifically, see how the historical <code>monad-bayes</code> commit handling this problem:</p>
+<pre><code class="language-julia">instance Functor Dist where
+    fmap  &#61; liftM
+
+instance Applicative Dist where
+    pure  &#61; return
+    &#40;&lt;*&gt;&#41; &#61; liftM2 &#40;&#36;&#41;
+
+instance Monad Dist where
+    return &#61; Return
+    &#40;&gt;&gt;&#61;&#41;  &#61; Bind</code></pre>
+<p>The implementation of these three typeclass jointly defines all the necessary elements for a Monad. The trick is the <code>&#40;&gt;&gt;&#61;&#41;</code> definition:</p>
+<pre><code class="language-julia">&#40;&gt;&gt;&#61;&#41; &#61; Bind</code></pre>
+<p>It is just another registering operation. That is to say, it doesn&#39;t matter what kind of data are in the Monad, we just assume that it is there, and registering upcomming function into the data type. Again, nothing really happened until some trigger function are called.</p>
+<p>Someting more interesting is the <code>fmap</code> function:</p>
+<pre><code class="language-julia">fmap &#61; liftM</code></pre>
+<p>This function is defined as <code>liftM</code> in <code>Control.Monad</code>, and we known the <code>leftM</code> function is defined based on <code>&#40;&gt;&gt;&#61;&#41;</code> function. So the behavior of <code>fmap</code> now changes&#40;unlike what we normally see&#41;. It is no longer some function that fetch data <code>a</code> from a Functor, then apply the function <code>f</code> on it, finally wrap it back in a Monad. It is again just a function registering operation: if assume a value <code>a</code> is stored in the monad, and registers a function <code>f</code>, such that, given the value, it return another value <code>f a</code>, and finally, we call some constuctor of Monad <code>M</code> to build a data of type <code>M</code>.  </p>
+<p>Let&#39;s demonstrate all above idea in a simple example:</p>
+<pre><code class="language-julia">newtype Explicit a &#61; Explicit &#123;toList :: &#91;&#40;a,Prob&#41;&#93;&#125;
+                deriving&#40;Show&#41;
+
+normalize :: &#91;&#40;a,Prob&#41;&#93; -&gt; &#91;&#40;a,Prob&#41;&#93;
+normalize xs &#61; map &#40;second &#40;/ norm&#41;&#41; xs where
+    norm &#61; sum &#36; map snd xs
+
+instance Sampleable Explicit where
+    sample g &#40;Explicit xs&#41; &#61;
+        pick xs &#36; fst &#36; randomR &#40;0.0,1.0&#41; g
+
+class DiscreteDist d where
+    categorical :: &#91;&#40;a,Prob&#41;&#93; -&gt; d a
+
+
+newtype Prob &#61; Prob &#123;toDouble :: Double&#125;
+    deriving &#40;Show, Eq, Ord, Num, Fractional, Real, RealFrac, Floating, Random, Ext.Distribution Ext.StdUniform&#41;
+
+instance DiscreteDist Explicit where
+    categorical &#61; Explicit . normalize
+
+instance DiscreteDist Dist where
+    categorical &#61; Primitive . &#40;categorical :: &#91;&#40;a,Prob&#41;&#93; -&gt; Explicit a&#41;
+
+type Samples a &#61; &#91;&#40;a,Prob&#41;&#93;
+
+resample :: Samples a -&gt; Dist &#40;Samples a&#41;
+resample xs &#61; sequence &#36; replicate n &#36; fmap &#40;,1&#41; &#36; categorical xs where
+    n &#61; length xs</code></pre>
+<p>In <code>resample</code> function, what <code>categorical xs</code> does is to return a data of type <code>Dist a</code>. <code>fmap &#40;,1&#41; &#36; categorical xs</code> will transform this data into type of <code>Dist &#40;a, Prob&#41;</code> just using fmap function we discussed above. Not that what <code>categorical xs</code> really gives us is something looks-like this:</p>
+<pre><code class="language-julia">Primitive &#40;Explicit &#123;toList&#61;xs :: Sample a&#125;&#41;</code></pre>
+<p>It is not clearly how the fmap would work for it by looking at it directly. However, if remind that <code>fmap</code> here is just about registering, it is clear. Since by calling trigger function such as <code>sample</code>, the <code>Primitive &#40;Explicit &#123;toList&#61;xs :: Sample a&#125;&#41;</code> data will certainly gives us a value of type <code>a</code>, and all the link is now connected&#33;</p>
+<p>This is the beauty of GADT&#33;</p>
+<div class="page-foot">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Le Niu. Last modified: May 26, 2023.
+    Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    </div> <!-- end of class main-content -->
+    </div> <!-- end of class main-content-wrap -->
+    </div> <!-- end of class page-wrap-->
+    
+    
+      <script src="/libs/highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

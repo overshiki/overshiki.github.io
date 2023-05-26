@@ -21,7 +21,7 @@
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/__menu2/index.html</loc>
-    <lastmod>2023-05-22</lastmod>
+    <lastmod>2023-05-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
@@ -75,6 +75,12 @@
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/index.html</loc>
+    <lastmod>2023-05-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/decomposing_scores/index.html</loc>
     <lastmod>2023-05-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
@@ -94,6 +100,12 @@
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/Decomposing_ELBO/index.html</loc>
     <lastmod>2023-05-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/Bayesian_GADT2/index.html</loc>
+    <lastmod>2023-05-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
