@@ -100,9 +100,24 @@
 </ul>
 <h3 id="summary"><a href="#summary" class="header-anchor">Summary:</a></h3>
 <p>Compared with <code>ADT</code>, what <code>GADT</code> provides you, is a flexible way to wrap more types of data into you data type. You can not only register some type of data or function, but also register a combination of data and functions together, where the behaviors of these combination could be defined later in some trigger function. By doing this, you immediately obtain the power of expressing any computational graph into your single data type. That is amazing&#33;</p>
+<h3 id="notes"><a href="#notes" class="header-anchor">Notes:</a></h3>
+<p>For the necessary of using <code>GADT</code> instead of <code>ADT</code>, considering rewriting the example shown above using normal <code>ADT</code>. For example:</p>
+<pre><code class="language-haskell">data Dist a where
+    Return      :: a -&gt; Dist a
+    Bind        :: Dist b -&gt; &#40;b -&gt; Dist a&#41; -&gt; Dist a
+    Primitive   :: &#40;Sampleable d&#41; &#61;&gt; d a -&gt; Dist a
+    Conditional :: &#40;a -&gt; Prob&#41; -&gt; Dist a -&gt; Dist a</code></pre>
+<p>should be rewritten as the follows:</p>
+<pre><code class="language-haskell">data Dist a &#61; Return a 
+            | Bind &#40;Dist b&#41; &#40;b -&gt; Dist a&#41;
+            | Primitive &#40;d a&#41;
+            | Conditional &#40;Dist a&#41;</code></pre>
+<p>This code will not compile, and will raise the following error:</p>
+<pre><code class="language-julia">error: Not in scope: type variable ‘b’
+error: Not in scope: type variable ‘d’</code></pre>
 <p><br/> <br/> <br/> <br/> <br/></p>
 <div class="page-foot">
-    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Le Niu. Last modified: May 22, 2023.
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Le Niu. Last modified: July 10, 2023.
     Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
 </div>
 </div><!-- CONTENT ENDS HERE -->
