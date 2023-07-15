@@ -9,11 +9,11 @@
 
   <channel>
     <title>
-      <![CDATA[  Learning &amp; Inference &amp; Computation  ]]>
+      <![CDATA[  Franklin Template  ]]>
     </title>
     <link> https://tlienart.github.io/FranklinTemplates.jl/ </link>
     <description>
-      <![CDATA[  Le&#39;s special post on statistical learning &amp; Quantum computation  ]]>
+      <![CDATA[  Example website using Franklin  ]]>
     </description>
     <atom:link
       href="https://tlienart.github.io/FranklinTemplates.jl/feed.xml"
@@ -35,7 +35,7 @@
   
   
   <atom:author>
-    <atom:name>Le Niu</atom:name>
+    <atom:name>Septimia Zenobia</atom:name>
   </atom:author>
         
 </item>

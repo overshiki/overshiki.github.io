@@ -6,50 +6,32 @@
    <link rel="stylesheet" href="/libs/katex/katex.min.css">
      
   
-    <link rel="stylesheet" href="/css/jtd.css">
-  <link rel="icon" href="/assets/favicon.ico">
+  <link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,400italic|Source+Code+Pro:400,700" type="text/css">
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/celeste.min.css">
+
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon.png">
+<link rel="shortcut icon" href="/assets/favicon.ico">
+<link rel="apple-touch-icon-precomposed" sizes="152x152" href="/assets/apple-touch-icon.png">
 
    <title>Could functional programming helps achieving </title>  
 </head>
-<body>                      <!-- closed in foot.html -->
-<div class="page-wrap">   <!-- closed in foot.html -->
-  <!-- SIDE BAR -->
-  <div class="side-bar">
-    <div class="header">
-      <a href="/" class="title">
-        Le Niu's forge
-      </a>
-    </div>
-    <label for="show-menu" class="show-menu">MENU</label>
-    <input type="checkbox" id="show-menu" role="button">
-    <div class="menu" id="side-menu">
-      <ul class="menu-list">
-        <li class="menu-list-item "><a href="/" class="menu-list-link ">Home</a>
-        <!-- <li><a href="/Decomposing_ELBO/">Decomposing ELBO</a></li>
-        <li><a href="/VITE/">VITE</a></li> -->
-        <!-- <li class="menu-list-item {{ispage menu1/*}}active{{end}}"><a href="/menu1/" class="menu-list-link {{ispage menu1}}active{{end}}">Code blocks</a>
-        <li class="menu-list-item {{ispage menu2/*}}active{{end}}"><a href="/menu2/" class="menu-list-link {{ispage menu2}}active{{end}}">More goodies</a>
-        <li class="menu-list-item {{ispage menu3/*}}active{{end}}"><a href="/menu3/" class="menu-list-link {{ispage menu3}}active{{end}}">Tags</a>
-          <ul class="menu-list-child-list ">
-            <li class="menu-list-item "><a href="#" class="menu-list-link">Submenu</a>
-          </ul> -->
-      </ul>
-    </div>
-    <div class="footer">
-      This is <em>Just the docs</em>, adapted from the <a href="https://github.com/pmarsceill/just-the-docs" target="_blank">Jekyll theme</a>.
-    </div>
-  </div>
-  <!-- CONTENT -->
-  <div class="main-content-wrap"> <!-- closed in foot.html -->
-    <div class="main-content">    <!-- closed in foot.html -->
-
-      <!-- <div class="main-header">
-        <a id="github" href="//github.com/overshiki">Le Niu on GitHub</a>
-      </div> -->
+<body>
+  <header>
+<nav class="nav-main">
+  <ul>
+    <li class="hvr-underline-reveal"><a href="/">Home</a></li>
+    <!-- <li class="logo"><a class="hvr-ripple-out" href="/">H</a></li> -->
+    <!-- <li class="hvr-underline-reveal"><a href="/menu1/">Code blocks</a></li>
+    <li class="hvr-underline-reveal"><a href="/menu2/">More goodies</a></li>
+    <li class="hvr-underline-reveal"><a href="/menu3/">Tags</a></li> -->
+  </ul>
+</nav>
+</header>
 
 
-
-<!-- Content appended here (in class franklin-content) -->
+<!-- Content appended here -->
 <div class="franklin-content"><h1 id="could_functional_programming_helps_achieving"><a href="#could_functional_programming_helps_achieving" class="header-anchor">Could functional programming helps achieving </a></h1>
 <h1 id="pure_algorithm"><a href="#pure_algorithm" class="header-anchor">pure algorithm?</a></h1>
 <p>Why are there so many programming languages, like <code>C&#43;&#43;</code>, <code>python</code>, <code>Julia</code>, <code>Haskell</code>? Why <code>C</code> or <code>Fortran</code> is not enough for people in the field of scientific computing? Why <code>OOP</code> or <code>FP</code>? The reason is obviously simple: the way computer thinks is totally different from the way &#40;mathmatical minding&#41; human-being thinks. For computers, state-machine or also called Turing machine is the main engine of thinking. Because of this, just a lot of details emerges: the memory limit, variables representing the current states, functions representing the operation on the states, and so on. There are even more details to be considered, when people care about the performance. However, the way a mathematical minding man/woman thinks is totally different, it is actually a combination of operations. For example, when we teach others to cook, what we are always saying is: Do this, do that, and then do that ... From mathematical point of view, what an algorithm is? Just formulars&#33; Formulars just declare something, using the composition of other formulars. However, when programming, we always need to translate the formular into a state-machine, that is troublesome.</p>
@@ -61,16 +43,13 @@
 <p>The <code>N</code>-dimensional array just contains all the possible outcomes given all possible combination of income auguments of a <code>N</code>-dimensional tensor. </p>
 <p><br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/> <br/> –end–</p>
 <div class="page-foot">
-    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Le Niu. Last modified: April 29, 2023.
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: July 15, 2023.
     Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
 </div>
 </div><!-- CONTENT ENDS HERE -->
-    </div> <!-- end of class main-content -->
-    </div> <!-- end of class main-content-wrap -->
-    </div> <!-- end of class page-wrap-->
     
-      <script src="/libs/katex/katex.min.js"></script>
-<script src="/libs/katex/auto-render.min.js"></script>
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/contrib/auto-render.min.js"></script>
 <script>renderMathInElement(document.body)</script>
 
     

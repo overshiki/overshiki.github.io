@@ -6,50 +6,32 @@
    <link rel="stylesheet" href="/libs/katex/katex.min.css">
      
   
-    <link rel="stylesheet" href="/css/jtd.css">
-  <link rel="icon" href="/assets/favicon.ico">
+  <link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,400italic|Source+Code+Pro:400,700" type="text/css">
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/celeste.min.css">
+
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon.png">
+<link rel="shortcut icon" href="/assets/favicon.ico">
+<link rel="apple-touch-icon-precomposed" sizes="152x152" href="/assets/apple-touch-icon.png">
 
    <title>decomposing scores</title>  
 </head>
-<body>                      <!-- closed in foot.html -->
-<div class="page-wrap">   <!-- closed in foot.html -->
-  <!-- SIDE BAR -->
-  <div class="side-bar">
-    <div class="header">
-      <a href="/" class="title">
-        Le Niu's forge
-      </a>
-    </div>
-    <label for="show-menu" class="show-menu">MENU</label>
-    <input type="checkbox" id="show-menu" role="button">
-    <div class="menu" id="side-menu">
-      <ul class="menu-list">
-        <li class="menu-list-item "><a href="/" class="menu-list-link ">Home</a>
-        <!-- <li><a href="/Decomposing_ELBO/">Decomposing ELBO</a></li>
-        <li><a href="/VITE/">VITE</a></li> -->
-        <!-- <li class="menu-list-item {{ispage menu1/*}}active{{end}}"><a href="/menu1/" class="menu-list-link {{ispage menu1}}active{{end}}">Code blocks</a>
-        <li class="menu-list-item {{ispage menu2/*}}active{{end}}"><a href="/menu2/" class="menu-list-link {{ispage menu2}}active{{end}}">More goodies</a>
-        <li class="menu-list-item {{ispage menu3/*}}active{{end}}"><a href="/menu3/" class="menu-list-link {{ispage menu3}}active{{end}}">Tags</a>
-          <ul class="menu-list-child-list ">
-            <li class="menu-list-item "><a href="#" class="menu-list-link">Submenu</a>
-          </ul> -->
-      </ul>
-    </div>
-    <div class="footer">
-      This is <em>Just the docs</em>, adapted from the <a href="https://github.com/pmarsceill/just-the-docs" target="_blank">Jekyll theme</a>.
-    </div>
-  </div>
-  <!-- CONTENT -->
-  <div class="main-content-wrap"> <!-- closed in foot.html -->
-    <div class="main-content">    <!-- closed in foot.html -->
-
-      <!-- <div class="main-header">
-        <a id="github" href="//github.com/overshiki">Le Niu on GitHub</a>
-      </div> -->
+<body>
+  <header>
+<nav class="nav-main">
+  <ul>
+    <li class="hvr-underline-reveal"><a href="/">Home</a></li>
+    <!-- <li class="logo"><a class="hvr-ripple-out" href="/">H</a></li> -->
+    <!-- <li class="hvr-underline-reveal"><a href="/menu1/">Code blocks</a></li>
+    <li class="hvr-underline-reveal"><a href="/menu2/">More goodies</a></li>
+    <li class="hvr-underline-reveal"><a href="/menu3/">Tags</a></li> -->
+  </ul>
+</nav>
+</header>
 
 
-
-<!-- Content appended here (in class franklin-content) -->
+<!-- Content appended here -->
 <div class="franklin-content"><h2 id="decomposing_scores"><a href="#decomposing_scores" class="header-anchor">decomposing scores</a></h2>
 <p>In Bayesian inference, the score is defined as the gradient of the log evidence \(P(x)\) respect to the observable random variable \(x\):</p>
 \(\nabla_x log P(x)\)
@@ -66,16 +48,13 @@
 <p>where the expectation is taken in respected to the posterior \(P_{0|t}(\bold{X_0}|\bold{X_t})\)</p>
 <p><br/> <br/> <br/> <br/> <br/></p>
 <div class="page-foot">
-    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Le Niu. Last modified: May 22, 2023.
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: July 15, 2023.
     Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
 </div>
 </div><!-- CONTENT ENDS HERE -->
-    </div> <!-- end of class main-content -->
-    </div> <!-- end of class main-content-wrap -->
-    </div> <!-- end of class page-wrap-->
     
-      <script src="/libs/katex/katex.min.js"></script>
-<script src="/libs/katex/auto-render.min.js"></script>
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/contrib/auto-render.min.js"></script>
 <script>renderMathInElement(document.body)</script>
 
     

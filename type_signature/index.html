@@ -5,52 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
    <link rel="stylesheet" href="/libs/katex/katex.min.css">
      
-   <link rel="stylesheet" href="/libs/highlight/github.min.css">
+   <link rel="stylesheet" href="/libs/highlight/styles/github.min.css">
    
-    <link rel="stylesheet" href="/css/jtd.css">
-  <link rel="icon" href="/assets/favicon.ico">
+  <link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,400italic|Source+Code+Pro:400,700" type="text/css">
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/celeste.min.css">
+
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon.png">
+<link rel="shortcut icon" href="/assets/favicon.ico">
+<link rel="apple-touch-icon-precomposed" sizes="152x152" href="/assets/apple-touch-icon.png">
 
    <title>More appealing example</title>  
 </head>
-<body>                      <!-- closed in foot.html -->
-<div class="page-wrap">   <!-- closed in foot.html -->
-  <!-- SIDE BAR -->
-  <div class="side-bar">
-    <div class="header">
-      <a href="/" class="title">
-        Le Niu's forge
-      </a>
-    </div>
-    <label for="show-menu" class="show-menu">MENU</label>
-    <input type="checkbox" id="show-menu" role="button">
-    <div class="menu" id="side-menu">
-      <ul class="menu-list">
-        <li class="menu-list-item "><a href="/" class="menu-list-link ">Home</a>
-        <!-- <li><a href="/Decomposing_ELBO/">Decomposing ELBO</a></li>
-        <li><a href="/VITE/">VITE</a></li> -->
-        <!-- <li class="menu-list-item {{ispage menu1/*}}active{{end}}"><a href="/menu1/" class="menu-list-link {{ispage menu1}}active{{end}}">Code blocks</a>
-        <li class="menu-list-item {{ispage menu2/*}}active{{end}}"><a href="/menu2/" class="menu-list-link {{ispage menu2}}active{{end}}">More goodies</a>
-        <li class="menu-list-item {{ispage menu3/*}}active{{end}}"><a href="/menu3/" class="menu-list-link {{ispage menu3}}active{{end}}">Tags</a>
-          <ul class="menu-list-child-list ">
-            <li class="menu-list-item "><a href="#" class="menu-list-link">Submenu</a>
-          </ul> -->
-      </ul>
-    </div>
-    <div class="footer">
-      This is <em>Just the docs</em>, adapted from the <a href="https://github.com/pmarsceill/just-the-docs" target="_blank">Jekyll theme</a>.
-    </div>
-  </div>
-  <!-- CONTENT -->
-  <div class="main-content-wrap"> <!-- closed in foot.html -->
-    <div class="main-content">    <!-- closed in foot.html -->
-
-      <!-- <div class="main-header">
-        <a id="github" href="//github.com/overshiki">Le Niu on GitHub</a>
-      </div> -->
+<body>
+  <header>
+<nav class="nav-main">
+  <ul>
+    <li class="hvr-underline-reveal"><a href="/">Home</a></li>
+    <!-- <li class="logo"><a class="hvr-ripple-out" href="/">H</a></li> -->
+    <!-- <li class="hvr-underline-reveal"><a href="/menu1/">Code blocks</a></li>
+    <li class="hvr-underline-reveal"><a href="/menu2/">More goodies</a></li>
+    <li class="hvr-underline-reveal"><a href="/menu3/">Tags</a></li> -->
+  </ul>
+</nav>
+</header>
 
 
-
-<!-- Content appended here (in class franklin-content) -->
+<!-- Content appended here -->
 <div class="franklin-content"><p>Here in this post, I would like to demonstrate how type signature in <code>Haskell</code> could help understanding functions &amp; function compositions. </p>
 <p>As a <code>Haskell</code> learner and lover, the most enjoyable part of programming in <code>Haskell</code>, is that whenever I wrote a function, I could aways start with a type signature. For example, imaging I want to write a factory function which recieves a input ternary function, outputs a function that flip the order of the function inputs. The description above is a little bit ambiguous, but if I write down the type signature, you could easily understand what I meant:</p>
 <pre><code class="language-haskell">flip :: &#40;a -&gt; b -&gt; c&#41; -&gt; &#40;b -&gt; a -&gt; c&#41;</code></pre>
@@ -129,7 +111,8 @@ id :: IO r -&gt; IO r
 b # id :: Trans c &#40;IO r&#41; -&gt; IO r
 
 -- suppose we have type bind a :: c1
--- a # &#40;b # id&#41; will be &#40;the association rule is given in &#40;infixr 1 #&#41; definition&#41;
+-- a # &#40;b # id&#41; will be &#40;the association rule is given in 
+-- &#40;infixr 1 #&#41; definition&#41;
 a # b # id :: Trans c1 &#40;Trans c &#40;IO r&#41;&#41; -&gt; IO r
 
 -- that&#39;s it&#33; the operator &#40;#&#33;&#41; should have the signature
@@ -140,22 +123,19 @@ a # b # id :: Trans c1 &#40;Trans c &#40;IO r&#41;&#41; -&gt; IO r
 <p>&#91;2&#93; https://github.com/haskell-numerics/hmatrix/blob/master/packages/base/src/Internal/Matrix.hs</p>
 <p><br/> <br/> <br/> <br/> <br/></p>
 <div class="page-foot">
-    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Le Niu. Last modified: April 29, 2023.
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: July 15, 2023.
     Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
 </div>
 </div><!-- CONTENT ENDS HERE -->
-    </div> <!-- end of class main-content -->
-    </div> <!-- end of class main-content-wrap -->
-    </div> <!-- end of class page-wrap-->
     
-      <script src="/libs/katex/katex.min.js"></script>
-<script src="/libs/katex/auto-render.min.js"></script>
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/contrib/auto-render.min.js"></script>
 <script>renderMathInElement(document.body)</script>
 
     
     
-      <script src="/libs/highlight/highlight.pack.js"></script>
-<script>hljs.initHighlightingOnLoad();hljs.configure({tabReplace: '    '});</script>
+        <script src="/libs/highlight/highlight.min.js"></script>
+<script>hljs.highlightAll();hljs.configure({tabReplace: '    '});</script>
 
     
   </body>
