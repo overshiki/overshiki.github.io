@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  
+  <link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,400italic|Source+Code+Pro:400,700" type="text/css">
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/celeste.min.css">
+
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon.png">
+<link rel="shortcut icon" href="/assets/favicon.ico">
+<link rel="apple-touch-icon-precomposed" sizes="152x152" href="/assets/apple-touch-icon.png">
+
+   <title></title>  
+</head>
+<body>
+  <header>
+<nav class="nav-main">
+  <ul>
+    <li class="hvr-underline-reveal"><a href="/">Home</a></li>
+    <!-- <li class="logo"><a class="hvr-ripple-out" href="/">H</a></li> -->
+    <!-- <li class="hvr-underline-reveal"><a href="/menu1/">Code blocks</a></li>
+    <li class="hvr-underline-reveal"><a href="/menu2/">More goodies</a></li>
+    <li class="hvr-underline-reveal"><a href="/menu3/">Tags</a></li> -->
+  </ul>
+</nav>
+</header>
+
+
+<!-- Content appended here -->
+<div class="franklin-content"><p>So finally, I come to this point: how a theorem could be proved using a computer? Or, equivalently, how exactly an automated proof assistant works?</p>
+<p>This question turns out to belong to the field of <code>constructive logic</code>, and is answered by the famous <code>Curry-Horward correspondence</code>, which links the field of <code>natural deduction</code> and <code>typed lambda calculus</code>. For more details of this astonishing discovery, please refer to <a href="https://homepages.inf.ed.ac.uk/wadler/papers/propositions-as-types/propositions-as-types.pdf"><code>Propositions as Types</code></a> by Philip Wadler. &#40;You may also interested in his <a href="https://www.youtube.com/watch?v&#61;IOiZatlZtGU">talk</a>, and this <a href="https://www.cs.cmu.edu/~fp/courses/15814-f18/lectures/19-natded.pdf">lecture note</a>&#41;</p>
+<p>In short, <code>Curry-Horward correspndance</code> says that a <code>Proposition</code> in <code>logic</code> is just a <code>Type</code> in <code>typed lambda calculus</code>, and a <code>Proof</code> of that <code>Proposition</code> is just a <code>term</code> belong to that <code>Type</code>.</p>
+<p>How to understand this?</p>
+<p>Intuitively speaking, a <code>proposition</code> is a claim, a claim of something to be true. So we can define a data type&#40;inductive data type as in dependent type theory&#41; which is in equivalent to the claim&#40;Or just define the data type recursively following the deduction definition of the claim&#41;. By doing so, if we can successfully implement an instance&#40;or <code>term</code>&#41; of this data type, we are just proving the claim to be true&#33;&#40;i.e. the <code>proposition</code> is proved&#41;. </p>
+<p>Always, there are multiple ways to prove a <code>proposition</code>. Equivalently, there are multiple <code>terms</code> belonging to the same <code>data type</code>. To prove a <code>proposition</code>, we just need one way of proving. Correspondingly, we just need to build one <code>term</code> belonging to that <code>data type</code>. That begins the story of automated proof assistant.</p>
+<div class="page-foot">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: July 16, 2023.
+    Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    
+    
+  </body>
+</html>

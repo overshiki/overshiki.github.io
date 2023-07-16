@@ -34,9 +34,9 @@
 
 <!-- Content appended here -->
 <div class="franklin-content"><p>Here in this post, I would like to demonstrate how type signature in <code>Haskell</code> could help understanding functions &amp; function compositions. </p>
-<p>As a <code>Haskell</code> learner and lover, the most enjoyable part of programming in <code>Haskell</code>, is that whenever I wrote a function, I could aways start with a type signature. For example, imaging I want to write a factory function which recieves a input ternary function, outputs a function that flip the order of the function inputs. The description above is a little bit ambiguous, but if I write down the type signature, you could easily understand what I meant:</p>
+<p>As a <code>Haskell</code> learner and lover, the most enjoyable part of programming in <code>Haskell</code>, is that whenever I wrote a function, I could aways start with a type signature. For example, imaging I want to write a factory function which receives a input ternary function, outputs a function that flip the order of the function inputs. The description above is a little bit ambiguous, but if I write down the type signature, you could easily understand what I meant:</p>
 <pre><code class="language-haskell">flip :: &#40;a -&gt; b -&gt; c&#41; -&gt; &#40;b -&gt; a -&gt; c&#41;</code></pre>
-<p>As you can see, the <code>flip</code> function just recieves a ternary function &#40;a -&gt; b -&gt; c&#41; as input, and outputs another ternary function: &#40;b -&gt; a -&gt; c&#41;. The implementation of the function definition becomes clear just by reading the type signature&#33;</p>
+<p>As you can see, the <code>flip</code> function just receives a ternary function &#40;a -&gt; b -&gt; c&#41; as input, and outputs another ternary function: &#40;b -&gt; a -&gt; c&#41;. The implementation of the function definition becomes clear just by reading the type signature&#33;</p>
 <h3 id="more_appealing_example"><a href="#more_appealing_example" class="header-anchor">More appealing example</a></h3>
 <p>Here is another more appealing example: suppose you have a function that just do nothing, then how could you build new nontrivial functions based on this trivial function?</p>
 <p>The function I mentioned is the famous <code>id</code> function: </p>
@@ -48,7 +48,7 @@
 <li><p>And you can easily check that most of the identity element in algebra systems obey this rule. For example, in group theory, the identity element \(e\) is an element that given any group element \(g \in G\), the group composition will return just the element itself&#40;which is obviously of the same type as the input, they both belong to \(G\)&#41;, i.e. \(\forall g \in G, g \cdot e \to g \in G\)</p>
 </li>
 </ul>
-<p>The interesting part is that, using this type binding, you can build brand new functions, with nontrivial behaviour change&#33;</p>
+<p>The interesting part is that, using this type binding, you can build brand new functions, with nontrivial behavior change&#33;</p>
 <p>For example, consider the <code>flip</code> function above, we could build a new function using <code>id</code>:</p>
 <pre><code class="language-haskell">nflip &#61; flip id</code></pre>
 <p>What does this function do? Let&#39;s firstly check its type signature:</p>
@@ -57,7 +57,7 @@
 <pre><code class="language-haskell">apply :: b -&gt; &#40;b -&gt; c&#41; -&gt; c
 apply x f &#61; f x</code></pre>
 <p>That is, apply the function <code>f</code>&#40;the second input argument&#41; onto the input <code>x</code>&#40;the first input argument&#41;, and return the resulting value.</p>
-<p>So how could we derive such a type signature? As we have mentioned, the <code>id</code> function bind the input and output to be the same type, then since <code>flip</code> function recieves a function as its input argument, the evaluation of <code>flip id</code> should satisfy the type binding of both <code>flip</code> and <code>id</code>:</p>
+<p>So how could we derive such a type signature? As we have mentioned, the <code>id</code> function bind the input and output to be the same type, then since <code>flip</code> function receives a function as its input argument, the evaluation of <code>flip id</code> should satisfy the type binding of both <code>flip</code> and <code>id</code>:</p>
 <pre><code class="language-haskell">id :: a -&gt; a 
 flip :: &#40;a -&gt; b -&gt; c&#41; -&gt; &#40;b -&gt; a -&gt; c&#41;
 
@@ -81,7 +81,7 @@ a # b &#61; apply a b
 
 &#40;#&#33;&#41; :: &#40;TransArray c, TransArray c1&#41; &#61;&gt; c1 -&gt; c -&gt; Trans c1 &#40;Trans c &#40;IO r&#41;&#41; -&gt; IO r
 a #&#33; b &#61; a # b # id</code></pre>
-<p>The <code>infixr</code> indicates that the operator <code>#</code> is an infix operator with right association order&#40;<code>1</code> means it is of rank 1 priority, ranging from 1 to 10, low to high&#41;. The apply function is defined in <code>Matrix</code> typeclass:</p>
+<p>The <code>infixr</code> indicates that the operator <code>#</code> is an infix operator with right association order&#40;<code>1</code> means it is of rank 1 priority, ranging from 1 to 10, low to high&#41;. The apply function is defined in <code>Matrix</code> <code>typeclass</code>:</p>
 <pre><code class="language-haskell">amat :: Storable a &#61;&gt; Matrix a -&gt; &#40;f -&gt; IO r&#41; -&gt; &#40;CInt -&gt; CInt -&gt; CInt -&gt; CInt -&gt; Ptr a -&gt; f&#41; -&gt; IO r
 amat x f g &#61; unsafeWith &#40;xdat x&#41; &#40;f . g r c sr sc&#41;
   where
@@ -117,13 +117,13 @@ a # b # id :: Trans c1 &#40;Trans c &#40;IO r&#41;&#41; -&gt; IO r
 
 -- that&#39;s it&#33; the operator &#40;#&#33;&#41; should have the signature
 &#40;#&#33;&#41; :: c1 -&gt; c -&gt; Trans c1 &#40;Trans c &#40;IO r&#41;&#41; -&gt; IO r</code></pre>
-<p>As you have seen, inference of type signature make it easier for understanding the behaviour of complex function compositions&#33;</p>
+<p>As you have seen, inference of type signature make it easier for understanding the behavior of complex function compositions&#33;</p>
 <h1 id="reference"><a href="#reference" class="header-anchor">Reference</a></h1>
 <p>&#91;1&#93; https://github.com/haskell-numerics/hmatrix</p>
 <p>&#91;2&#93; https://github.com/haskell-numerics/hmatrix/blob/master/packages/base/src/Internal/Matrix.hs</p>
 <p><br/> <br/> <br/> <br/> <br/></p>
 <div class="page-foot">
-    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: July 15, 2023.
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: July 16, 2023.
     Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
 </div>
 </div><!-- CONTENT ENDS HERE -->
