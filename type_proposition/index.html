@@ -15,7 +15,7 @@
 <link rel="shortcut icon" href="/assets/favicon.ico">
 <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/assets/apple-touch-icon.png">
 
-   <title>dependent type</title>  
+   <title>Example: equality</title>  
 </head>
 <body>
   <header>
@@ -38,25 +38,21 @@
 <p>How to understand this?</p>
 <p>Intuitively speaking, a <code>proposition</code> is a claim, a claim of something to be true. So we can define a data type&#40;inductive data type as in dependent type theory&#41; which is in equivalent to the claim&#40;Or just define the data type recursively following the deduction definition of the claim&#41;. By doing so, if we can successfully implement an instance&#40;or <code>term</code>, or element&#41; of this data type, we are just proving the claim to be true&#33;&#40;i.e. the <code>proposition</code> is proved&#41;. On the contrary, if we can see the data type&#40;the set&#41; to be empty, then the <code>proposition</code> can not be proved. </p>
 <p>Always, there are multiple ways to prove a <code>proposition</code>. Equivalently, there are multiple <code>terms</code>&#40;or element&#41; belonging to&#40;or inside&#41; the same <code>data type</code>. To prove a <code>proposition</code>, we just need one way of proving. Correspondingly, we just need to build one <code>term</code> belonging to that <code>data type</code>. That begins the story of automated proof assistant.</p>
-<h3 id="dependent_type"><a href="#dependent_type" class="header-anchor">dependent type</a></h3>
-<p>The <code>proposition as type</code> immediately requires that the type and the value both can be passed as arguments into functions. The formal demonstration of the reason remain next time. This time, I would like to give a brief demonstration of some use case of dependent type in proving.</p>
-<p>For more detail of this demonstration, you may want to refer to this <a href="https://www.andrej.com/zapiski/ISRM-LOGRAC-2022/02-dependent-types.lagda.html">lecture</a>.</p>
-<p>Let&#39;s begin with the definition of natural number:</p>
-<pre><code class="language-Agda">data Fin : Nat -&gt; Set where
-    zero&#39; : &#123;n : Nat&#125; -&gt; Fin n
-    succ&#39; : &#123;n : Nat&#125; &#40;i : Fin n&#41; -&gt; Fin &#40;suc n&#41;</code></pre>
-<p>what this does, is just to define any natural number as a types. More specifically, the type signature <code>Fin</code> itself is a function which receive instance of type <code>Nat</code> as parameter and return a type of <code>sort</code> <code>Set</code>. Which means, <code>Fin</code> combined with some instance <code>n</code> of type <code>Nat</code> would form a data type <code>Fin n</code>. &#40;quite similar to type family in <code>Haskell</code>&#41;</p>
-<p>The data type has two constructors: </p>
-<ul>
-<li><p><code>zero&#39;</code> receives <code>n</code> of type <code>Nat</code> and treat it as instance of type <code>Fin n</code></p>
-</li>
-<li><p><code>succ&#39;</code> receives <code>n</code> of type <code>Nat</code> as well as <code>i</code> of type <code>Fin n</code> then treat it as instance of type <code>Fin &#40;suc n&#41;</code>. </p>
-</li>
-</ul>
-<p>In this way, any natural numbers are corresponding to a data type. </p>
-<p>Then if we want to prove that a natural number&#40;for example, 2&#41; exists, we just need to build an instance of type <code>Fin &#40;suc &#40;suc zero&#41;&#41;</code>. The proof is simple, since we already have one: <code>succ&#39; &#40;succ&#39; zero&#39;&#41;</code>, that&#39;s it&#33;</p>
+<p>To demonstrate the idea, let me show you an example using <code>Agda</code>:</p>
+<h3 id="example_equality"><a href="#example_equality" class="header-anchor">Example: equality</a></h3>
+<p>Proposition as type has a direct consequences, that is, mainly, we prove by constructing. </p>
+<pre><code class="language-haskell">infix 4 _&#61;&#61;_
+data _&#61;&#61;_ &#123;a&#125; &#123;A : Set a&#125; &#40;x : A&#41; : A -&gt; Set a where
+  instance refl : x &#61;&#61; x
+&#123;-# BUILTIN EQUALITY _&#61;&#61;_ #-&#125;</code></pre>
+<p>The code above just defines a data type: <code>&#61;&#61;</code>, and has only one constructor: <code>refl</code>. Then, if we want to prove two terms are in equal, we just need to use these two terms to construct a <code>term/element</code> of <code>&#61;&#61;</code> type.  For example:</p>
+<pre><code class="language-haskell">sym : &#123;l : Level&#125; -&gt; &#123;A : Set l&#125; &#123;x y : A&#125; -&gt; x &#61;&#61; y -&gt; y &#61;&#61; x
+sym &#123;x &#61; x&#125; &#123;y &#61; .x&#125; refl &#61; refl</code></pre>
+<p>This example says, given the assumption that <code>x&#61;&#61;y</code>, we want to prove <code>y&#61;&#61;x</code>, that is, the equality is of reflexivity. </p>
+<p>To prove this, we firstly build a term of assumption <code>x&#61;&#61;y</code>. This is constructed by <code>&#123;x &#61; x&#125; &#123;y &#61; .x&#125; refl</code>, that is, we set x and y to be the same item, and build the equality using <code>refl</code> constructor. </p>
+<p>Then we immediately has the term of second type <code>y &#61;&#61; x</code> by using <code>refl</code> constructor&#33; Note that we can do so because the term we put into <code>&#123;&#125;</code> is implicit, meaning that we can allow <code>agda</code> to do the type inference for us. And remember <code>sym</code> is indeed a function, which given a term of the assumption type, return a term of the correspondence type.</p>
 <div class="page-foot">
-    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: July 17, 2023.
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: July 20, 2023.
     Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
 </div>
 </div><!-- CONTENT ENDS HERE -->
