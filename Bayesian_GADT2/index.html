@@ -45,8 +45,8 @@
     Bind        :: Dist b -&gt; &#40;b -&gt; Dist a&#41; -&gt; Dist a
     Primitive   :: &#40;Sampleable d&#41; &#61;&gt; d a -&gt; Dist a
     Conditional :: &#40;a -&gt; Prob&#41; -&gt; Dist a -&gt; Dist a</code></pre>
-<p>The <code>Bind</code> and <code>Conditional</code> constructor just wrapps multiple things&#40;values or functions&#41; inside, which one should be correponding to value of type <code>a</code>?</p>
-<p>The answer is still related to the idea we have demonstrated in previous post: GADT just do registering job, and all the function/operation registed in are in lazy evaluation mode. We can decide what kind of operaton for <code>&#40;&gt;&gt;&#61;&#41;</code> later in typeclass, and viewing GADT as a thunk. More specifically, see how the historical <code>monad-bayes</code> commit handling this problem:</p>
+<p>The <code>Bind</code> and <code>Conditional</code> constructor just wraps multiple things&#40;values or functions&#41; inside, which one should be corresponding to value of type <code>a</code>?</p>
+<p>The answer is still related to the idea we have demonstrated in previous post: GADT just do registering job, and all the function/operation registered in are in lazy evaluation mode. We can decide what kind of operation for <code>&#40;&gt;&gt;&#61;&#41;</code> later in typeclass, and viewing GADT as a thunk. More specifically, see how the historical <code>monad-bayes</code> commit handling this problem:</p>
 <pre><code class="language-julia">instance Functor Dist where
     fmap  &#61; liftM
 
@@ -59,10 +59,10 @@ instance Monad Dist where
     &#40;&gt;&gt;&#61;&#41;  &#61; Bind</code></pre>
 <p>The implementation of these three typeclass jointly defines all the necessary elements for a Monad. The trick is the <code>&#40;&gt;&gt;&#61;&#41;</code> definition:</p>
 <pre><code class="language-julia">&#40;&gt;&gt;&#61;&#41; &#61; Bind</code></pre>
-<p>It is just another registering operation. That is to say, it doesn&#39;t matter what kind of data are in the Monad, we just assume that it is there, and registering upcomming function into the data type. Again, nothing really happened until some trigger function are called.</p>
-<p>Someting more interesting is the <code>fmap</code> function:</p>
+<p>It is just another registering operation. That is to say, it doesn&#39;t matter what kind of data are in the Monad, we just assume that it is there, and registering upcoming function into the data type. Again, nothing really happened until some trigger function are called.</p>
+<p>Something more interesting is the <code>fmap</code> function:</p>
 <pre><code class="language-julia">fmap &#61; liftM</code></pre>
-<p>This function is defined as <code>liftM</code> in <code>Control.Monad</code>, and we known the <code>leftM</code> function is defined based on <code>&#40;&gt;&gt;&#61;&#41;</code> function. So the behavior of <code>fmap</code> now changes&#40;unlike what we normally see&#41;. It is no longer some function that fetch data <code>a</code> from a Functor, then apply the function <code>f</code> on it, finally wrap it back in a Monad. It is again just a function registering operation: if assume a value <code>a</code> is stored in the monad, and registers a function <code>f</code>, such that, given the value, it return another value <code>f a</code>, and finally, we call some constuctor of Monad <code>M</code> to build a data of type <code>M</code>.  </p>
+<p>This function is defined as <code>liftM</code> in <code>Control.Monad</code>, and we known the <code>leftM</code> function is defined based on <code>&#40;&gt;&gt;&#61;&#41;</code> function. So the behavior of <code>fmap</code> now changes&#40;unlike what we normally see&#41;. It is no longer some function that fetch data <code>a</code> from a Functor, then apply the function <code>f</code> on it, finally wrap it back in a Monad. It is again just a function registering operation: if assume a value <code>a</code> is stored in the monad, and registers a function <code>f</code>, such that, given the value, it return another value <code>f a</code>, and finally, we call some constructor of Monad <code>M</code> to build a data of type <code>M</code>.  </p>
 <p>Let&#39;s demonstrate all above idea in a simple example:</p>
 <pre><code class="language-julia">newtype Explicit a &#61; Explicit &#123;toList :: &#91;&#40;a,Prob&#41;&#93;&#125;
                 deriving&#40;Show&#41;
@@ -98,7 +98,7 @@ resample xs &#61; sequence &#36; replicate n &#36; fmap &#40;,1&#41; &#36; categ
 <p>It is not clearly how the fmap would work for it by looking at it directly. However, if remind that <code>fmap</code> here is just about registering, it is clear. Since by calling trigger function such as <code>sample</code>, the <code>Primitive &#40;Explicit &#123;toList&#61;xs :: Sample a&#125;&#41;</code> data will certainly gives us a value of type <code>a</code>, and all the link is now connected&#33;</p>
 <p>This is the beauty of GADT&#33;</p>
 <div class="page-foot">
-    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: July 15, 2023.
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: July 21, 2023.
     Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
 </div>
 </div><!-- CONTENT ENDS HERE -->
