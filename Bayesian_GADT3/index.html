@@ -36,26 +36,36 @@
 <blockquote>
 <p>All <code>GADT</code> does there is about registering. </p>
 </blockquote>
-<p>Now I make a slight correction: In fact, all <code>GADT</code> does there is about promise. The type signature <code>D a</code> does not exactly mean that there is an element of type <code>a</code> wrapped in <code>D</code>, instead, it means that something will happen in the computation of <code>D a</code> and will certainly return you an element of type <code>a</code> upon request. This kind of construction defines information/existence in a most abstract way, that is great&#33; </p>
+<p>Now I make a slight correction: In fact, all <code>GADT</code> does there is about <code>promise</code>. The type signature <code>D a</code> does not exactly mean that there is an element of type <code>a</code> wrapped in <code>D</code>, instead, it means that something will happen in the computation of <code>D a</code> and will certainly return you an element of type <code>a</code> upon request. This kind of construction defines information/existence in a most abstract way, that is great&#33; </p>
 <p>We should use <code>GADT</code> there, instead of normal <code>ADT</code>, because the concept we are trying to define there is not normal <code>Monad</code>, instead, it is a <code>Monad</code> that wrapped in a single type. That is, <code>Return</code> and <code>Bind</code> is used to build <code>AST</code> declared by a single type. And the <code>AST</code> definition, not like those in <code>ADT</code>, can wrap computational effect inside.</p>
 <p>We know there could be something silently happened along the computational chain of a <code>Monad</code>. Unlike a normal <code>ADT</code> <code>Monad</code>, the <code>GADT</code> <code>Monad</code> defined here allows arbitrary side effects to be defined later and uses some trigger function to trigger the computation chain, a very clever implementation of lazy evaluation.&#40;laziness not provided by <code>haskell</code>, but provided by <code>GADT</code> definition itself&#41;</p>
-<p>The <code>GADT</code> concept can go farther. That is, it not only works as indexed type, where a type parameter reflects a property of the value contents. But also a singleton type, where a <code>GADT</code> value represents exactly one type. For more details, one can follow this <a href="https://v2.ocaml.org/manual/gadts-tutorial.html">tutorial</a>. The value of this singleton type can then serve to trigger the polytypic behavior of a function. </p>
-<p>Let&#39;s learn this through an example in <code>ocaml</code>:</p>
-<pre><code class="language-ocaml">type _ typ &#61; 
-    | Int : int typ
-    | String : string typ
-    | Pair : &#39;a typ * &#39;b typ -&gt; &#40;&#39;a * &#39;b&#41; typ</code></pre>
-<p>The <code>typ</code> type defined above is a <code>ocaml</code> <code>GADT</code>, where the type constructor could return different forms of <code>a typ</code>: <code>int type</code>, <code>string type</code> and <code>&#40;&#39;a * &#39;b&#41; typ</code>. This allows a more fine grained control of a type polymorphisms. &#40;remind in <code>haskell</code>, <code>ADT</code> is defined in the way <code>M a &#61;&gt; D a</code> where <code>a</code> belongs to the typeclass <code>M</code>, this kind of control is obviously looser than what we see here in <code>GADT</code>&#41;. Also note that the <code>Int</code> and <code>String</code> constructors do not take any arguments and are therefore singleton types. However, their type signatures are <code>int typ</code> and <code>string typ</code>, which suggests that they are related to <code>int</code> and <code>string</code> types. This is similar to the <code>promise</code> idea we have seen before. </p>
+<p>The <code>GADT</code> concept can go farther. That is, it not only works as indexed type, where a type parameter reflects a property of the value contents. But also a singleton type, where a <code>GADT</code> value represents exactly one type. The value of this singleton type can then serve to trigger the <code>polytypic</code> behavior of a function. </p>
+<p>Let&#39;s learn this through an example in <code>haskell</code>:</p>
+<p>For more details&#40;the original <code>ocaml</code> version of demonstration&#41;, one can follow this <a href="https://v2.ocaml.org/manual/gadts-tutorial.html">tutorial</a></p>
+<pre><code class="language-haskell">&#123;-# LANGUAGE GADTs #-&#125;
+
+data Typ a where
+    TInt    :: Typ Int
+    TString :: Typ String
+    TPair   :: &#40;Typ a, Typ b&#41; -&gt; Typ &#40;a, b&#41;</code></pre>
+<p>The <code>Typ</code> type defined above is a <code>haskell</code> <code>GADT</code>, where the type constructor could return different forms of <code>Typ a</code>, including <code>Type Int</code>, <code>Type String</code> and <code>Typ &#40;a, b&#41;</code>. This allows a more fine grained control of a type polymorphisms. &#40;remind that normal <code>ADT</code> is defined in the way <code>M a &#61;&gt; D a</code> where <code>a</code> belongs to the typeclass <code>M</code>, this kind of control is obviously looser than what we see here in <code>GADT</code>&#41;. Also note that the <code>TInt</code> and <code>TString</code> constructors do not take any arguments and are therefore singleton types. However, their type signatures are <code>Typ Int</code> and <code>Typ String</code>, which suggests that they are related to <code>Int</code> and <code>String</code> types. This is similar to the <code>promise</code> idea we have seen before. </p>
 <p>Then, let us define a <code>pretty print</code> function for this <code>GADT</code> type:</p>
-<pre><code class="language-ocaml">let rec to_string : type t. t typ -&gt; t -&gt; string &#61; 
-    fun t x -&gt; 
-    match t with 
-    | Int -&gt; Int.to_string x
-    | String -&gt; Printf.sprintf &quot;&#37;S&quot; x
-    | Pair &#40;t1, t2&#41; -&gt; 
-        let &#40;x1, x2&#41; &#61; x in
-        Printf.sprintf &quot;&#40;&#37;s, &#37;s&#41;&quot; &#40;to_string t1 x1&#41; &#40;to_string t2 x2&#41;</code></pre>
-<p>This function takes one argument, <code>t: t typ</code>, and another, <code>x: t</code>, and returns the nicely formatted string representation of <code>x</code>. Note that we can see from this that <code>t: t typ</code> only acts as a trigger for the polytypic behavior of the function <code>to_string</code>, i.e., if <code>t type</code> is an <code>int typ</code>, the function will use <code>Int.to_string</code> for x or, if it is an <code>string typ</code>, it will use <code>Printf.sprintf</code> instead.</p>
+<pre><code class="language-haskell">to_string :: Typ a -&gt; a -&gt; String 
+to_string TInt    x &#61; show x 
+to_string TString x &#61; &quot;s:&quot; &#43;&#43; x 
+to_string &#40;TPair &#40;tx, ty&#41;&#41; &#40;x, y&#41; &#61; &quot;&#40;&quot; 
+            &#43;&#43; &#40;to_string tx x&#41; 
+            &#43;&#43; &quot;,&quot; 
+            &#43;&#43; &#40;to_string ty y&#41; 
+            &#43;&#43; &quot;&#41;&quot;</code></pre>
+<p>This function takes one argument, <code>tx :: Typ a</code>, and another, <code>x :: a</code>, and returns the nicely formatted string representation of <code>x</code>. Note that we can see from this that <code>tx :: Typ a</code> only acts as a trigger for the <code>polytypic</code> behavior of the function <code>to_string</code>, i.e., if <code>Type a</code> is an <code>Typ Int</code>, the function will use <code>show</code> for x or, if it is an <code>Typ String</code>, it will use <code>\x -&gt; &quot;s:&quot; &#43;&#43; x</code> instead.</p>
+<p>Finally, let&#39;s run this in a demo:</p>
+<pre><code class="language-haskell">main :: IO &#40;&#41;
+main &#61; do 
+    let s &#61; TPair &#40;TInt, TString&#41;
+        t &#61; &#40;1, &quot;a&quot;&#41;
+    print &#36; to_string s t</code></pre>
+<p>It will nicely print <code>&quot;&#40;1,s:a&#41;&quot;</code> in terminal.</p>
 <div class="page-foot">
     <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: July 22, 2023.
     Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
