@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+  
+  <link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,400italic|Source+Code+Pro:400,700" type="text/css">
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/celeste.min.css">
+
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon.png">
+<link rel="shortcut icon" href="/assets/favicon.ico">
+<link rel="apple-touch-icon-precomposed" sizes="152x152" href="/assets/apple-touch-icon.png">
+
+   <title>simulation of quantum noise</title>  
+</head>
+<body>
+  <header>
+<nav class="nav-main">
+  <ul>
+    <li class="hvr-underline-reveal"><a href="/">Home</a></li>
+    <!-- <li class="logo"><a class="hvr-ripple-out" href="/">H</a></li> -->
+    <!-- <li class="hvr-underline-reveal"><a href="/menu1/">Code blocks</a></li>
+    <li class="hvr-underline-reveal"><a href="/menu2/">More goodies</a></li>
+    <li class="hvr-underline-reveal"><a href="/menu3/">Tags</a></li> -->
+  </ul>
+</nav>
+</header>
+
+
+<!-- Content appended here -->
+<div class="franklin-content"><h5 id="simulation_of_quantum_noise"><a href="#simulation_of_quantum_noise" class="header-anchor">simulation of quantum noise</a></h5>
+<ul>
+<li><p>simulation at gate-circuit level</p>
+</li>
+<li><p>simulation at pulse level</p>
+</li>
+</ul>
+<h5 id="gate-circuit_level_simulation"><a href="#gate-circuit_level_simulation" class="header-anchor">gate-circuit level simulation</a></h5>
+<p>execution of a circuit on a quantum state:</p>
+\[
+\ket{\phi_f} = U_K U_{K-1}...U_2 U_1 \ket{\phi_i}
+\]
+<p>To consider the effect of noise, we must turn to density matrix representation</p>
+\[
+\rho_f = U \rho_0 U^{\dagger}
+\]
+<p>where \(\rho\) could be pure state or mixed state</p>
+<p>The density matrix representation could be used to represent open quantum system&#40;instead of closed system as in state representation&#41;</p>
+\[
+\mathcal{L}(\rho) = Tr_{K}(U(\rho \otimes \omega)U^{\dagger})
+\]
+<p>where \(\omega\) represents the density matrix of the environment. A global unitary operation \(U\) is applied on the global system&#40;local system \(\otimes\) environment&#41;, then the environment is traced out, resulting a non-unitary operation on the local system.</p>
+<p>This formulation is also known as quantum channels.</p>
+<p>Quantum channels can be decomposed into more convenient form:</p>
+\[
+\rho \mapsto \mathcal{L}(\rho) = \sum_{n \in \mathcal{N}} M_n \rho M_n^{\dagger}
+\]
+<p>where</p>
+\[
+\sum_{n \in \mathcal{N}} M_n M_n^{\dagger} = I
+\]
+<p>This is known as <code>Krauss representation</code> of quantum channels.</p>
+<p>To simulate this effect at gate-circuit level, normally, we need to apply an non-unitary noisy gate immediately after the ideal gate unitaries, to form a <code>Krauss representation</code>. </p>
+<h5 id="pulse_level_simulation"><a href="#pulse_level_simulation" class="header-anchor">pulse level simulation</a></h5>
+<p>However, in reality, the should not be separated into two parts, so a better way is to solve general open dynamics at the pulse level, where the noise is injected into the driven Hamiltonian of quantum gates.</p>
+\[
+\frac{\partial \rho(t)}{\partial t} = \mathcal{L} (\rho(t))
+\]
+<ul>
+<li><p>example1:</p>
+</li>
+</ul>
+<p>A quantum circuit consisting of N qubits experiencing relaxation and dephasing would follow <code>Lindblad master equation</code>:</p>
+\[
+\frac{\partial \rho(t)}{\partial t} = -i[H(t), \rho(t)] + \sum_{j=0}^{N-1}\gamma_j \mathcal{D}[\sigma_j^{-}]\rho(t) + \sum_{j=0}^{N-1}\frac{\gamma_j^{D}}{2} \mathcal{D}[\sigma_j^{z}]\rho(t)
+\]
+<p>\(H\) is the system Hamiltonian</p>
+<p>\(\gamma_j\) is the relaxation rate of qubit \(j\)</p>
+<p>\(\gamma_j^{D}\) is the pure dephasing rate of qubit \(j\)</p>
+<p>\(\mathcal{D}[T]\rho\) indblad dissipator for a generic jump operator \(T\) acting on a density matrix \(\rho\)</p>
+<p>\(\sigma_j^{\alpha}\) are Pauli operators, with \(\alpha = x, y, z, +, −\)</p>
+<h5 id="pulse_level_noise_models"><a href="#pulse_level_noise_models" class="header-anchor">pulse level noise models </a></h5>
+<ul>
+<li><p>noise in the hardware model</p>
+<ul>
+<li><p>the compiled ideal pulse does not implement the ideal unitary gate, due to intrinsic imperfections of the system</p>
+</li>
+<li><ul>
+<li><p>superconducting-qubit: Since the second excitation level is only weakly detuned from the qubit transition frequency, the population may leak out of the qubit subspace. </p>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><p>superconducting-qubit: always-on ZZ type cross-talk induced by interaction with higher levels of the physical qubits </p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>control noise</p>
+<ul>
+<li><p>imperfect control of the quantum system, such as distortion in the pulse amplitude or frequency drift</p>
+</li>
+<li><ul>
+<li><p>random amplitude noise on the control coefficient \(c_j\)</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+\[
+        H(t) = H_d(t) + H_c(t) = H_d(t) + \sum_j c_j(t)H_j
+    \]
+<p>where \(H_d\): non-controllable drift, \(H_j\): effects of available physical controls</p>
+<ul>
+<li><p><code>Lindblad</code> noise</p>
+<ul>
+<li><p>coupling of the quantum system with the environment&#40;e.g. a thermal bath&#41;</p>
+</li>
+<li><ul>
+<li><p>decoherence, characterized by the coherence time T1 and T2 &#40;dephasing&#41;.</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="reference"><a href="#reference" class="header-anchor">reference</a></h5>
+<p><a href="https://arxiv.org/pdf/2105.09902.pdf">&#40;1&#41;</a> Pulse-level noisy quantum circuits with QuTiP, 2022</p>
+<div class="page-foot">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: July 23, 2023.
+    Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/contrib/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+  </body>
+</html>

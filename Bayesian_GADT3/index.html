@@ -15,7 +15,7 @@
 <link rel="shortcut icon" href="/assets/favicon.ico">
 <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/assets/apple-touch-icon.png">
 
-   <title></title>  
+   <title>What is a <code>GADT</code>?</title>  
 </head>
 <body>
   <header>
@@ -32,13 +32,19 @@
 
 
 <!-- Content appended here -->
-<div class="franklin-content"><p>Remember my previous comment about <code>Monad</code> implemented using <code>GADT</code>? </p>
+<div class="franklin-content"><h4 id="what_is_a_gadt"><a href="#what_is_a_gadt" class="header-anchor">What is a <code>GADT</code>?</a></h4>
+<blockquote>
+<p><code>GADTs</code> can be seen as a restricted form of dependent types, where the stage-distinction between terms and types is not lost. They allow data constructors to bear extra type annotations that can describe the shape, size, content, or other properties of the data. These annotations can be used to express key invariants of the data structures, and thus rule out invalid uses of the data.  – <a href="https://www.iro.umontreal.ca/~monnier/tfp08.pdf">ref</a></p>
+</blockquote>
+<h4 id="gadt_version_of_monad"><a href="#gadt_version_of_monad" class="header-anchor"><code>GADT</code> version of <code>Monad</code></a></h4>
+<p>Remember my previous comment about <code>Monad</code> implemented using <code>GADT</code>? </p>
 <blockquote>
 <p>All <code>GADT</code> does there is about registering. </p>
 </blockquote>
 <p>Now I make a slight correction: In fact, all <code>GADT</code> does there is about <code>promise</code>. The type signature <code>D a</code> does not exactly mean that there is an element of type <code>a</code> wrapped in <code>D</code>, instead, it means that something will happen in the computation of <code>D a</code> and will certainly return you an element of type <code>a</code> upon request. This kind of construction defines information/existence in a most abstract way, that is great&#33; </p>
 <p>We should use <code>GADT</code> there, instead of normal <code>ADT</code>, because the concept we are trying to define there is not normal <code>Monad</code>, instead, it is a <code>Monad</code> that wrapped in a single type. That is, <code>Return</code> and <code>Bind</code> is used to build <code>AST</code> declared by a single type. And the <code>AST</code> definition, not like those in <code>ADT</code>, can wrap computational effect inside.</p>
 <p>We know there could be something silently happened along the computational chain of a <code>Monad</code>. Unlike a normal <code>ADT</code> <code>Monad</code>, the <code>GADT</code> <code>Monad</code> defined here allows arbitrary side effects to be defined later and uses some trigger function to trigger the computation chain, a very clever implementation of lazy evaluation.&#40;laziness not provided by <code>haskell</code>, but provided by <code>GADT</code> definition itself&#41;</p>
+<h4 id="gadt_as_singleton_type"><a href="#gadt_as_singleton_type" class="header-anchor"><code>GADT</code> as singleton type</a></h4>
 <p>The <code>GADT</code> concept can go farther. That is, it not only works as indexed type, where a type parameter reflects a property of the value contents. But also a singleton type, where a <code>GADT</code> value represents exactly one type. The value of this singleton type can then serve to trigger the <code>polytypic</code> behavior of a function. </p>
 <p>Let&#39;s learn this through an example in <code>haskell</code>:</p>
 <p>For more details&#40;the original <code>ocaml</code> version of demonstration&#41;, one can follow this <a href="https://v2.ocaml.org/manual/gadts-tutorial.html">tutorial</a></p>
