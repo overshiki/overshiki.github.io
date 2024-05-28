@@ -33,7 +33,7 @@
 
 <!-- Content appended here -->
 <div class="franklin-content"><h3 id="brief_introduction"><a href="#brief_introduction" class="header-anchor">Brief Introduction: </a></h3>
-<p>Variational ansatz-based imaginary time evolution&#40;VITE&#41;, or imaginary-time Ansatz optimization&#40;as refered in <a href="https://www.nature.com/articles/s41567-019-0704-4">Ref</a>&#41; is a method to project the trajectory of imaginary time evolution onto the ansatz manifold. The basic idea is to solve the imaginary time evolution equation&#40;McLachlan’s variational principle&#41;: </p>
+<p>Variational ansatz-based imaginary time evolution&#40;VITE&#41;, or imaginary-time Ansatz optimization&#40;as referred in <a href="https://www.nature.com/articles/s41567-019-0704-4">Ref</a>&#41; is a method to project the trajectory of imaginary time evolution onto the ansatz manifold. The basic idea is to solve the imaginary time evolution equation&#40;McLachlan’s variational principle&#41;: </p>
 \[\frac{\partial |\psi(\tau)\rangle}{\partial \tau} = -(H - E_{\tau})|\psi(\tau)\rangle\]
 <p>Where </p>
 \[E_{\tau} = \langle \psi(\tau)|H|\psi(\tau) \rangle\]
@@ -51,7 +51,7 @@
 \[F_{ij}(\tau) = 4 \mathrm{Real}\left(\frac{\partial \langle \phi(\tau)|}{\partial \theta_i} \frac{\partial |\phi(\tau) \rangle}{\partial \theta_j} - \frac{\partial \langle \phi(\tau)|}{\partial \theta_i} |\phi(\tau)\rangle \langle \phi(\tau)|  \frac{\partial |\phi(\tau)\rangle}{\partial \theta_j}\right)\]
 <p>We see that both VITE and QNGD can be seen as cases for applying Hessian-like preconditioner to the gradient descent method.</p>
 <h3 id="calculation_of_hessian-like_matrix"><a href="#calculation_of_hessian-like_matrix" class="header-anchor">Calculation of Hessian-like matrix</a></h3>
-<p>The calculation of the form \(\mathrm{Real}\left(\frac{\partial \langle \phi(\tau)|}{\partial \theta_i} \frac{\partial |\phi(\tau) \rangle}{\partial \theta_j}\right)\), from the viewpoint of the physical implementation of quantum computation, requires doing hadamard test at both side of the circuit, i.e. the left circuit with parameter \(\theta_i\) and the right circuit with parameter \(\theta_j\). From the viewpoint of the numerical simulation, it becomes a little bit interesting, since forward mode differetiation&#40;including forward mode numerical differetiation method and hadamard test method&#41; has a complexity of \(O(N^2)\), which is not efficient enough. Since most numerical simulator use a more efficient&#40;complexity of \(O(N)\)&#41; differetiation method, i.e. reverse mode or backpropogation, here is the question that, if reverse mode could be used in the calculation of the Hessian-like matrix defined above.</p>
+<p>The calculation of the form \(\mathrm{Real}\left(\frac{\partial \langle \phi(\tau)|}{\partial \theta_i} \frac{\partial |\phi(\tau) \rangle}{\partial \theta_j}\right)\), from the viewpoint of the physical implementation of quantum computation, requires doing hadamard test at both side of the circuit, i.e. the left circuit with parameter \(\theta_i\) and the right circuit with parameter \(\theta_j\). From the viewpoint of the numerical simulation, it becomes a little interesting, since forward mode differentiation&#40;including forward mode numerical differentiation method and hadamard test method&#41; has a complexity of \(O(N^2)\), which is not efficient enough. Since most numerical simulator use a more efficient&#40;complexity of \(O(N)\)&#41; differentiation method, i.e. reverse mode or backpropogation, here is the question that, if reverse mode could be used in the calculation of the Hessian-like matrix defined above.</p>
 <p>It is actually possible, just do the hybrid mode&#33;</p>
 <p>In a forward-reverse hybrid mode, we firstly do forward-mode symbolic rewriting of the left circuit, such that the new circuit has the \(\langle A|B\rangle\) form:</p>
 \[ \langle A|B\rangle = \mathrm{Real}\left( \frac{\partial \langle \phi(\tau)| \phi(\tau)  \rangle}{\partial \theta_i} \right)\]
@@ -66,7 +66,7 @@
 \[
 f(\theta_j) = u(\theta_j) + i v(\theta_j)
 \]
-<p>where \(u\) and \(v\) are real function, and \(\theta_j\) is a real variable. Thus we easily have:</p>
+<p>where \(u\) and \(v\) are real function, and \(\theta_j\) is a real variable. Thus, we easily have:</p>
 \[
 \frac{\partial f(\theta_j)}{\partial \theta_j} = \frac{\partial u(\theta_j)}{\partial \theta_j} + i \frac{\partial v(\theta_j)}{\partial \theta_j}
 \]
@@ -74,13 +74,13 @@ f(\theta_j) = u(\theta_j) + i v(\theta_j)
 \[
 \mathrm{Real}\left( \frac{\partial f(\theta_j)}{\partial \theta_j}\right) = \frac{\partial u(\theta_j)}{\partial \theta_j} = \frac{\partial \mathrm{Real}\left( f(\theta_j) \right) }{\partial \theta_j}
 \]
-<p>expanding \(f\) into \(\frac{\partial \langle \phi(\tau)| \phi(\tau)  \rangle}{\partial \theta_i}\) we imediately have </p>
+<p>expanding \(f\) into \(\frac{\partial \langle \phi(\tau)| \phi(\tau)  \rangle}{\partial \theta_i}\) we immediately have </p>
 \[
 \mathrm{Real}\left(\frac{\partial \langle \phi(\tau)|}{\partial \theta_i} \frac{\partial |\phi(\tau) \rangle}{\partial \theta_j}\right) = \partial \mathrm{Real}\left( \frac{\partial \langle \phi(\tau)| \phi(\tau)  \rangle}{\partial \theta_i} \right) / \partial \theta_j
 \]
 <p><br/> <br/> <br/> <br/> <br/></p>
 <div class="page-foot">
-    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: July 15, 2023.
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: May 28, 2024.
     Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
 </div>
 </div><!-- CONTENT ENDS HERE -->

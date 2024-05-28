@@ -96,15 +96,15 @@
 <p>, an expression of \(p\{x\}\) into Bolzmann distribution is available:</p>
 \[p(\{x\})=\frac{1}{Z} e^{-E_p(\{x\}) / T}\]
 <p>where \(Z = \int e^{-E_p(\{x\})/T} dx\) is the partition function</p>
-<p>and \(E(\{x\}) = - T \cdot log(Z \cdot p_p(\{x\}))\) is easily holds for general cases.</p>
+<p>and \(E(\{x\}) = - T \cdot log(Z \cdot p_p(\{x\}))\) it easily holds for general cases.</p>
 <p>In statistical physics literature, \(E(\{x\})\) stands for potential energy the system obtained, and \(T\) stands for temperature. Since temperature is just a parameter that defines a scale of units for the energy, for simplicity, we can choose our units so that \(T=1\) </p>
-<p>Substitute Bolzmann distribution into the KL divergence, the KL divergence thus can be transformed into an energy based term:</p>
+<p>Substitute Boltzmann distribution into the KL divergence, the KL divergence thus can be transformed into an energy based term:</p>
 \[\mathbb{KL}(b\{x\}|| p(\{x\})=\sum_{\{x\}} b(\{x\}) E_p(\{x\})+\sum_{\{x\}} b(\{x\}) \ln b(\{x\})+\ln Z.\]
 <p>The right hand side term consists an energy term, an entropy term, and a partition function term, and not surprisedly, The first two term is just equivalent to the Gibbs free energy in statistical physics literature:</p>
 \[G_p(b(\{x\})) \equiv \sum_{\{x\}} b(\{x\}) E_p(\{x\})+\sum_{\{x\}} b(\{x\}) \ln b(\{x\})=U(b\{x\})-S(b\{x\})\]
-<p>and the third term is equivalent to Helmholz free energy:</p>
+<p>and the third term is equivalent to Helmholtz free energy:</p>
 \(F \equiv-\ln Z\)
-<p>thus we have </p>
+<p>thus, we have </p>
 \[\mathbb{KL}(b(\{x\}) \| p(\{x\})= G_p(b(\{x\})) - F.\]
 <p>minimizing KL divergence is in equilivent to minimizing Gibbs free energy, and KL divergence reaches zero only if Gibbs free energy is minimized to be equal to Helmholz free energy.</p>
 <p>This is the second law of thermodynamics&#33;</p>
@@ -116,7 +116,7 @@
 <p>&#91;3&#93; Higgins, Irina, Loic Matthey, Arka Pal, Christopher Burgess, Xavier Glorot, Matthew Botvinick, Shakir Mohamed, and Alexander Lerchner. 2016. “Beta-VAE: Learning Basic Visual Concepts with a Constrained Variational Framework,” November. https://openreview.net/forum?id&#61;Sy2fzU9gl.</p>
 <p><br/> <br/> <br/> <br/> <br/></p>
 <div class="page-foot">
-    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: July 15, 2023.
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: May 28, 2024.
     Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
 </div>
 </div><!-- CONTENT ENDS HERE -->

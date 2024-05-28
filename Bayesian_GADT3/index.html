@@ -54,7 +54,7 @@ data Typ a where
     TInt    :: Typ Int
     TString :: Typ String
     TPair   :: &#40;Typ a, Typ b&#41; -&gt; Typ &#40;a, b&#41;</code></pre>
-<p>The <code>Typ</code> type defined above is a <code>haskell</code> <code>GADT</code>, where the type constructor could return different forms of <code>Typ a</code>, including <code>Type Int</code>, <code>Type String</code> and <code>Typ &#40;a, b&#41;</code>. This allows a more fine grained control of a type polymorphisms. &#40;remind that normal <code>ADT</code> is defined in the way <code>M a &#61;&gt; D a</code> where <code>a</code> belongs to the typeclass <code>M</code>, this kind of control is obviously looser than what we see here in <code>GADT</code>&#41;. Also note that the <code>TInt</code> and <code>TString</code> constructors do not take any arguments and are therefore singleton types. However, their type signatures are <code>Typ Int</code> and <code>Typ String</code>, which suggests that they are related to <code>Int</code> and <code>String</code> types. This is similar to the <code>promise</code> idea we have seen before. </p>
+<p>The <code>Typ</code> type defined above is a <code>haskell</code> <code>GADT</code>, where the type constructor could return different forms of <code>Typ a</code>, including <code>Type Int</code>, <code>Type String</code> and <code>Typ &#40;a, b&#41;</code>. This allows a more fine-grained control of a type polymorphisms. &#40;remind that normal <code>ADT</code> is defined in the way <code>M a &#61;&gt; D a</code> where <code>a</code> belongs to the typeclass <code>M</code>, this kind of control is obviously looser than what we see here in <code>GADT</code>&#41;. Also note that the <code>TInt</code> and <code>TString</code> constructors do not take any arguments and are therefore singleton types. However, their type signatures are <code>Typ Int</code> and <code>Typ String</code>, which suggests that they are related to <code>Int</code> and <code>String</code> types. This is similar to the <code>promise</code> idea we have seen before. </p>
 <p>Then, let us define a <code>pretty print</code> function for this <code>GADT</code> type:</p>
 <pre><code class="language-haskell">to_string :: Typ a -&gt; a -&gt; String 
 to_string TInt    x &#61; show x 
@@ -64,7 +64,7 @@ to_string &#40;TPair &#40;tx, ty&#41;&#41; &#40;x, y&#41; &#61; &quot;&#40;&quot
             &#43;&#43; &quot;,&quot; 
             &#43;&#43; &#40;to_string ty y&#41; 
             &#43;&#43; &quot;&#41;&quot;</code></pre>
-<p>This function takes one argument, <code>tx :: Typ a</code>, and another, <code>x :: a</code>, and returns the nicely formatted string representation of <code>x</code>. Note that we can see from this that <code>tx :: Typ a</code> only acts as a trigger for the <code>polytypic</code> behavior of the function <code>to_string</code>, i.e., if <code>Type a</code> is an <code>Typ Int</code>, the function will use <code>show</code> for x or, if it is an <code>Typ String</code>, it will use <code>\x -&gt; &quot;s:&quot; &#43;&#43; x</code> instead.</p>
+<p>This function takes one argument, <code>tx :: Typ a</code>, and another, <code>x :: a</code>, and returns the nicely formatted string representation of <code>x</code>. Note that we can see from this that <code>tx :: Typ a</code> only acts as a trigger for the <code>polytypic</code> behavior of the function <code>to_string</code>, i.e., if <code>Type a</code> is a <code>Typ Int</code>, the function will use <code>show</code> for x or, if it is a <code>Typ String</code>, it will use <code>\x -&gt; &quot;s:&quot; &#43;&#43; x</code> instead.</p>
 <p>Finally, let&#39;s run this in a demo:</p>
 <pre><code class="language-haskell">main :: IO &#40;&#41;
 main &#61; do 
@@ -73,7 +73,7 @@ main &#61; do
     print &#36; to_string s t</code></pre>
 <p>It will nicely print <code>&quot;&#40;1,s:a&#41;&quot;</code> in terminal.</p>
 <div class="page-foot">
-    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: July 22, 2023.
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: May 28, 2024.
     Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
 </div>
 </div><!-- CONTENT ENDS HERE -->

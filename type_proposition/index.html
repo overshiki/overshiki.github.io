@@ -33,14 +33,14 @@
 
 <!-- Content appended here -->
 <div class="franklin-content"><p>So finally, I come to this point: how a theorem could be proved using a computer? Or, equivalently, how exactly an automated proof assistant works?</p>
-<p>This question turns out to belong to the field of <code>constructive logic</code>, and is answered by the famous <code>Curry-Horward correspondence</code>, which links the field of <code>natural deduction</code> and <code>typed lambda calculus</code>. For more details of this astonishing discovery, please refer to <a href="https://homepages.inf.ed.ac.uk/wadler/papers/propositions-as-types/propositions-as-types.pdf"><code>Propositions as Types</code></a> by Philip Wadler. &#40;You may also interested in his <a href="https://www.youtube.com/watch?v&#61;IOiZatlZtGU">talk</a>, and this <a href="https://www.cs.cmu.edu/~fp/courses/15814-f18/lectures/19-natded.pdf">lecture note</a>&#41;</p>
+<p>This question turns out to belong to the field of <code>constructive logic</code>, and is answered by the famous <code>Curry-Horward correspondence</code>, which links the field of <code>natural deduction</code> and <code>typed lambda calculus</code>. For more details of this astonishing discovery, please refer to <a href="https://homepages.inf.ed.ac.uk/wadler/papers/propositions-as-types/propositions-as-types.pdf"><code>Propositions as Types</code></a> by Philip Wadler. &#40;You may also be interested in his <a href="https://www.youtube.com/watch?v&#61;IOiZatlZtGU">talk</a>, and this <a href="https://www.cs.cmu.edu/~fp/courses/15814-f18/lectures/19-natded.pdf">lecture note</a>&#41;</p>
 <p>In short, <code>Curry-Horward correspndance</code> says that a <code>Proposition</code> in <code>logic</code> is just a <code>Type</code> in <code>typed lambda calculus</code>, and a <code>Proof</code> of that <code>Proposition</code> is just a <code>term</code> belong to that <code>Type</code>.</p>
 <p>How to understand this?</p>
 <p>Intuitively speaking, a <code>proposition</code> is a claim, a claim of something to be true. So we can define a data type&#40;inductive data type as in dependent type theory&#41; which is in equivalent to the claim&#40;Or just define the data type recursively following the deduction definition of the claim&#41;. By doing so, if we can successfully implement an instance&#40;or <code>term</code>, or element&#41; of this data type, we are just proving the claim to be true&#33;&#40;i.e. the <code>proposition</code> is proved&#41;. On the contrary, if we can see the data type&#40;the set&#41; to be empty, then the <code>proposition</code> can not be proved. </p>
 <p>Always, there are multiple ways to prove a <code>proposition</code>. Equivalently, there are multiple <code>terms</code>&#40;or element&#41; belonging to&#40;or inside&#41; the same <code>data type</code>. To prove a <code>proposition</code>, we just need one way of proving. Correspondingly, we just need to build one <code>term</code> belonging to that <code>data type</code>. That begins the story of automated proof assistant.</p>
 <p>To demonstrate the idea, let me show you an example using <code>Agda</code>:</p>
 <h3 id="example_equality"><a href="#example_equality" class="header-anchor">Example: equality</a></h3>
-<p>Proposition as type has a direct consequences, that is, mainly, we prove by constructing. </p>
+<p>Proposition as type has a direct consequence, that is, mainly, we prove by constructing. </p>
 <pre><code class="language-haskell">infix 4 _&#61;&#61;_
 data _&#61;&#61;_ &#123;a&#125; &#123;A : Set a&#125; &#40;x : A&#41; : A -&gt; Set a where
   instance refl : x &#61;&#61; x
@@ -52,7 +52,7 @@ sym &#123;x &#61; x&#125; &#123;y &#61; .x&#125; refl &#61; refl</code></pre>
 <p>To prove this, we firstly build a term of assumption <code>x&#61;&#61;y</code>. This is constructed by <code>&#123;x &#61; x&#125; &#123;y &#61; .x&#125; refl</code>, that is, we set x and y to be the same item, and build the equality using <code>refl</code> constructor. </p>
 <p>Then we immediately has the term of second type <code>y &#61;&#61; x</code> by using <code>refl</code> constructor&#33; Note that we can do so because the term we put into <code>&#123;&#125;</code> is implicit, meaning that we can allow <code>agda</code> to do the type inference for us. And remember <code>sym</code> is indeed a function, which given a term of the assumption type, return a term of the correspondence type.</p>
 <div class="page-foot">
-    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: July 20, 2023.
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: May 28, 2024.
     Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
 </div>
 </div><!-- CONTENT ENDS HERE -->

@@ -33,8 +33,8 @@
 
 
 <!-- Content appended here -->
-<div class="franklin-content"><p>Here in this post, I would like to demonstrate how type signature in <code>Haskell</code> could help understanding functions &amp; function compositions. </p>
-<p>As a <code>Haskell</code> learner and lover, the most enjoyable part of programming in <code>Haskell</code>, is that whenever I wrote a function, I could aways start with a type signature. For example, imaging I want to write a factory function which receives a input ternary function, outputs a function that flip the order of the function inputs. The description above is a little bit ambiguous, but if I write down the type signature, you could easily understand what I meant:</p>
+<div class="franklin-content"><p>Here in this post, I would like to demonstrate how type signature in <code>Haskell</code> could help to understand functions &amp; function compositions. </p>
+<p>As a <code>Haskell</code> learner and lover, the most enjoyable part of programming in <code>Haskell</code>, is that whenever I wrote a function, I could always start with a type signature. For example, imaging I want to write a factory function which receives a input ternary function, outputs a function that flip the order of the function inputs. The description above is a little ambiguous, but if I write down the type signature, you could easily understand what I meant:</p>
 <pre><code class="language-haskell">flip :: &#40;a -&gt; b -&gt; c&#41; -&gt; &#40;b -&gt; a -&gt; c&#41;</code></pre>
 <p>As you can see, the <code>flip</code> function just receives a ternary function &#40;a -&gt; b -&gt; c&#41; as input, and outputs another ternary function: &#40;b -&gt; a -&gt; c&#41;. The implementation of the function definition becomes clear just by reading the type signature&#33;</p>
 <h3 id="more_appealing_example"><a href="#more_appealing_example" class="header-anchor">More appealing example</a></h3>
@@ -48,7 +48,7 @@
 <li><p>And you can easily check that most of the identity element in algebra systems obey this rule. For example, in group theory, the identity element \(e\) is an element that given any group element \(g \in G\), the group composition will return just the element itself&#40;which is obviously of the same type as the input, they both belong to \(G\)&#41;, i.e. \(\forall g \in G, g \cdot e \to g \in G\)</p>
 </li>
 </ul>
-<p>The interesting part is that, using this type binding, you can build brand new functions, with nontrivial behavior change&#33;</p>
+<p>The interesting part is that, using this type binding, you can build brand-new functions, with nontrivial behavior change&#33;</p>
 <p>For example, consider the <code>flip</code> function above, we could build a new function using <code>id</code>:</p>
 <pre><code class="language-haskell">nflip &#61; flip id</code></pre>
 <p>What does this function do? Let&#39;s firstly check its type signature:</p>
@@ -123,7 +123,7 @@ a # b # id :: Trans c1 &#40;Trans c &#40;IO r&#41;&#41; -&gt; IO r
 <p>&#91;2&#93; https://github.com/haskell-numerics/hmatrix/blob/master/packages/base/src/Internal/Matrix.hs</p>
 <p><br/> <br/> <br/> <br/> <br/></p>
 <div class="page-foot">
-    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: July 16, 2023.
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: May 28, 2024.
     Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
 </div>
 </div><!-- CONTENT ENDS HERE -->
