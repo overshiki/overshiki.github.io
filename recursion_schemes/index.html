@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+   <link rel="stylesheet" href="/libs/highlight/styles/github.min.css">
+   
+  <link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,400italic|Source+Code+Pro:400,700" type="text/css">
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/celeste.min.css">
+
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon.png">
+<link rel="shortcut icon" href="/assets/favicon.ico">
+<link rel="apple-touch-icon-precomposed" sizes="152x152" href="/assets/apple-touch-icon.png">
+
+   <title>the definition </title>  
+</head>
+<body>
+  <header>
+<nav class="nav-main">
+  <ul>
+    <li class="hvr-underline-reveal"><a href="/">Home</a></li>
+    <!-- <li class="logo"><a class="hvr-ripple-out" href="/">H</a></li> -->
+    <!-- <li class="hvr-underline-reveal"><a href="/menu1/">Code blocks</a></li>
+    <li class="hvr-underline-reveal"><a href="/menu2/">More goodies</a></li>
+    <li class="hvr-underline-reveal"><a href="/menu3/">Tags</a></li> -->
+  </ul>
+</nav>
+</header>
+
+
+<!-- Content appended here -->
+<div class="franklin-content"><p>This time, I would like to talk about recursion schemes, the idea, the benefits and an real world example.</p>
+<p>The materials I follow including the famous <a href="https://blog.sumtypeofway.com/posts/introduction-to-recursion-schemes.html">series of posts&#91;1&#93;</a>, the <a href="https://hackage.haskell.org/package/data-fix-0.3.3/docs/Data-Fix.html">data-fix package&#91;2&#93;</a> and a real world <a href="https://github.com/anton-k/hindley-milner-type-check">type-inference project&#91;3&#93;</a>.</p>
+<h3 id="the_definition"><a href="#the_definition" class="header-anchor">the definition </a></h3>
+<p>Briefly speaking, <code>recursion-schemes</code> is another style of expressing recursive data type in functional programming langauges&#40;such as <code>haskell</code>&#41;. It takes advantage of <code>Y-combinator</code>&#40;or fixpoint&#41; and provides one more abstract level of graph traversal mechanism compared with &quot;naive&quot; definition of recursive data type.</p>
+<p>I would not like to discuss at a very detailed level, since the the famous posts&#91;<a href="### reference">1</a>&#93; have already demonstrated it clearly, a curious mind should consider referring to it. Let&#39;s instead start with a very brief summary of the idea, then jump directly into its usage in a real world language project.</p>
+<p>The definition of the example AST&#40;from the post &#91;<a href="### reference">1</a>&#93;&#41; is:</p>
+<pre><code class="language-haskell">data Lit
+  &#61; StrLit String
+  | IntLit Int
+  | Ident String
+  deriving &#40;Show, Eq&#41;
+
+data Expr
+  &#61; Index Expr Expr
+  | Call Expr &#91;Expr&#93;
+  | Unary String Expr
+  | Binary Expr String Expr
+  | Paren Expr
+  | Literal Lit
+  deriving &#40;Show, Eq&#41;</code></pre>
+<p>This is the &quot;naive&quot; definition and would be familiar to any haskellers. The trick is that the constructors of <code>Expr</code> could also take the <code>Expr</code> datatype as its parameters, so that a recursive datatype is declared.</p>
+<p>The <code>recursion-schemes</code> style, however, define the above <code>Expr</code> in this way:</p>
+<pre><code class="language-haskell">-- use TemplateHaskell only for better support of &#96;show&#96; function
+&#123;-# LANGUAGE TemplateHaskell #-&#125;
+-- optional, only to demonstrate ExprF could be a Functor
+&#123;-# LANGUAGE DeriveFunctor #-&#125;
+-- for better demonstration, we will use &#96;data-fix&#96;
+import Data.Fix 
+-- better support of &#96;show&#96; function
+import Text.Show.Deriving
+
+data Lit
+  &#61; StrLit String
+  | IntLit Int
+  | Ident String
+  deriving &#40;Show, Eq&#41;
+
+data ExprF a
+  &#61; Index a a
+  | Call a &#91;a&#93;
+  | Unary String a
+  | Binary a String a
+  | Paren a
+  | Literal Lit
+  deriving &#40;Show, Eq, Functor&#41;
+
+-- better support of &#96;show&#96; function
+&#36;&#40;deriveShow1 &#39;&#39;ExprF&#41;
+
+type Expr &#61; Fix ExprF
+
+-- -- the Fix datatype is just 
+-- newtype Fix f &#61; Fix &#123; unFix :: f &#40;Fix f&#41; &#125;
+
+d1 &#61; Fix &#40;Literal &#40;IntLit 10&#41;&#41; :: Expr
+d2 &#61; Fix &#36; Paren &#36; Fix &#40;Literal &#40;IntLit 10&#41;&#41; :: Expr</code></pre>
+<p>As you can see, <code>Expr</code> is defined using the fixpoint of <code>ExprF</code> while <code>ExprF</code> just represents our AST in a non-recursive way: it can be hardly seen that <code>ExprF a</code> could build any tree-like structures in any way. </p>
+<p>However, using the fixpoint trick, this becomes possible.</p>
+<p>Take a look at the definition of <code>Fix</code>&#40;as we import from <code>Data.Fix</code> in the above example&#41;:</p>
+<pre><code class="language-haskell">newtype Fix f &#61; Fix &#123; unFix :: f &#40;Fix f&#41; &#125;</code></pre>
+<p>The trick is to deploy the recursive definition at the <code>FixPoint</code> level, where <code>f</code> just works as a wrapper over another <code>Fix f</code> datatype.</p>
+<p>To better understand this, consider a marginal case:</p>
+<pre><code class="language-haskell">Fix &#40;Literal &#40;IntLit 10&#41;&#41; :: Expr</code></pre>
+<p>Will this pass the type-check?</p>
+<p>Yes&#33; because <code>&#40;Literal &#40;IntLit 10&#41;&#41;</code> can be type-checked with <code>ExprF a</code> where <code>a</code> stands as any type variables. More specifically:</p>
+<pre><code class="language-haskell">l1 &#61; Literal &#40;IntLit 10&#41; :: ExprF a
+l2 &#61; Literal &#40;IntLit 10&#41; :: ExprF &#40;&#41;
+l3 &#61; Literal &#40;IntLit 10&#41; :: ExprF &#40;ExprF a&#41;
+l4 &#61; Literal &#40;IntLit 10&#41; :: ExprF &#40;Fix ExprF&#41;</code></pre>
+<p>can all be type-checked.</p>
+<p>With this, <code>Fix l4 :: Fix ExprF</code> pass successfully.</p>
+<p>Then, immediately, you can see </p>
+<pre><code class="language-haskell">d2 &#61; Fix &#36; Paren &#36; Fix &#40;Literal &#40;IntLit 10&#41;&#41; :: Expr</code></pre>
+<p>can also pass type-check, since <code>Fix</code> of <code>f &#40;Fix f&#41;</code> belongs to <code>Fix f</code></p>
+<p>So, one reason why <code>recursion-schemes</code> works is that the marginal case of <code>ExprF a</code> can be type-checked with any type variable <code>a</code>, or, put it in another way, marginal case such as <code>Literal &#40;IntLit 10&#41;</code> brings an extra type variable with it.</p>
+<p>Knowing this is important, since most of the traversal mechanism provided by <code>recursion-schemes</code> just use functions defined on marginal cases&#40;all other cases are automatically supported without any extra code&#33;&#41;</p>
+<p>Consider a folding case from the post&#91;<a href="### reference">1</a>&#93;:</p>
+<pre><code class="language-haskell">import Text.PrettyPrint &#40;Doc&#41;
+import qualified Text.PrettyPrint as P
+
+ten, add, call :: Expr
+ten  &#61; Fix &#40;Literal &#40;IntLit 10&#41;&#41;
+add  &#61; Fix &#40;Literal &#40;Ident &quot;add&quot; &#41;&#41;
+call &#61; Fix &#40;Call add &#91;ten, ten&#93;&#41; --add&#40;10, 10&#41;
+
+type Algebra f a &#61; f a -&gt; a
+prettyPrint :: Algebra ExprF Doc
+prettyPrint &#40;Literal &#40;IntLit i&#41;&#41; &#61; P.int i
+prettyPrint &#40;Literal &#40;Ident s&#41;&#41; &#61; P.text s
+prettyPrint &#40;Call f as&#41;     &#61; 
+  ---f&#40;a,b...&#41;
+  f &lt;&gt; P.parens &#40;mconcat &#40;P.punctuate &quot;,&quot; as&#41;&#41;  
+prettyPrint &#40;Index it idx&#41;  &#61; 
+  ---a&#91;b&#93;
+  it &lt;&gt; P.brackets idx                
+prettyPrint &#40;Unary op it&#41;   &#61; 
+  ---op x
+  &#40;P.text op&#41; &lt;&gt; it                   
+prettyPrint &#40;Binary l op r&#41; &#61; 
+  ---lhs op rhs
+  l &lt;&gt; &#40;P.text op&#41; &lt;&gt; r               
+prettyPrint &#40;Paren exp&#41;     &#61; 
+  ---&#40;op&#41;
+  P.parens exp                        
+
+v &#61; foldFix prettyPrint call</code></pre>
+<p>This will result in <code>add&#40;10,10&#41;</code>.</p>
+<p>The magic <code>foldFix</code> provided by <code>fix-data</code> has this type signature:</p>
+<pre><code class="language-haskell">foldFix :: Functor f &#61;&gt; &#40;f a -&gt; a&#41; -&gt; Fix f -&gt; a</code></pre>
+<p>As its name indicates, it is the <code>Fix</code> version of fold function.</p>
+<p>Actually, this function is named <code>cata</code> in <a href="https://blog.sumtypeofway.com/posts/introduction-to-recursion-schemes.html">the post</a>, and the implementation looks like this:</p>
+<pre><code class="language-haskell">import Control.Arrow
+-- foldFix is also named cata, meaning catamorphism
+foldFix :: &#40;Functor f&#41; &#61;&gt; Algebra f a -&gt; Term f -&gt; a
+foldFix f &#61; unFix &gt;&gt;&gt; fmap &#40;foldFix f&#41; &gt;&gt;&gt; f</code></pre>
+<p>Let&#39;s just skip the implementation details of <code>foldFix</code>&#40;a curious mind can always refer to the post&#91;<a href="### reference">1</a>&#93;&#41; and focus on the <code>prettyPrint</code>. At first glance, the implementation of <code>prettyPrint &#40;Literal &#40;IntLit i&#41;&#41;</code> and <code>prettyPrint &#40;Literal &#40;Ident s&#41;&#41;</code> are some sort of trivial, however, in fact, these are where the tricks ly.</p>
+<p>Consider the implementation of <code>prettyPrint &#40;Index it idx&#41;</code>:</p>
+<pre><code class="language-haskell">prettyPrint &#40;Index it idx&#41;  &#61; it &lt;&gt; P.brackets idx</code></pre>
+<p>We know that <code>prettyPrint</code> has type signature <code>prettyPrint :: ExprF Doc -&gt; Doc</code>, it is easily understood that there should be <code>&lt;&gt;</code> in between the two object <code>it</code> and <code>P.brackets idx</code> since <code>&#40;&lt;&gt;&#41; :: Doc -&gt; Doc -&gt; Doc</code>. But wait, do <code>it</code> and <code>idx</code> really belong to the type <code>Doc</code>? </p>
+<p>We know by definition that <code>id</code> and <code>idx</code> should belong to the same type since recall:</p>
+<pre><code class="language-haskell">data ExprF a
+  &#61; Index a a
+  | Call a &#91;a&#93;
+  | Unary String a
+  | Binary a String a
+  | Paren a
+  | Literal Lit
+  deriving &#40;Show, Eq, Functor&#41;</code></pre>
+<p>But clearly, <code>a</code> could also be <code>Fix ExprF</code>&#40;i.e. <code>Expr</code> AST&#41;, why does it become <code>Doc</code> in the <code>prettyPrint</code> function?</p>
+<p>The answer lies in the marginal cases:</p>
+<pre><code class="language-haskell">prettyPrint &#40;Literal &#40;IntLit i&#41;&#41; &#61; P.int i
+prettyPrint &#40;Literal &#40;Ident s&#41;&#41; &#61; P.text s</code></pre>
+<p>And by looking at this, you can easily see how the <code>Expr</code> AST will reduce into <code>Doc</code> starting from the marginal cases&#40;leaves&#41; and propogating throught the traversal procedure, and when it reaches the <code>Index a a</code> node, <code>a</code> is already <code>Doc</code>.</p>
+<p>Analyzing the marginal case, is the key to understand a recursion scheme.</p>
+<h3 id="a_real_world_example"><a href="#a_real_world_example" class="header-anchor">a real world example</a></h3>
+<p>As we have known a little bit of <code>recursion-schemes</code>, its definition and the basic idea, we move on to a real world example: <a href="https://github.com/anton-k/hindley-milner-type-check">hindley-milner-type-check</a>&#91;3&#93;</p>
+<p>As its name suggests, <code>hindley-milner-type-check</code> is a library that provide <code>HM-based</code> type inference on an arbitray language based on <code>lambda calculus</code>. It brings a language using <code>recursion-schemes</code> style, and custom language should be able to map onto it in order to use its type-infer facility. Today, we mainly focus on its language definition and some folding cases of it.</p>
+<p>The language is defined as follows:</p>
+<pre><code class="language-haskell">import Data.Fix
+import Data.Eq.Deriving
+import Data.Ord.Deriving
+import Text.Show.Deriving
+
+-- | Term functor. The arguments are
+-- loc for source code locations
+-- v for variables
+-- r for recursion
+
+data TermF prim loc v r
+    &#61; Var loc v                       -- ^ Variables.
+    | Prim loc prim                   -- ^ Primitives.
+    | App loc r r                     -- ^ Applications.
+    | Lam loc v r                     -- ^ Abstractions.
+    | Let loc &#40;Bind loc v r&#41; r        -- ^ Let bindings.
+    | LetRec loc &#91;Bind loc v r&#93; r     -- ^ Recursive  let bindings
+    | AssertType loc r &#40;Type loc v&#41;   -- ^ Assert type.
+    | Case loc r &#91;CaseAlt loc v r&#93;    -- ^ case alternatives
+    | Constr loc v                    -- ^ constructor with tag
+    | Bottom loc                      -- ^ value of any type that means failed program.
+    deriving &#40;Show, Eq, Functor, Foldable, Traversable, Data&#41;
+
+-- | Case alternatives
+data CaseAlt loc v a &#61; CaseAlt
+  &#123; caseAlt&#39;loc   :: loc
+  -- ^ source code location
+  , caseAlt&#39;tag   :: v
+  -- ^ tag of the constructor
+  , caseAlt&#39;args  :: &#91;&#40;loc, v&#41;&#93;
+  -- ^ arguments of the pattern matching
+  , caseAlt&#39;rhs   :: a
+  -- ^ right-hand side of the case-alternative
+  &#125;
+  deriving &#40;Show, Eq, Functor, Foldable, Traversable, Data&#41;
+
+-- | Local variable definition.
+--
+-- &gt; let lhs &#61; rhs in ...
+data Bind loc var a &#61; Bind
+  &#123; bind&#39;loc :: loc             -- ^ Source code location
+  , bind&#39;lhs :: var             -- ^ Variable name
+  , bind&#39;rhs :: a               -- ^ Definition &#40;right-hand side&#41;
+  &#125; deriving &#40;Show, Eq, Functor, Foldable, Traversable, Data&#41;
+
+&#36;&#40;deriveShow1 &#39;&#39;TermF&#41;
+&#36;&#40;deriveEq1   &#39;&#39;TermF&#41;
+&#36;&#40;deriveOrd1  &#39;&#39;TermF&#41;
+&#36;&#40;deriveShow1 &#39;&#39;Bind&#41;
+&#36;&#40;deriveEq1   &#39;&#39;Bind&#41;
+&#36;&#40;deriveOrd1  &#39;&#39;Bind&#41;
+&#36;&#40;deriveShow1 &#39;&#39;CaseAlt&#41;
+&#36;&#40;deriveEq1   &#39;&#39;CaseAlt&#41;
+&#36;&#40;deriveOrd1  &#39;&#39;CaseAlt&#41;</code></pre>
+<p>Take a look at the <code>TermF</code> definition, it has three variables: <code>loc</code> for source code locations, <code>v</code> for variables, <code>r</code> for recursion.</p>
+<p><code>loc</code> is not important in our study, so we just ignore it, <code>v</code> is the variable we should registered into the AST and it just corresponds to the marginal cases we will discuss later, <code>r</code> is the recursion variable, and will be transformed into marginal cases during folding. Note that <code>CaseAlt</code> and <code>Bind</code> also have <code>r</code> as recursion variable in the definition of <code>TermF</code>, this is also a demonstration of how to define mutually recursive data type using <code>recursion-schemes</code> </p>
+<p>Also the definition of <code>Term</code> based on <code>TermF</code> using fixpoint:</p>
+<pre><code class="language-haskell">-- | The type of terms.
+newtype Term prim loc v &#61; Term &#123; unTerm :: Fix &#40;TermF prim loc v&#41; &#125;
+  deriving &#40;Show, Eq, Data&#41;</code></pre>
+<h4 id="simple_folding_example"><a href="#simple_folding_example" class="header-anchor">simple folding example</a></h4>
+<p>Now let&#39;s take a look at a simple folding example using <code>recursion-schemes</code>: </p>
+<ul>
+<li><p>get free variables from an AST</p>
+</li>
+</ul>
+<pre><code class="language-haskell">-- | Get free variables of the term.
+freeVars :: Ord v &#61;&gt; Term prim loc v -&gt; Set v
+freeVars &#61; foldFix go . unTerm
+  where
+    go &#61; \case
+      Var    _ v          -&gt; S.singleton v
+      Prim   _ _          -&gt; mempty
+      App    _ a b        -&gt; mappend a b
+      Lam    _ v a        -&gt; S.delete v a
+      Let    _ bind body  -&gt; let lhs &#61; S.singleton &#36; bind&#39;lhs bind
+                             in  mappend &#40;bind&#39;rhs bind&#41;
+                                         &#40;body &#96;S.difference&#96; lhs&#41;
+      LetRec _ binds body -&gt; let 
+                              lhs &#61; S.fromList &#36; fmap bind&#39;lhs binds
+                             in  
+                             &#40;mappend &#40;freeBinds binds&#41; body&#41; 
+                             &#96;S.difference&#96; lhs
+      AssertType _ a _    -&gt; a
+      Case _ e alts       -&gt; mappend e &#40;foldMap freeVarAlts alts&#41;
+      Constr _ _          -&gt; mempty
+      Bottom _            -&gt; mempty
+
+    freeBinds &#61; foldMap bind&#39;rhs
+
+    freeVarAlts CaseAlt&#123;..&#125; &#61; 
+      caseAlt&#39;rhs &#96;S.difference&#96; 
+      &#40;S.fromList &#36; fmap snd caseAlt&#39;args&#41;</code></pre>
+<p>Again, let&#39;s firstly focus on the two marginal cases: <code>Var loc v</code> and <code>Prim loc prim</code>.</p>
+<p>The <code>Var loc v</code> case is simple, since <code>v</code> IS a free variable, we have</p>
+<pre><code class="language-haskell">Var _ v -&gt; S.singleton v</code></pre>
+<p>The <code>Prim loc prim</code> is even simpler, it has no variables inside</p>
+<pre><code class="language-haskell">Prim _ _ -&gt; mempty</code></pre>
+<p>Then, let&#39;s take a look at three non-marginal cases as an example&#40;other cases follows the same rule&#41;: <code>App loc r r</code>, <code>Lam loc v r</code> and <code>Let loc &#40;Bind loc v r&#41; r</code></p>
+<p>The <code>App loc r r</code> case is simple, since application of <code>r1</code> to <code>r2</code> just results in free variables of <code>r1</code> and <code>r2</code> to merge. And remember that under <code>foldFix</code>, the <code>r</code> in <code>App loc r r</code> just reduce to the result of marginal cases&#40;i.e. <code>Set v</code>&#41;, so that an <code>mappend</code> function is enough</p>
+<pre><code class="language-haskell">App _ a b -&gt; mappend a b</code></pre>
+<p>The <code>Lam loc v r</code> looks a little bit complex at first glance, since it has both <code>v</code> and <code>r</code> inside. But, remind that <code>r</code> will be reduced into <code>Set v</code> under <code>foldFix</code>, we can easily see we just need to do some set operation on <code>r</code></p>
+<pre><code class="language-haskell">Lam _ v a -&gt; S.delete v a</code></pre>
+<p>We remove <code>v</code> from set <code>a</code> since <code>v</code> is binded.</p>
+<p>The <code>Let loc &#40;Bind loc v r&#41; r</code> case is the most complex one, since it also refer to another datatype <code>Bind</code>. Remind the definition of <code>Bind</code>:</p>
+<pre><code class="language-haskell">data Bind loc var a &#61; Bind
+  &#123; bind&#39;loc :: loc             -- ^ Source code location
+  , bind&#39;lhs :: var             -- ^ Variable name
+  , bind&#39;rhs :: a               -- ^ Definition &#40;right-hand side&#41;
+  &#125; deriving &#40;Show, Eq, Functor, Foldable, Traversable, Data&#41;</code></pre>
+<p>Looks complex? We just need to apply the strategy we used to analyze <code>Term</code> onto <code>Bind</code>. </p>
+<ul>
+<li><p>Firstly, <code>v</code> in <code>Bind loc v r</code> is the variable corresponds to the marginal cases</p>
+</li>
+<li><p>Secondly, <code>r</code> is the recursion variable, and will be transformed into marginal cases during folding</p>
+</li>
+</ul>
+<p>So we use <code>bind&#39;lhs bind</code> to fetch variables and use <code>bind&#39;rhs bind</code> to fetch the <code>Set</code> of variables, that&#39;s it&#33; The resulting function looks like this:</p>
+<pre><code class="language-haskell">Let _ bind body  -&gt; 
+  let 
+    lhs &#61; S.singleton &#36; bind&#39;lhs bind
+  in  
+    mappend &#40;bind&#39;rhs bind&#41; &#40;body &#96;S.difference&#96; lhs&#41;</code></pre>
+<h3 id="reference"><a href="#reference" class="header-anchor">reference</a></h3>
+<p>&#91;1&#93; series of posts: https://blog.sumtypeofway.com/posts/introduction-to-recursion-schemes.html</p>
+<p>&#91;2&#93; data-fix package: https://hackage.haskell.org/package/data-fix-0.3.3/docs/Data-Fix.html</p>
+<p>&#91;3&#93; type-inference project: https://github.com/anton-k/hindley-milner-type-check</p>
+<div class="page-foot">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: June 11, 2024.
+    Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    
+    
+        <script src="/libs/highlight/highlight.min.js"></script>
+<script>hljs.highlightAll();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+   <link rel="stylesheet" href="/libs/highlight/styles/github.min.css">
+   
+  <link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,400italic|Source+Code+Pro:400,700" type="text/css">
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/celeste.min.css">
+
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon.png">
+<link rel="shortcut icon" href="/assets/favicon.ico">
+<link rel="apple-touch-icon-precomposed" sizes="152x152" href="/assets/apple-touch-icon.png">
+
+   <title>0.6.6 &#91;2024.03.19&#93;</title>  
+</head>
+<body>
+  <header>
+<nav class="nav-main">
+  <ul>
+    <li class="hvr-underline-reveal"><a href="/">Home</a></li>
+    <!-- <li class="logo"><a class="hvr-ripple-out" href="/">H</a></li> -->
+    <!-- <li class="hvr-underline-reveal"><a href="/menu1/">Code blocks</a></li>
+    <li class="hvr-underline-reveal"><a href="/menu2/">More goodies</a></li>
+    <li class="hvr-underline-reveal"><a href="/menu3/">Tags</a></li> -->
+  </ul>
+</nav>
+</header>
+
+
+<!-- Content appended here -->
+<div class="franklin-content"><h3 id="066_20240319"><a href="#066_20240319" class="header-anchor">0.6.6 &#91;2024.03.19&#93;</a></h3>
+<ul>
+<li><p>Support building with <code>template-haskell-2.22.*</code> &#40;GHC 9.10&#41;.</p>
+</li>
+</ul>
+<h3 id="065_20230806"><a href="#065_20230806" class="header-anchor">0.6.5 &#91;2023.08.06&#93;</a></h3>
+<ul>
+<li><p>When generating <code>Show&#40;1&#41;&#40;2&#41;</code> instances with <code>Text.Show.Deriving</code> using GHC 9.8 or later, data types that have fields of type <code>Int&#123;8,16,32,64&#125;#</code> or <code>Word&#123;8,16,32,64&#125;#</code> will be printed using  extended literal syntax, mirroring corresponding changes introduced in GHC 9.8 &#40;see https://github.com/ghc-proposals/ghc-proposals/pull/596&#41;.</p>
+</li>
+</ul>
+<h3 id="064_20230806"><a href="#064_20230806" class="header-anchor">0.6.4 &#91;2023.08.06&#93;</a></h3>
+<ul>
+<li><p>Support building with <code>template-haskell-2.21.*</code> &#40;GHC 9.8&#41;.</p>
+</li>
+<li><p>The Template Haskell machinery now uses <code>TemplateHaskellQuotes</code> when building with GHC 8.0&#43; instead of manually constructing each Template Haskell <code>Name</code>. A consequence of this is that <code>deriving-compat</code> will now build with GHC 9.8, as <code>TemplateHaskellQuotes</code> abstracts over some internal Template Haskell changes introduced in 9.8.</p>
+</li>
+</ul>
+<h3 id="063_20230227"><a href="#063_20230227" class="header-anchor">0.6.3 &#91;2023.02.27&#93;</a></h3>
+<ul>
+<li><p>Support <code>th-abstraction-0.5.*</code>.</p>
+</li>
+</ul>
+<h3 id="062_20221207"><a href="#062_20221207" class="header-anchor">0.6.2 &#91;2022.12.07&#93;</a></h3>
+<ul>
+<li><p>Make the test suite build with GHC 9.6 or later.</p>
+</li>
+</ul>
+<h3 id="061_20220507"><a href="#061_20220507" class="header-anchor">0.6.1 &#91;2022.05.07&#93;</a></h3>
+<ul>
+<li><p>Backport <a href="https://gitlab.haskell.org/ghc/ghc/-/merge_requests/6955">GHC&#33;6955</a>, which makes derived <code>Eq</code> instances check data constructor tags, which can improve runtime performance for data types with nullary constructors.</p>
+</li>
+<li><p>Allow building the test suite with <code>transformers-0.6.*</code>.</p>
+</li>
+</ul>
+<h2 id="06_20210829"><a href="#06_20210829" class="header-anchor">0.6 &#91;2021.08.29&#93;</a></h2>
+<ul>
+<li><p>Allow building with <code>template-haskell-2.18.0.0</code> &#40;GHC 9.2&#41;.</p>
+</li>
+<li><p>Using <code>deriveEnum</code> and <code>deriveIx</code> on poly-kinded data family instances may now require the use of the <code>TypeInType</code> extension if using GHC 8.0, 8.2, or 8.4. &#40;On later versions of GHC, <code>TypeInType</code>&#39;s functionality has been folded into <code>PolyKinds</code>.&#41;</p>
+</li>
+<li><p>Support deriving <code>Eq</code>, <code>Ord</code>, and <code>Show</code> instances for data types with fields of type <code>Int32#</code> or <code>Word32#</code> on GHC 9.2 or later.</p>
+</li>
+<li><p><code>deriveVia</code> now instantiates &quot;floating&quot; <code>via</code> type variables &#40;i.e., type variables mentioned in the <code>via</code> type that are not mentioned in the instance context or the first argument to <code>Via</code>&#41; to <code>Any</code> in the generated code. As a result, <code>deriveVia</code> no longer generates code that produces <code>-Wunused-foralls</code> warnings.</p>
+</li>
+</ul>
+<h3 id="0510_20200930"><a href="#0510_20200930" class="header-anchor">0.5.10 &#91;2020.09.30&#93;</a></h3>
+<ul>
+<li><p>Allow building with <code>template-haskell-2.17.0.0</code> &#40;GHC 9.0&#41;.</p>
+</li>
+</ul>
+<h3 id="059_20190608"><a href="#059_20190608" class="header-anchor">0.5.9 &#91;2019.06.08&#93;</a></h3>
+<ul>
+<li><p>Have <code>deriveFunctor</code> and <code>deriveFoldable</code> derive implementations of <code>&#40;&lt;&#36;&#41;</code> and <code>null</code>, which GHC starting doing in 8.2 and 8.4, respectively.</p>
+</li>
+<li><p>Fix a bug in which <code>deriveOrd&#123;,1,2&#125;</code> could generate incorrect code for data types with a combination of nullary and non-nullary constructors.</p>
+</li>
+<li><p>Fix a bug in which <code>deriveFunctor</code> would fail on sufficiently complex uses of rank-n types in constructor fields.</p>
+</li>
+<li><p>Fix a bug in which <code>deriveFunctor</code> and related functions would needlessly reject data types whose last type parameters appear as oversaturated arguments to a type family.</p>
+</li>
+</ul>
+<h3 id="058_20191126"><a href="#058_20191126" class="header-anchor">0.5.8 &#91;2019.11.26&#93;</a></h3>
+<ul>
+<li><p>Allow building with GHC 8.10.</p>
+</li>
+</ul>
+<h3 id="057_20190827"><a href="#057_20190827" class="header-anchor">0.5.7 &#91;2019.08.27&#93;</a></h3>
+<ul>
+<li><p>Permit <code>deriveVia</code> to use &quot;floating&quot; <code>via</code> type variables, such as the <code>a</code> in:</p>
+</li>
+</ul>
+<pre><code class="language-hs">deriveVia &#91;t| forall a. Show MyInt &#96;Via&#96; Const Int a |&#93;</code></pre>
+<h3 id="056_20190502"><a href="#056_20190502" class="header-anchor">0.5.6 &#91;2019.05.02&#93;</a></h3>
+<ul>
+<li><p>Support deriving <code>Eq</code>, <code>Ord</code>, and <code>Show</code> instances for data types with fields of type <code>Int8#</code>, <code>Int16#</code>, <code>Word8#</code>, or <code>Word16#</code> on GHC 8.8 or later.</p>
+</li>
+</ul>
+<h3 id="055_20190426"><a href="#055_20190426" class="header-anchor">0.5.5 &#91;2019.04.26&#93;</a></h3>
+<ul>
+<li><p>Support <code>th-abstraction-0.3</code> or later.</p>
+</li>
+</ul>
+<h3 id="054_20190121"><a href="#054_20190121" class="header-anchor">0.5.4 &#91;2019.01.21&#93;</a></h3>
+<ul>
+<li><p>Expose <code>Internal</code> modules.</p>
+</li>
+</ul>
+<h3 id="053_20190120"><a href="#053_20190120" class="header-anchor">0.5.3 &#91;2019.01.20&#93;</a></h3>
+<ul>
+<li><p>Fix a bug in which <code>deriveEnum</code>/<code>deriveIx</code> would generate ill-scoped code for certain poly-kinded data types.</p>
+</li>
+</ul>
+<h3 id="052_20180913"><a href="#052_20180913" class="header-anchor">0.5.2 &#91;2018.09.13&#93;</a></h3>
+<ul>
+<li><p>Fix a bug &#40;on GHC 8.7 and above&#41; in which <code>deriveGND</code>/<code>deriveVia</code> would generate ill-scoped code.</p>
+</li>
+</ul>
+<h3 id="051_20180711"><a href="#051_20180711" class="header-anchor">0.5.1 &#91;2018.07.11&#93;</a></h3>
+<ul>
+<li><p>Have <code>deriveGND</code>/<code>deriveVia</code> throw an error if an incorrect number of arguments are supplied to the type class.</p>
+</li>
+</ul>
+<h2 id="05_20180701"><a href="#05_20180701" class="header-anchor">0.5 &#91;2018.07.01&#93;</a></h2>
+<ul>
+<li><p>Backport the changes to <code>GeneralizedNewtypeDeriving</code> and <code>DerivingVia</code> code generation from <a href="https://ghc.haskell.org/trac/ghc/ticket/15290">Trac #15290</a>.</p>
+<p>As a result, code generated by <code>deriveGND</code> or <code>deriveVia</code> now requires the <code>InstanceSigs</code> and <code>ScopedTypeVariables</code> language extensions. On the other hand, the generated code no longer requires the <code>ImpredicativeTypes</code> extension &#40;unless any class methods use higher-rank types&#41;.</p>
+</li>
+<li><p>Allow building with <code>containers-0.6</code> and <code>template-haskell-2.14</code>.</p>
+</li>
+</ul>
+<h3 id="043_20180616"><a href="#043_20180616" class="header-anchor">0.4.3 &#91;2018.06.16&#93;</a></h3>
+<ul>
+<li><p>Fix a bug that caused debug-enabled GHC builds to panic when generating code from this library &#40;see <a href="https://ghc.haskell.org/trac/ghc/ticket/15270">Trac #15270</a>&#41;. The fix only affects the library&#39;s internals, so no changes are user-facing.</p>
+</li>
+</ul>
+<h3 id="042_20180514"><a href="#042_20180514" class="header-anchor">0.4.2 &#91;2018.05.14&#93;</a></h3>
+<ul>
+<li><p>Backport the fixes for GHC Trac <a href="https://ghc.haskell.org/trac/ghc/ticket/14364">#14364</a> and <a href="https://ghc.haskell.org/trac/ghc/ticket/14918">#14918</a>, which significantly improve the compliation times of derived <code>Read</code> instances.</p>
+</li>
+</ul>
+<h3 id="041_20180204"><a href="#041_20180204" class="header-anchor">0.4.1 &#91;2018.02.04&#93;</a></h3>
+<ul>
+<li><p>Add <code>Data.Deriving.Via</code>, which allows emulating the behavior of the <code>GeneralizedNewtypeDeriving</code> and <code>DerivingVia</code> extensions.</p>
+</li>
+<li><p>Test suite fixes for GHC 8.4.</p>
+</li>
+</ul>
+<h2 id="04_20171207"><a href="#04_20171207" class="header-anchor">0.4 &#91;2017.12.07&#93;</a></h2>
+<ul>
+<li><p>Incorporate changes from the <code>EmptyDataDeriving</code> proposal &#40;which is in GHC as of 8.4&#41;:</p>
+<ul>
+<li><p>For derived <code>Eq</code> and <code>Ord</code> instances for empty data types, simply return <code>True</code> and <code>EQ</code>, respectively, without inspecting the arguments.</p>
+</li>
+<li><p>For derived <code>Read</code> instances for empty data types, simply return <code>pfail</code> &#40;without <code>parens</code>&#41;.</p>
+</li>
+<li><p>For derived <code>Show</code> instances for empty data types, inspect the argument &#40;instead of <code>error</code>ing&#41;. In addition, add <code>showEmptyCaseBehavior</code> to <code>ShowOptions</code>, which configures whether derived instances for empty data types should use the <code>EmptyCase</code> extension &#40;this is disabled by default&#41;.</p>
+</li>
+<li><p>For derived <code>Functor</code> and <code>Traversable</code> instances for empty data types, make <code>fmap</code> and <code>traverse</code> strict in its argument.</p>
+</li>
+<li><p>For derived <code>Foldable</code> instances, do not error on empty data types. Instead, simply return the folded state &#40;for <code>foldr</code>&#41; or <code>mempty</code> &#40;for <code>foldMap</code>&#41;, without inspecting the arguments.</p>
+</li>
+<li><p>Add <code>FFTOptions</code> &#40;<code>Functor</code>/<code>Foldable</code>/<code>Traversable</code> options&#41; to <code>Data.Functor.Deriving</code>, along with variants of existing functions that take <code>FFTOptions</code> as an argument. For now, the only configurable option is whether derived instances for empty data types should use the <code>EmptyCase</code> extension &#40;this is disabled by default&#41;.</p>
+</li>
+</ul>
+</li>
+<li><p>Backport the fix to #13328. That is, when deriving <code>Functor</code> or <code>Traversable</code> instances for data types where the last type variable is at phantom role, generated <code>fmap</code>/<code>traverse</code> implementations now use <code>coerce</code> for efficiency.</p>
+</li>
+<li><p>Rename <code>emptyCaseBehavior</code> from <code>Data.Functor.Deriving</code> to <code>fftEmptyCaseBehavior</code>.</p>
+</li>
+</ul>
+<h3 id="036_20170410"><a href="#036_20170410" class="header-anchor">0.3.6 &#91;2017.04.10&#93;</a></h3>
+<ul>
+<li><p>Make <code>deriveTraversable</code> use <code>liftA2</code> in derived implementations of <code>traverse</code> when possible, now that <code>liftA2</code> is a class method of <code>Applicative</code> &#40;as of GHC 8.2&#41;</p>
+</li>
+<li><p>Make <code>deriveShow</code> use <code>showCommaSpace</code>, a change introduced in GHC 8.2</p>
+</li>
+</ul>
+<h3 id="035_20161212"><a href="#035_20161212" class="header-anchor">0.3.5 &#91;2016.12.12&#93;</a></h3>
+<ul>
+<li><p>Fix bug in which derived <code>Ord</code> instances for datatypes with many constructors would fail to typecheck</p>
+</li>
+</ul>
+<h3 id="034_20161020"><a href="#034_20161020" class="header-anchor">0.3.4 &#91;2016.10.20&#93;</a></h3>
+<ul>
+<li><p>Fix bug in which infix record selectors weren&#39;t shown with parentheses in derived <code>Show</code> instances</p>
+</li>
+<li><p>Fix bug in which record selectors weren&#39;t parsed correctly in derived <code>Read</code> instances</p>
+</li>
+</ul>
+<h3 id="033_20160911"><a href="#033_20160911" class="header-anchor">0.3.3 &#91;2016.09.11&#93;</a></h3>
+<ul>
+<li><p>Add <code>Data.Bounded.Deriving</code>, which allows deriving <code>Bounded</code> with TH.</p>
+</li>
+<li><p>Add <code>Data.Enum.Deriving</code>, which allows deriving <code>Enum</code> with TH.</p>
+</li>
+<li><p>Add <code>Data.Ix.Deriving</code>, which allows deriving <code>Ix</code> with TH.</p>
+</li>
+<li><p>Fix bug in which derived <code>Show</code> instance would parenthesize the output too eagerly</p>
+</li>
+</ul>
+<h3 id="032"><a href="#032" class="header-anchor">0.3.2</a></h3>
+<ul>
+<li><p>Incorporate a fix to GHC Trac #10858, which will be introduced in GHC 8.2</p>
+</li>
+<li><p>Fix bug in which derived <code>Ord</code> instances accidentally swapped their less-than&#40;-or-equal-to&#41; and greater-than&#40;-or-equal-to&#41; methods</p>
+</li>
+<li><p>Fix GHC HEAD build</p>
+</li>
+</ul>
+<h3 id="031"><a href="#031" class="header-anchor">0.3.1</a></h3>
+<ul>
+<li><p>Allow deriving <code>Functor</code> and <code>Foldable</code> instances for datatypes containing unboxed tuples</p>
+</li>
+<li><p>Microoptimization in derived instances of higher-order versions of <code>Eq</code>, <code>Ord</code>, <code>Read</code>, and <code>Show</code></p>
+</li>
+</ul>
+<h2 id="03"><a href="#03" class="header-anchor">0.3</a></h2>
+<ul>
+<li><p>Added <code>Data.Eq.Deriving</code>, which allows deriving <code>Eq</code>, <code>Eq1</code>, and <code>Eq2</code> with TH.</p>
+</li>
+<li><p>Added <code>Data.Ord.Deriving</code>, which allows deriving <code>Ord</code>, <code>Ord1</code>, and <code>Ord2</code> with TH.</p>
+</li>
+<li><p>Added <code>Data.Read.Deriving</code>, which allows deriving <code>Read</code>, <code>Read1</code>, and <code>Eq2</code> with TH.</p>
+</li>
+<li><p>Renamed <code>Text.Show.Deriving.Options</code> to <code>ShowOptions</code> so as to disambiguate it from the options datatypes in other <code>deriving-compat</code> modules.</p>
+</li>
+</ul>
+<h3 id="022"><a href="#022" class="header-anchor">0.2.2</a></h3>
+<ul>
+<li><p>Fixed a bug in <code>Text.Show.Deriving</code>&#39;s treatment of unlifted types</p>
+</li>
+</ul>
+<h3 id="021"><a href="#021" class="header-anchor">0.2.1</a></h3>
+<ul>
+<li><p>Added <code>Text.Show.Deriving</code>, which allows deriving <code>Show</code>, <code>Show1</code>, and <code>Show2</code> with TH.</p>
+</li>
+</ul>
+<h2 id="02"><a href="#02" class="header-anchor">0.2</a></h2>
+<ul>
+<li><p>Added support for GHC 8.0</p>
+</li>
+<li><p>Added <code>Data.Functor.Deriving</code> and <code>Data.Traversable.Deriving</code>, which allow deriving <code>Functor</code> and <code>Traversable</code> with TH.</p>
+</li>
+<li><p>Added <code>Data.Deriving</code>, which reexports all other modules</p>
+</li>
+</ul>
+<h2 id="01"><a href="#01" class="header-anchor">0.1</a></h2>
+<ul>
+<li><p>Initial commit</p>
+</li>
+</ul>
+<div class="page-foot">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: September 09, 2001.
+    Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    
+    
+        <script src="/libs/highlight/highlight.min.js"></script>
+<script>hljs.highlightAll();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

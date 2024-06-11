@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  
+  <link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,400italic|Source+Code+Pro:400,700" type="text/css">
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/celeste.min.css">
+
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon.png">
+<link rel="shortcut icon" href="/assets/favicon.ico">
+<link rel="apple-touch-icon-precomposed" sizes="152x152" href="/assets/apple-touch-icon.png">
+
+   <title><code>deriving-compat</code></title>  
+</head>
+<body>
+  <header>
+<nav class="nav-main">
+  <ul>
+    <li class="hvr-underline-reveal"><a href="/">Home</a></li>
+    <!-- <li class="logo"><a class="hvr-ripple-out" href="/">H</a></li> -->
+    <!-- <li class="hvr-underline-reveal"><a href="/menu1/">Code blocks</a></li>
+    <li class="hvr-underline-reveal"><a href="/menu2/">More goodies</a></li>
+    <li class="hvr-underline-reveal"><a href="/menu3/">Tags</a></li> -->
+  </ul>
+</nav>
+</header>
+
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="deriving-compat"><a href="#deriving-compat" class="header-anchor"><code>deriving-compat</code></a></h1>
+<p>&#91;<img src="https://img.shields.io/hackage/v/deriving-compat.svg" alt="Hackage" />&#93;&#91;Hackage: deriving-compat&#93; <a href="http://packdeps.haskellers.com/reverse/deriving-compat"><img src="https://img.shields.io/hackage-deps/v/deriving-compat.svg" alt="Hackage Dependencies" /></a> &#91;<img src="https://img.shields.io/badge/language-Haskell-blue.svg" alt="Haskell Programming Language" />&#93;&#91;Haskell.org&#93; &#91;<img src="http://img.shields.io/badge/license-BSD3-brightgreen.svg" alt="BSD3 License" />&#93;&#91;tl;dr Legal: BSD3&#93; <a href="https://github.com/haskell-compat/deriving-compat/actions?query&#61;workflow&#37;3AHaskell-CI"><img src="https://github.com/haskell-compat/deriving-compat/workflows/Haskell-CI/badge.svg" alt="Build Status" /></a></p>
+<p>&#91;Hackage: deriving-compat&#93;:   http://hackage.haskell.org/package/deriving-compat   &quot;deriving-compat package on Hackage&quot; &#91;Haskell.org&#93;:   http://www.haskell.org   &quot;The Haskell Programming Language&quot; &#91;tl;dr Legal: BSD3&#93;:   https://tldrlegal.com/license/bsd-3-clause-license-&#37;28revised&#37;29   &quot;BSD 3-Clause License &#40;Revised&#41;&quot;</p>
+<p><code>deriving-compat</code> provides Template Haskell functions that mimic <code>deriving</code> extensions that were introduced or modified in recent versions of GHC. Currently, the following typeclasses/extensions are covered:</p>
+<ul>
+<li><p>Deriving <code>Bounded</code></p>
+</li>
+<li><p>Deriving <code>Enum</code></p>
+</li>
+<li><p>Deriving <code>Ix</code></p>
+</li>
+<li><p>Deriving <code>Eq</code></p>
+</li>
+<li><p>Deriving <code>Ord</code></p>
+</li>
+<li><p>Deriving <code>Read</code></p>
+</li>
+<li><p>Deriving <code>Show</code></p>
+</li>
+<li><p><code>DeriveFoldable</code></p>
+</li>
+<li><p><code>DeriveFunctor</code></p>
+</li>
+<li><p><code>DeriveTraversable</code></p>
+</li>
+<li><p><code>GeneralizedNewtypeDeriving</code> &#40;with GHC 8.2 or later&#41;</p>
+</li>
+<li><p><code>DerivingVia</code> &#40;with GHC 8.2 or later&#41;</p>
+</li>
+</ul>
+<p>See the <code>Data.Deriving</code> module for a full list of backported changes.</p>
+<p>In addition, <code>deriving-compat</code> also provides some additional <code>deriving</code> functionality that has not yet been merged into upstream GHC. Aside from the GHC <code>deriving</code> extensions mentioned above, <code>deriving-compat</code> also permits deriving instances of classes in the <code>Data.Functor.Classes</code> module, covering the <code>Eq1</code>, <code>Eq2</code>, <code>Ord1</code>, <code>Ord2</code>, <code>Read1</code>, <code>Read2</code>, <code>Show1</code>, and <code>Show2</code> classes. This extra functionality is outside of the main scope of <code>deriving-compat</code>, as it does not backport extensions that exist in today&#39;s GHC. Nevertheless, the underlying Template Haskell machinery needed to derive <code>Eq</code> and friends extends very naturally to <code>Eq1</code> and friends, so this extra functionality is included in <code>deriving-compat</code> as a convenience.</p>
+<p>Note that some recent GHC typeclasses/extensions are not covered by this package:</p>
+<ul>
+<li><p><code>DeriveDataTypeable</code></p>
+</li>
+<li><p><code>DeriveGeneric</code>, which was introducted in GHC 7.2 for deriving <code>Generic</code> instances, and modified in GHC 7.6 to allow derivation of <code>Generic1</code> instances. Use <code>Generics.Deriving.TH</code> from <a href="http://hackage.haskell.org/package/generic-deriving"><code>generic-deriving</code></a> to derive <code>Generic&#40;1&#41;</code> using Template Haskell.</p>
+</li>
+<li><p><code>DeriveLift</code>, which was introduced in GHC 8.0 for deriving <code>Lift</code> instances. Use <code>Language.Haskell.TH.Lift</code> from <a href="http://hackage.haskell.org/package/th-lift"><code>th-lift</code></a> to derive <code>Lift</code> using Template Haskell.</p>
+</li>
+<li><p>The <code>Bifunctor</code> typeclass, which was introduced in GHC 7.10, as well as the <code>Bifoldable</code> and <code>Bitraversable</code> typeclasses, which were introduced in GHC 8.2. Use <code>Data.Bifunctor.TH</code> from <a href="http://hackage.haskell.org/package/bifunctors"><code>bifunctors</code></a> to derive these typeclasses using Template Haskell.</p>
+</li>
+</ul>
+<div class="page-foot">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: September 09, 2001.
+    Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    
+    
+  </body>
+</html>

@@ -93,13 +93,19 @@
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/menu2/index.html</loc>
-    <lastmod>2024-05-28</lastmod>
+    <lastmod>2024-06-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/recursion_schemes/index.html</loc>
+    <lastmod>2024-06-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/index.html</loc>
-    <lastmod>2024-05-21</lastmod>
+    <lastmod>2024-06-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
