@@ -141,31 +141,33 @@ v &#61; foldFix prettyPrint call</code></pre>
 <p>This will result in <code>add&#40;10,10&#41;</code>.</p>
 <p>The magic <code>foldFix</code> provided by <code>fix-data</code> has this type signature:</p>
 <pre><code class="language-haskell">foldFix :: Functor f &#61;&gt; &#40;f a -&gt; a&#41; -&gt; Fix f -&gt; a</code></pre>
-<p>As its name indicates, it is the <code>Fix</code> version of fold function.</p>
-<p>Actually, this function is named <code>cata</code> in <a href="https://blog.sumtypeofway.com/posts/introduction-to-recursion-schemes.html">the post</a>, and the implementation looks like this:</p>
+<p>This function is named <code>cata</code> in <a href="https://blog.sumtypeofway.com/posts/introduction-to-recursion-schemes.html">the post</a>, and the implementation looks like this:</p>
 <pre><code class="language-haskell">import Control.Arrow
 -- foldFix is also named cata, meaning catamorphism
-foldFix :: &#40;Functor f&#41; &#61;&gt; Algebra f a -&gt; Term f -&gt; a
-foldFix f &#61; unFix &gt;&gt;&gt; fmap &#40;foldFix f&#41; &gt;&gt;&gt; f</code></pre>
-<p>Let&#39;s just skip the implementation details of <code>foldFix</code>&#40;a curious mind can always refer to the post&#91;<a href="### reference">1</a>&#93;&#41; and focus on the <code>prettyPrint</code>. At first glance, the implementation of <code>prettyPrint &#40;Literal &#40;IntLit i&#41;&#41;</code> and <code>prettyPrint &#40;Literal &#40;Ident s&#41;&#41;</code> are some sort of trivial, however, in fact, these are where the tricks ly.</p>
+foldFix :: &#40;Functor f&#41; &#61;&gt; Algebra f a -&gt; Fix f -&gt; a
+foldFix fn &#61; unFix &gt;&gt;&gt; fmap &#40;foldFix fn&#41; &gt;&gt;&gt; fn</code></pre>
+<p>What this function does, is </p>
+<ul>
+<li><p>firstly using <code>unFix</code> to fetch the content <code>f &#40;Fix f&#41;</code></p>
+</li>
+<li><p>then apply <code>fmap &#40;foldFix fn&#41;</code> on it, this is just the recursive call. After this step, <code>f &#40;Fix f&#41;</code> will become <code>f a</code></p>
+</li>
+<li><p>finally apply <code>fn</code> on the result, transform <code>f a</code> into <code>a</code> </p>
+</li>
+</ul>
+<p>Looks familiar? Yes, the <code>foldr</code> function&#33; </p>
+<p>As its name indicates, <code>foldFix</code> is the <code>Fix</code> version of fold function.</p>
+<p>In fact, we can write any recursive function we like as in &quot;naive&quot; AST definitions, <code>foldr</code>, <code>foldl</code>, <code>map</code>, <code>mapM</code> what ever&#33;</p>
+<p>Now, let&#39;s go back to the example:</p>
 <p>Consider the implementation of <code>prettyPrint &#40;Index it idx&#41;</code>:</p>
 <pre><code class="language-haskell">prettyPrint &#40;Index it idx&#41;  &#61; it &lt;&gt; P.brackets idx</code></pre>
 <p>We know that <code>prettyPrint</code> has type signature <code>prettyPrint :: ExprF Doc -&gt; Doc</code>, it is easily understood that there should be <code>&lt;&gt;</code> in between the two object <code>it</code> and <code>P.brackets idx</code> since <code>&#40;&lt;&gt;&#41; :: Doc -&gt; Doc -&gt; Doc</code>. But wait, do <code>it</code> and <code>idx</code> really belong to the type <code>Doc</code>? </p>
-<p>We know by definition that <code>id</code> and <code>idx</code> should belong to the same type since recall:</p>
-<pre><code class="language-haskell">data ExprF a
-  &#61; Index a a
-  | Call a &#91;a&#93;
-  | Unary String a
-  | Binary a String a
-  | Paren a
-  | Literal Lit
-  deriving &#40;Show, Eq, Functor&#41;</code></pre>
-<p>But clearly, <code>a</code> could also be <code>Fix ExprF</code>&#40;i.e. <code>Expr</code> AST&#41;, why does it become <code>Doc</code> in the <code>prettyPrint</code> function?</p>
-<p>The answer lies in the marginal cases:</p>
+<p>The answer is Yes, just like what <code>foldr</code> function does.</p>
+<p>More specifically, consider the two marginal cases:</p>
 <pre><code class="language-haskell">prettyPrint &#40;Literal &#40;IntLit i&#41;&#41; &#61; P.int i
 prettyPrint &#40;Literal &#40;Ident s&#41;&#41; &#61; P.text s</code></pre>
-<p>And by looking at this, you can easily see how the <code>Expr</code> AST will reduce into <code>Doc</code> starting from the marginal cases&#40;leaves&#41; and propogating throught the traversal procedure, and when it reaches the <code>Index a a</code> node, <code>a</code> is already <code>Doc</code>.</p>
-<p>Analyzing the marginal case, is the key to understand a recursion scheme.</p>
+<p>By looking at this, you can easily see the <code>Expr</code> AST will be reduce into <code>Doc</code> starting from the marginal cases&#40;leaves&#41; and propogating throught the traversal procedure, and when it reaches the <code>Index a a</code> node, <code>a</code> is already <code>Doc</code>.</p>
+<p>The key point to smoothly understand this, again, is to remind that <code>&#40;Literal &#40;IntLit i&#41;&#41;</code> can be safely type-checkered as <code>Expr</code>, just like what a &quot;naive&quot; AST definition does.</p>
 <h3 id="a_real_world_example"><a href="#a_real_world_example" class="header-anchor">a real world example</a></h3>
 <p>As we have known a little bit of <code>recursion-schemes</code>, its definition and the basic idea, we move on to a real world example: <a href="https://github.com/anton-k/hindley-milner-type-check">hindley-milner-type-check</a>&#91;3&#93;</p>
 <p>As its name suggests, <code>hindley-milner-type-check</code> is a library that provide <code>HM-based</code> type inference on an arbitray language based on <code>lambda calculus</code>. It brings a language using <code>recursion-schemes</code> style, and custom language should be able to map onto it in order to use its type-infer facility. Today, we mainly focus on its language definition and some folding cases of it.</p>
@@ -298,7 +300,7 @@ freeVars &#61; foldFix go . unTerm
 <p>&#91;2&#93; data-fix package: https://hackage.haskell.org/package/data-fix-0.3.3/docs/Data-Fix.html</p>
 <p>&#91;3&#93; type-inference project: https://github.com/anton-k/hindley-milner-type-check</p>
 <div class="page-foot">
-    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: June 11, 2024.
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: June 12, 2024.
     Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
 </div>
 </div><!-- CONTENT ENDS HERE -->
