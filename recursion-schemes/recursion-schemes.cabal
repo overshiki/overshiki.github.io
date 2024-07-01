@@ -61,6 +61,7 @@ executable recursion-schemes
     other-modules:
         Def 
         , Pretty
+        , Def2
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
@@ -71,6 +72,7 @@ executable recursion-schemes
         , data-fix
         , deriving-compat
         , pretty
+        , mtl
     -- Directories containing source files.
     hs-source-dirs:   app
 

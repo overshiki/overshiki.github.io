@@ -35,7 +35,7 @@
 <div class="franklin-content"><p>This time, I would like to talk about recursion schemes, the idea, the benefits and an real world example.</p>
 <p>The materials I follow including the famous <a href="https://blog.sumtypeofway.com/posts/introduction-to-recursion-schemes.html">series of posts&#91;1&#93;</a>, the <a href="https://hackage.haskell.org/package/data-fix-0.3.3/docs/Data-Fix.html">data-fix package&#91;2&#93;</a> and a real world <a href="https://github.com/anton-k/hindley-milner-type-check">type-inference project&#91;3&#93;</a>.</p>
 <h3 id="the_definition"><a href="#the_definition" class="header-anchor">the definition </a></h3>
-<p>Briefly speaking, <code>recursion-schemes</code> is another style of expressing recursive data type in functional programming langauges&#40;such as <code>haskell</code>&#41;. It takes advantage of <code>Y-combinator</code>&#40;or fixpoint&#41; and provides one more abstract level of graph traversal mechanism compared with &quot;naive&quot; definition of recursive data type.</p>
+<p>Briefly speaking, <code>recursion-schemes</code> is another style of expressing recursive data type in functional programming langauges&#40;such as <code>haskell</code>&#41;. It takes advantage of <code>fixpoint</code> and provides one more abstract level of graph traversal mechanism compared with &quot;naive&quot; definition of recursive data type.</p>
 <p>I would not like to discuss at a very detailed level, since the the famous posts&#91;<a href="### reference">1</a>&#93; have already demonstrated it clearly, a curious mind should consider referring to it. Let&#39;s instead start with a very brief summary of the idea, then jump directly into its usage in a real world language project.</p>
 <p>The definition of the example AST&#40;from the post &#91;<a href="### reference">1</a>&#93;&#41; is:</p>
 <pre><code class="language-haskell">data Lit
@@ -300,7 +300,7 @@ freeVars &#61; foldFix go . unTerm
 <p>&#91;2&#93; data-fix package: https://hackage.haskell.org/package/data-fix-0.3.3/docs/Data-Fix.html</p>
 <p>&#91;3&#93; type-inference project: https://github.com/anton-k/hindley-milner-type-check</p>
 <div class="page-foot">
-    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: June 12, 2024.
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: July 01, 2024.
     Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
 </div>
 </div><!-- CONTENT ENDS HERE -->

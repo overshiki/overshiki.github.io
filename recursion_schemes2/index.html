@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+   <link rel="stylesheet" href="/libs/highlight/styles/github.min.css">
+   
+  <link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,400italic|Source+Code+Pro:400,700" type="text/css">
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/celeste.min.css">
+
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon.png">
+<link rel="shortcut icon" href="/assets/favicon.ico">
+<link rel="apple-touch-icon-precomposed" sizes="152x152" href="/assets/apple-touch-icon.png">
+
+   <title>the need for incremental development</title>  
+</head>
+<body>
+  <header>
+<nav class="nav-main">
+  <ul>
+    <li class="hvr-underline-reveal"><a href="/">Home</a></li>
+    <!-- <li class="logo"><a class="hvr-ripple-out" href="/">H</a></li> -->
+    <!-- <li class="hvr-underline-reveal"><a href="/menu1/">Code blocks</a></li>
+    <li class="hvr-underline-reveal"><a href="/menu2/">More goodies</a></li>
+    <li class="hvr-underline-reveal"><a href="/menu3/">Tags</a></li> -->
+  </ul>
+</nav>
+</header>
+
+
+<!-- Content appended here -->
+<div class="franklin-content"><p>Previously, we have demonstrated what is a <code>recursion schemes</code> and how to define recursive data type&#40;such as AST&#41; using it. We have shown that some built-in traversal mechanisms are easily defined using such a style&#40;such as <code>foldFix</code>&#41;.</p>
+<p>Today, we are going to view the whole concept in another way: how <code>recursion schemes</code> is valuable in incremental development.</p>
+<h3 id="the_need_for_incremental_development"><a href="#the_need_for_incremental_development" class="header-anchor">the need for incremental development</a></h3>
+<p>Suppose we are on a language project, and initially, we have defined an <code>Functor</code> based on basic lambda calculus:</p>
+<pre><code class="language-haskell">data Prim
+  &#61; PInt Int
+  | PFloat Float
+  | PBool Bool
+  | PStr String
+  | Unit
+  deriving &#40;Show, Eq&#41;
+
+data ExprF r
+  &#61; Var String     -- ^ Variables.
+  | Prim Prim      -- ^ Primitives.
+  | App r r        -- ^ Applications.
+  | Lam String r   -- ^ Abstractions.
+  | Constr String
+  deriving &#40;Functor&#41;</code></pre>
+<p>Then we happily apply <code>Fix</code> around <code>ExprF</code> to build an <code>AST</code>:</p>
+<pre><code class="language-haskell">type Expr &#61; Fix ExprIn</code></pre>
+<p>Now comes the <code>pretty</code> function for pretty printing. This time, we use a function definition based on <code>typeclass</code>, soon you will find the very benefit of doing so:</p>
+<pre><code class="language-haskell">class Pretty a where
+  pretty :: a -&gt; String</code></pre>
+<p>We firstly define pretty function on the <code>Functor</code> <code>ExprC r</code>:</p>
+<pre><code class="language-haskell">instance Pretty Prim where
+  pretty &#61; show
+
+instance Pretty String where
+  pretty &#61; show
+
+instance &#40;Pretty r&#41; &#61;&gt; Pretty &#40;ExprC r&#41; where
+  pretty &#40;Var v&#41; &#61; pretty v
+  pretty &#40;Prim p&#41; &#61; &quot;&#40;&quot; &#43;&#43; pretty p &#43;&#43; &quot;&#41;&quot;
+  pretty &#40;App e1 e2&#41; 
+    &#61; &quot;&#40;App &quot; &#43;&#43; pretty e1 &#43;&#43; &quot; &quot; &#43;&#43; pretty e2 &#43;&#43; &quot;&#41;&quot;
+  pretty &#40;Lam v e&#41; 
+    &#61; &quot;fun &quot; &#43;&#43; pretty v &#43;&#43; &quot; -&gt; &quot; &#43;&#43; pretty e
+  pretty &#40;Constr sig fv&#41; 
+    &#61; &quot;&#40;&quot; &#43;&#43; pretty fv &#43;&#43; &quot; : &quot; &#43;&#43; pretty sig &#43;&#43; &quot;&#41;&quot;</code></pre>
+<p>And then we define pretty function on our <code>AST</code>:</p>
+<pre><code class="language-haskell">instance Pretty Expr where 
+  pretty &#40;Fix x&#41; &#61; pretty x</code></pre>
+<p>done? Yes&#33; Done&#33;</p>
+<p>What we have obtained, is a way to define a traversal function on <code>AST</code> layer by layer: </p>
+<ul>
+<li><p>We firstly define the function on the <code>Functor</code> layer</p>
+</li>
+<li><p>then define it on the <code>FixPoint</code> layer, and this recursive mechanism is possible thanks to <code>typeclass</code>.</p>
+</li>
+</ul>
+<p>Now comes to the incremental needs: we want to add new nodes on this AST, moreover, we want it to be one layer above the original AST:</p>
+<pre><code class="language-haskell">data FuncBody &#61; FuncBody &#40;&#91;String&#93;, Expr&#41;
+data FuncDef &#61; Func &#40;Expr, FuncBody&#41;</code></pre>
+<p>That is, we define a <code>FuncDef</code> node which should be composed of <code>Expr</code>, and we still want it naturally fit into our <code>AST</code>&#33; </p>
+<p>Take a look at this need, you may immediately recognized that how hard to merge this into our existing code. The fact is that if <code>FuncDef</code> is one layer above the existing <code>AST</code>, it will never type check if we inject such node directly into existing <code>AST</code>.</p>
+<p>However, using recursion schemes, this becomes possible&#33;</p>
+<h3 id="the_solution_using_recursion_schemes"><a href="#the_solution_using_recursion_schemes" class="header-anchor">the solution using recursion schemes</a></h3>
+<p>Let&#39;s starts with a slight rewrite of the definition above:</p>
+<pre><code class="language-haskell">newtype FuncBody r &#61; FuncBody &#40;&#91;String&#93;, ExprC r&#41;
+  deriving &#40;Functor&#41;
+newtype FuncDef r &#61; Func &#40;ExprC r, FuncBody r&#41;
+  deriving &#40;Functor&#41;</code></pre>
+<p>WoW, we just defined another <code>Functor</code> based on some <code>r</code>, and indeed, this <code>r</code> should be the same as <code>r</code> in <code>ExprF r</code>. Now we have two <code>Functor</code>, we just need to merge them into a single one, and build <code>FixPoint</code> around it:</p>
+<pre><code class="language-haskell">data ExprC r &#61; E &#40;ExprF r&#41;
+  | F &#40;FuncDef r&#41;
+  deriving &#40;Functor&#41;
+
+type Expr &#61; Fix ExprC</code></pre>
+<p>then, what happed to the existing <code>pretty</code> function? we just need to add support on our newly defined nodes, and all existing code based on <code>ExprF r</code> does not need to change:</p>
+<pre><code class="language-haskell">instance &#40;Pretty r&#41; &#61;&gt; Pretty &#40;ExprC r&#41; where 
+  pretty &#40;E e&#41; &#61; pretty e 
+  pretty &#40;F &#40;Func &#40;h, FuncBody &#40;argTys, body&#41;&#41;&#41;&#41; &#61; pretty h</code></pre>
+<p>This way, we have achieved a incremental development with almost no change of our code&#33;</p>
+<h3 id="discussion"><a href="#discussion" class="header-anchor">discussion</a></h3>
+<p>The complexity added by recursion schemes and the less flexiblity of the traversal algorithm it provides are the two reasons why it is not so popular among haskellers&#40;indeed, because of this, some of my colleages don&#39;t buy it&#41;. </p>
+<p>However, the benefit of enabling incremental development is a strong pros for using it in any ongoing project. </p>
+<p>There is another benefit of using recursion schemes, which lies in its connection with <code>free monad</code>, we will cover it in the next post. </p>
+<div class="page-foot">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: July 01, 2024.
+    Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    
+    
+        <script src="/libs/highlight/highlight.min.js"></script>
+<script>hljs.highlightAll();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

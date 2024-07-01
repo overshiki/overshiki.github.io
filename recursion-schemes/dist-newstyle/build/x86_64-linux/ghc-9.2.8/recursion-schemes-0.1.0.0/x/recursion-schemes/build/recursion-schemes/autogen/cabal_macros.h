@@ -40,6 +40,16 @@
   (major1) == 0 && (major2) <  6 || \
   (major1) == 0 && (major2) == 6 && (minor) <= 6)
 #endif /* MIN_VERSION_deriving_compat */
+/* package mtl-2.2.2 */
+#ifndef VERSION_mtl
+#define VERSION_mtl "2.2.2"
+#endif /* VERSION_mtl */
+#ifndef MIN_VERSION_mtl
+#define MIN_VERSION_mtl(major1,major2,minor) (\
+  (major1) <  2 || \
+  (major1) == 2 && (major2) <  2 || \
+  (major1) == 2 && (major2) == 2 && (minor) <= 2)
+#endif /* MIN_VERSION_mtl */
 /* package pretty-1.1.3.6 */
 #ifndef VERSION_pretty
 #define VERSION_pretty "1.1.3.6"
@@ -51,6 +61,16 @@
   (major1) == 1 && (major2) == 1 && (minor) <= 3)
 #endif /* MIN_VERSION_pretty */
 
+/* tool alex-3.5.1.0 */
+#ifndef TOOL_VERSION_alex
+#define TOOL_VERSION_alex "3.5.1.0"
+#endif /* TOOL_VERSION_alex */
+#ifndef MIN_TOOL_VERSION_alex
+#define MIN_TOOL_VERSION_alex(major1,major2,minor) (\
+  (major1) <  3 || \
+  (major1) == 3 && (major2) <  5 || \
+  (major1) == 3 && (major2) == 5 && (minor) <= 1)
+#endif /* MIN_TOOL_VERSION_alex */
 /* tool gcc-9 */
 #ifndef TOOL_VERSION_gcc
 #define TOOL_VERSION_gcc "9"
@@ -91,6 +111,16 @@
   (major1) == 2 && (major2) <  26 || \
   (major1) == 2 && (major2) == 26 && (minor) <= 0)
 #endif /* MIN_TOOL_VERSION_haddock */
+/* tool happy-1.20.1.1 */
+#ifndef TOOL_VERSION_happy
+#define TOOL_VERSION_happy "1.20.1.1"
+#endif /* TOOL_VERSION_happy */
+#ifndef MIN_TOOL_VERSION_happy
+#define MIN_TOOL_VERSION_happy(major1,major2,minor) (\
+  (major1) <  1 || \
+  (major1) == 1 && (major2) <  20 || \
+  (major1) == 1 && (major2) == 20 && (minor) <= 1)
+#endif /* MIN_TOOL_VERSION_happy */
 /* tool hpc-0.68 */
 #ifndef TOOL_VERSION_hpc
 #define TOOL_VERSION_hpc "0.68"
