@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/styles/github.min.css">
+   
+  <link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,400italic|Source+Code+Pro:400,700" type="text/css">
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/celeste.min.css">
+
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon.png">
+<link rel="shortcut icon" href="/assets/favicon.ico">
+<link rel="apple-touch-icon-precomposed" sizes="152x152" href="/assets/apple-touch-icon.png">
+
+   <title>theoretical background</title>  
+</head>
+<body>
+  <header>
+<nav class="nav-main">
+  <ul>
+    <li class="hvr-underline-reveal"><a href="/">Home</a></li>
+    <!-- <li class="logo"><a class="hvr-ripple-out" href="/">H</a></li> -->
+    <!-- <li class="hvr-underline-reveal"><a href="/menu1/">Code blocks</a></li>
+    <li class="hvr-underline-reveal"><a href="/menu2/">More goodies</a></li>
+    <li class="hvr-underline-reveal"><a href="/menu3/">Tags</a></li> -->
+  </ul>
+</nav>
+</header>
+
+
+<!-- Content appended here -->
+<div class="franklin-content"><h2 id="theoretical_background"><a href="#theoretical_background" class="header-anchor">theoretical background</a></h2>
+<p>For a quantum two-energy system, we can have the following set of operations &#40;satisfying a specific mutation relation&#41;:</p>
+\[
+\hat{X}^2 = - \hat{Y}^2 = \hat{Z}^2 = \hat{I}
+\]
+\[
+\hat{X}\hat{Z} = - \hat{Z}\hat{X}
+\]
+\[
+[\hat{X}, \hat{Y}] := \hat{X}\hat{Y} - \hat{Y}\hat{X} = -2 \hat{Z}
+\]
+\[
+[\hat{Y}, \hat{Z}] = -2\hat{X}
+\]
+\[
+[\hat{Z}, \hat{X}] = 2\hat{Y}
+\]
+<p>It constitutes a group of Pauli operators</p>
+<p>where we define:</p>
+\[
+\hat{X}\ket{0} = \ket{1}
+\]
+\[
+\hat{Z}(\ket{0} + \ket{1}) = \ket{0} - \ket{1}
+\]
+<p>where \(\ket{0}\), \(\ket{1}\) are the two quantum states of this two-energy system.</p>
+<h3 id="computational_basis_versus_pauli_operators"><a href="#computational_basis_versus_pauli_operators" class="header-anchor">Computational basis versus Pauli operators</a></h3>
+<p>The Computational basis of a qubit and Pauli operators possess a correspondence, which can also be interpreted as a mutually defining relationship, namely:</p>
+<pre><code class="language-julia">We can determine a qubit&#39;s pauli operator by defining its computational basis, or we can determine the corresponding computational basis by defining the pauli operator</code></pre>
+<p>In the following analysis, we implement the definition of a qubit by defining the pauli operator corresponding to a logical quantum bit</p>
+<h3 id="recall_matrix_representation_of_pauli_operator"><a href="#recall_matrix_representation_of_pauli_operator" class="header-anchor">recall: matrix representation of pauli operator</a></h3>
+<p>The matrix representation of the pauli operator is summarized below:</p>
+\[
+\hat{I} := \ket{0}\bra{0} + \ket{1}\bra{1}
+\]
+\[
+\hat{X} := \ket{1}\bra{0} + \ket{0}\bra{1}
+\]
+\[
+\hat{Y} := -i\ket{1}\bra{0} + i\ket{1}\bra{0} = \hat{X}\hat{Z}
+\]
+\[
+\hat{Z} := \ket{0}\bra{0} - \ket{1}\bra{1}
+\]
+<h3 id="theoretical_background-solovay-kitaev_theorem"><a href="#theoretical_background-solovay-kitaev_theorem" class="header-anchor">Theoretical background-solovay-kitaev theorem</a></h3>
+<p>solovay-kitaev theorem is concluded as:</p>
+<p>In order to implement an arbitrary quantum algorithm, only the following collection of gate operations is needed: \(\hat{X}\), \(\hat{Z}\), \(\hat{H}\), \(\hat{S}\), \(\hat{S}^{\dagger}\), \(\hat{T}\), \(\hat{T}^{\dagger}\), \(CNOT\)</p>
+<h3 id="theoretical_background_-_projection_measurement_eigenstate_and_commute"><a href="#theoretical_background_-_projection_measurement_eigenstate_and_commute" class="header-anchor">Theoretical background - projection measurement, eigenstate and commute</a></h3>
+<p>The tensor corresponding to the Hamiltonian &#40;which, by definition, is Hermitian&#41; can be eigenvalue decomposed:</p>
+\[
+H = U \Lambda U ^{\dagger}
+\]
+<p>where \(U\) is the unitary matrix and \(\Lambda\) is the diagonal matrix. It is easy to see that this decomposition is independent of the choice of coordinate system</p>
+<p>i.e.</p>
+\[
+VHV^{\dagger} = VU\Lambda U^{\dagger}V^{\dagger}
+\]
+<p>still holds &#40;where \(V\) is the matrix of unitary&#41;.</p>
+<p>\(\Lambda\) is a diagonal matrix and every value of the diagonal is non-zero &#40;for the eigenvalues&#41;. For a qubit, we write its two eigenvalues as \(\lambda_0\), \(\lambda_1\).</p>
+<p>\(U\) is the matrix consisting of the eigenstates in the current coordinates, i.e., the eigenstates together constitute \(\hat{U}\). For a qubit, we denote its two eigenstates as \(\ket{0}\), \(\ket{1}\). That is, \({\ket{0},\ket{1}} = \hat{U}\).</p>
+<p>For projection measurements, with a qubit in a quantum state of \(\ket{\phi} = \alpha \ket{0} + \beta \ket{1}\), the measurer obtains, with a certain probability &#40;\(\alpha^2\) , \(\beta^2\) &#41;, the measurement of \(\lambda_0\) or \(\lambda_1\), and correspondingly, the system collapses into \(\ket{0}\) , \(\ket{1}\) quantum states.</p>
+<p><strong>Note: Here \(\ket{0}\) \(\ket{1}\) are the two eigenstates of the Hamiltonian H, which are not equivalent to the computational basis we usually talk about. For example, these two quantum states can also be written as \(\ket{+}\) \(\ket{-}\) depends on the Hamiltonian we have</strong></p>
+<p>Based on the basic conclusion of linear algebra, for two commuting operators, they have a common eigenstate. That is, when \(\hat{H_1}\hat{H_2} = \hat{H_2}\hat{H_1}\) , the order of measurements does not affect the quantum state at the end of these measurements.</p>
+<p>The two operators \(\hat{X}\), \(\hat{Z}\) satisfy the definition of the Hamiltonian and can be used for projection measurements. Since \(\hat{X}\hat{Z} = -\hat{Z}\hat{X}\) does not, it is easy to see that they have no common eigenstates.</p>
+<p>However, the two-bit operator \(\hat{X_a}\hat{X_b}\) , \(\hat{Y_a}\hat{Y_b}\) does commute:</p>
+\[
+[\hat{X_a}\hat{X_b}, \hat{Y_a}\hat{Y_b}] = 0
+\]
+<p>This is one of the keys to building our stabilizer.</p>
+<h3 id="theoretical_background_-_stabilizer"><a href="#theoretical_background_-_stabilizer" class="header-anchor">theoretical background - stabilizer</a></h3>
+<p>Since the two-bit operators \(\hat{X_a}\hat{X_b}\) , \(\hat{Y_a}\hat{Y_b}\) commutes, repeated measurements using these two operators will not change the state of the system when the system is in its common eigenstate &#40;i.e., the system is stabilized in its common eigenstate&#41;.</p>
+<p>More generally, corresponding to multiple qubits: \({Q_0, Q_1, ... , Q_N}\) , we get a collection of operators \(\hat{X_i}\hat{X_j}, \hat{Z_k}\hat{Z_l} | i \neq j, k \neq l, |\{i,j\} \cup \{k,l\}|=2 ,or, =4\) , which are pairwise commute with each other, i.e., they have a common set of eigenstates.</p>
+<p>Such a system can be further generalized to 4-bit operators:</p>
+\[
+\hat{X_i}\hat{X_j}\hat{X_k}\hat{X_l}, \hat{Z_m}\hat{Z_n}\hat{Z_o}\hat{Z_p} 
+| i \neq j \neq k \neq l, m\neq n \neq o \neq p,
+|\{i,j,k,l\} \cup \{m,n,o,p\}| = 8 ,or, = 6
+\]
+<p>This set of operators still satisfies the definition of stabilizer and forms the theoretical basis of surface code.</p>
+<h3 id="theoretical_background_-_stabilizer_for_quantum_error_correction"><a href="#theoretical_background_-_stabilizer_for_quantum_error_correction" class="header-anchor">theoretical background - stabilizer for quantum error correction</a></h3>
+<p>Starting with the simplest case, suppose we have a physical quantum bit in a superposition state:</p>
+\[
+\ket{\phi} = \alpha \ket{0} + \beta \ket{1}
+\]
+<p>We additionally introduce an ancilla qubit to encode that quantum state into a higher dimensional Hilbert Space:</p>
+\[
+\ket{\phi} = \alpha \ket{0} + \beta \ket{1} \to \ket{\phi}_L = \alpha \ket{00} + \beta \ket{11} = \alpha \ket{0}_L + \beta \ket{1}_L
+\]
+<p>Considering the operator \(Z_0Z_1\), it is easy to obtain \(\ket{\phi}_L\) as its eigenstate:</p>
+\[
+Z_0Z_1\alpha \ket{00} + \beta \ket{11} = \alpha \ket{00} + \beta \ket{11} 
+\]
+<p>recall: \(Z := \ket{0}\bra{0} - \ket{1}\bra{1}\)</p>
+<p><strong>This is a key point: using the above encoding, we LIFT the quantum state to a higher dimensional Hilbert Space, the quantum state then SPANS the SPACE&#39;s SUBSPACE, and all the quantum states of this subspace can be \(Z_0Z_1\) \(X_0X_1\) stabilized</strong></p>
+<h4 id="continuous_quantum_noise"><a href="#continuous_quantum_noise" class="header-anchor">continuous quantum noise</a></h4>
+<p>Unlike classical bits, the quantum state of a qubit is continuous, so the Quantum Noise acting on the qubit is also continuous. Error correction for continuous quantum noise was once thought to be impossible, but fortunately this problem was solved by the quantum error correction scheme proposed by Peter Shor in 1995. The core principle of this scheme is to discretize the continuous Quantum Noise randomly through measurement operations, and then correct the discrete random errors.</p>
+<p>We first consider a simple modeling of quantum noise:</p>
+<p>We rewrite the quantum state \(\ket{\phi}\) according to Euler&#39;s formula:</p>
+\[
+\ket{\phi} = cos \frac{\theta}{2} \ket{0} + e^{i\psi}sin \frac{\theta}{2} \ket{1}
+\]
+<p>Then the coherence error can be modeled as follows:</p>
+\[
+U(\delta \theta, \delta \psi)\ket{\phi} = cos \frac{\theta + \delta \theta}{2} \ket{0} + e^{i(\psi + \delta \psi)} sin \frac{\theta + \delta \theta}{2} \ket{1}
+\]
+<p>It is easy to see, that this noise can be further rewrite:</p>
+\[
+U(\delta \theta, \delta \psi)\ket{\phi} = \alpha_I \mathcal{1} \ket{\phi} + \alpha_X X\ket{\phi} + \alpha_Z Z\ket{\phi} + \alpha_{XZ}XZ\ket{\phi}
+\]
+<p>Below we show how to discretize it</p>
+<h4 id="syndrom_extraction"><a href="#syndrom_extraction" class="header-anchor">syndrom extraction</a></h4>
+<h5 id="z1z2_syndrom"><a href="#z1z2_syndrom" class="header-anchor">Z1Z2 syndrom</a></h5>
+<p>Now, let&#39;s consider the following quantum circuit:</p>
+<img src="/assets/error_correction/syndrom_extraction.png" alt="">
+<p>If there is no noise \(E\), it is easily obtained that measurement does not affect the quantum state \(\ket{\phi}\).</p>
+\[
+\ket{A} := \hat{H}_A \ket{0}_A = \frac{\sqrt{2}}{2} \ket{0} + \frac{\sqrt{2}}{2} \ket{1}
+\]
+\[
+\ket{P_1} := (Z_1Z_2)_{control}\ket{\phi}_L \otimes \ket{A} = \frac{\sqrt{2}}{2}\ket{0}\ket{\phi}_L + \frac{\sqrt{2}}{2}\ket{1} Z_1Z_2\ket{\phi}_L
+\]
+\[
+\ket{P_2} := \hat{H}_A \ket{P_1} = \frac{1}{2} \ket{0} (I + Z_1Z_2)\ket{\phi}_L + \frac{1}{2}\ket{1}(I-Z_1Z_2)\ket{\phi} = \ket{0}\ket{\phi}_L
+\]
+<p>For simplicity, now consider only the presence of noise in qubit 0. &#40;The qubit 1 and two-bit noise can be generalized accordingly.&#41; Then for the above quantum circuit, our input quantum state is:</p>
+\[
+\ket{\phi}_{noisy} =  \alpha_I I \ket{\phi}_L + \alpha_X X_1\ket{\phi}_L + \alpha_Z Z_1\ket{\phi}_L + \alpha_{XZ}X_1Z_1\ket{\phi}_L = E\ket{\phi}_L
+\]
+<p>then:</p>
+\[
+\bar{\ket{P_1}} := (Z_1Z_2)_{control}(I\otimes E)\ket{\phi}_L \otimes \ket{A} = \frac{\sqrt{2}}{2}(I\otimes E)\ket{0}\ket{\phi}_L + \frac{\sqrt{2}}{2} Z_1Z_2(I\otimes E)\ket{1}\ket{\phi}_L
+\]
+\[
+\bar{\ket{P_2}} := \hat{H}_A \bar{\ket{P_1}} = \frac{1}{2} \ket{0} (I + Z_1Z_2)E\ket{\phi}_L + \frac{1}{2}\ket{1}(I-Z_1Z_2)E\ket{\phi}_L
+\]
+<p>It is easy to see that the relative phase of \(\ket{0}\ket{\phi}_L\) and \(\ket{1}\ket{\phi}_L\) changes.</p>
+<p>recall</p>
+\[
+E := \alpha_I I  + \alpha_X X_1 + \alpha_Z Z_1 + \alpha_{XZ}X_1Z_1
+\]
+<p>We consider this in four cases:</p>
+<p>\(\alpha_I I\): </p>
+\[
+\bar{\ket{P_2}} = \ket{0}\ket{\phi}_L = \ket{0} (\alpha \ket{00} + \beta \ket{11})
+\]
+<p>\(\alpha_X X_1\):</p>
+\[
+X_1\ket{\phi}_L = \alpha\ket{10} + \beta\ket{01}
+\]
+\[
+Z_1Z_2X_1\ket{\phi}_L = -\alpha\ket{10} - \beta\ket{01}
+\]
+\[\bar{\ket{P_2}} = \ket{1}(\alpha\ket{10} + \beta\ket{01})\]
+<p>\(\alpha_Z Z_1\):</p>
+\[
+Z_1\ket{\phi}_L = \alpha\ket{00} - \beta\ket{11}
+\]
+\[
+Z_1Z_2Z_1\ket{\phi}_L = \alpha\ket{00} - \beta\ket{11}
+\]
+\[\bar{\ket{P_2}} = \ket{0}(\alpha\ket{00} - \beta \ket{11})\]
+<p>\(\alpha_{XZ}X_1Z_1\):</p>
+\[
+X_1Z_1\ket{\phi}_L = \alpha\ket{10} - \beta\ket{01}
+\]
+\[
+Z_1Z_2X_1Z_1\ket{\phi}_L = -\alpha\ket{10} + \beta \ket{01}
+\]
+\[\bar{\ket{P_2}} = \ket{1}(\alpha \ket{10} - \beta \ket{01})\]
+<p>It can be noticed that after a measurement</p>
+<p>The system is either at \(\alpha_I (\alpha \ket{00} + \beta \ket{11}) + \alpha_Z (\alpha \ket{00} - \beta \ket{11})\)</p>
+<p>Or at \(\alpha_X(\alpha\ket{10} + \beta\ket{01}) + \alpha_{XZ}(\alpha\ket{10} - \beta\ket{01})\).</p>
+<p>If we restrict the type of noise to X noise of arbitrary amplitude, we see that</p>
+<p>The system is either in \(\alpha\ket{00} + \beta \ket{11}\)</p>
+<p>or at \(\alpha\ket{10} + \beta \ket{01}\).</p>
+<p>At this point the continuous noise is discretized: \(\alpha_X\) no longer exists&#33;</p>
+<p>As can be seen, the above encoding is flawed: it cannot handle arbitrary single-bit noise.</p>
+<p>The above circuit&#40;encoder&#41; is a simple demonstration that discretization through measurement is feasible. For better protection of quantum states, we more complete coding methods, such as surface code. An thoroughly introduction to the surface code may remain for future posts.</p>
+<h2 id="reference"><a href="#reference" class="header-anchor">Reference:</a></h2>
+<p>&#91;1&#93; J. Roffe, “Quantum Error Correction: An Introductory Guide,” Jul. 25, 2019. doi: 10.1080/00107514.2019.1667078.</p>
+<div class="page-foot">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: October 04, 2024.
+    Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/contrib/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.min.js"></script>
+<script>hljs.highlightAll();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>

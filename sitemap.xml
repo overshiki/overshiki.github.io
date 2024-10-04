@@ -2,116 +2,122 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
-    <loc>https://tlienart.github.io/FranklinTemplates.jl/type_proposition/index.html</loc>
-    <lastmod>2024-05-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-</url>
-<url>
-    <loc>https://tlienart.github.io/FranklinTemplates.jl/Bayesian_GADT2/index.html</loc>
-    <lastmod>2024-05-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-</url>
-<url>
-    <loc>https://tlienart.github.io/FranklinTemplates.jl/recursion-schemes/CHANGELOG/index.html</loc>
-    <lastmod>2024-06-11</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-</url>
-<url>
-    <loc>https://tlienart.github.io/FranklinTemplates.jl/generalized_gradient/index.html</loc>
-    <lastmod>2024-05-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-</url>
-<url>
-    <loc>https://tlienart.github.io/FranklinTemplates.jl/FPPA/index.html</loc>
-    <lastmod>2024-05-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-</url>
-<url>
-    <loc>https://tlienart.github.io/FranklinTemplates.jl/correspondence/index.html</loc>
-    <lastmod>2024-05-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-</url>
-<url>
-    <loc>https://tlienart.github.io/FranklinTemplates.jl/type_signature/index.html</loc>
-    <lastmod>2024-05-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-</url>
-<url>
-    <loc>https://tlienart.github.io/FranklinTemplates.jl/Diffusion/index.html</loc>
-    <lastmod>2024-05-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-</url>
-<url>
-    <loc>https://tlienart.github.io/FranklinTemplates.jl/Bayesian_GADT/index.html</loc>
-    <lastmod>2024-05-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-</url>
-<url>
-    <loc>https://tlienart.github.io/FranklinTemplates.jl/VITE/index.html</loc>
-    <lastmod>2024-05-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-</url>
-<url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/menu3/index.html</loc>
-    <lastmod>2024-05-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-</url>
-<url>
-    <loc>https://tlienart.github.io/FranklinTemplates.jl/quantum_noise/index.html</loc>
-    <lastmod>2024-05-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-</url>
-<url>
-    <loc>https://tlienart.github.io/FranklinTemplates.jl/Bayesian_GADT3/index.html</loc>
-    <lastmod>2024-05-28</lastmod>
+    <lastmod>2024-03-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/Decomposing_ELBO/index.html</loc>
-    <lastmod>2024-05-28</lastmod>
+    <lastmod>2024-10-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
 <url>
-    <loc>https://tlienart.github.io/FranklinTemplates.jl/decomposing_scores/index.html</loc>
-    <lastmod>2024-05-21</lastmod>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/generalized_gradient/index.html</loc>
+    <lastmod>2024-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/FPPA/index.html</loc>
+    <lastmod>2024-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/Bayesian_GADT3/index.html</loc>
+    <lastmod>2024-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/correspondence/index.html</loc>
+    <lastmod>2024-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/quantum_noise/index.html</loc>
+    <lastmod>2024-03-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/type_proposition/index.html</loc>
+    <lastmod>2024-10-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/menu1/index.html</loc>
-    <lastmod>2024-05-21</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-</url>
-<url>
-    <loc>https://tlienart.github.io/FranklinTemplates.jl/menu2/index.html</loc>
-    <lastmod>2024-07-01</lastmod>
+    <lastmod>2024-03-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/recursion_schemes/index.html</loc>
-    <lastmod>2024-06-12</lastmod>
+    <lastmod>2024-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/menu2/index.html</loc>
+    <lastmod>2024-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/Bayesian_GADT2/index.html</loc>
+    <lastmod>2024-10-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
 <url>
     <loc>https://tlienart.github.io/FranklinTemplates.jl/index.html</loc>
-    <lastmod>2024-06-11</lastmod>
+    <lastmod>2024-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/recursion-schemes/CHANGELOG/index.html</loc>
+    <lastmod>2024-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/Diffusion/index.html</loc>
+    <lastmod>2024-03-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/VITE/index.html</loc>
+    <lastmod>2024-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/error_correction/index.html</loc>
+    <lastmod>2024-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/type_signature/index.html</loc>
+    <lastmod>2024-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/Bayesian_GADT/index.html</loc>
+    <lastmod>2024-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>https://tlienart.github.io/FranklinTemplates.jl/decomposing_scores/index.html</loc>
+    <lastmod>2024-03-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
