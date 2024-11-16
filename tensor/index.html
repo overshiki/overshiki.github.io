@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+  
+  <link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,400italic|Source+Code+Pro:400,700" type="text/css">
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/celeste.min.css">
+
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon.png">
+<link rel="shortcut icon" href="/assets/favicon.ico">
+<link rel="apple-touch-icon-precomposed" sizes="152x152" href="/assets/apple-touch-icon.png">
+
+   <title>Tensor: connecting probability theory and quantum computing </title>  
+</head>
+<body>
+  <header>
+<nav class="nav-main">
+  <ul>
+    <li class="hvr-underline-reveal"><a href="/">Home</a></li>
+    <!-- <li class="logo"><a class="hvr-ripple-out" href="/">H</a></li> -->
+    <!-- <li class="hvr-underline-reveal"><a href="/menu1/">Code blocks</a></li>
+    <li class="hvr-underline-reveal"><a href="/menu2/">More goodies</a></li>
+    <li class="hvr-underline-reveal"><a href="/menu3/">Tags</a></li> -->
+  </ul>
+</nav>
+</header>
+
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="tensor_connecting_probability_theory_and_quantum_computing"><a href="#tensor_connecting_probability_theory_and_quantum_computing" class="header-anchor">Tensor: connecting probability theory and quantum computing </a></h1>
+<p>The idea is that both probability theory and quantum computing has the concept of tensor. What&#39;s more, the <code>entanglement</code> happens in both fields. In this post, I would like to demonstrate it, and try to talk about quantum parallel.</p>
+<h2 id="tensor"><a href="#tensor" class="header-anchor">tensor</a></h2>
+<p>What is a tensor? By definition, tensor is a multilinear function on some vector space \(\mathcal{V}\) over field \(\mathbb{F}\), and any multilinear function on some vector space \(\mathcal{V}\) over field \(\mathbb{F}\) is a tensor, that&#39;s it&#33;</p>
+<p>The definition of multilinear function:</p>
+\[
+\begin{aligned}
+& T (..., \alpha \ket{x_0} + \beta \ket{x_1}, ...) = \alpha T (..., \ket{x_0}, ...) + \beta T (..., \ket{x_1}, ...) \\
+& \forall \ket{x_0}, \ket{x_1} \in \mathcal{V}\\
+& \forall \alpha, \beta \in \mathbb{F}
+\end{aligned}
+\]
+<p><strong>tensor is not just <code>NDarray</code></strong>, which machine learning community always abuses.</p>
+<p>But tensor can be represented with <code>NDarray</code>, given some basis.</p>
+<p>Put a multilinear binary function \(T(\ket{a}, \ket{b})\) as an example: </p>
+<p>if \(\ket{a}, \ket{b}\) each is in a two dimensional vector space, then they can be decomposed into linear combination of basis vector:</p>
+\[
+\begin{aligned}
+& \ket{a} = a_0 \ket{0} + a_1 \ket{1} \\
+& \ket{b} = b_0 \ket{0} + b_1 \ket{1}
+\end{aligned}
+\]
+<p>We immediately get:</p>
+\[
+T(\ket{a}, \ket{b}) = a_0 b_0 T(\ket{0}, \ket{0}) + a_0b_1 T(\ket{0}, \ket{1}) + a_1b_0 T(\ket{1}, \ket{0}) + a_1b_1 T(\ket{1}, \ket{1})
+\]
+<p>and this can be rearranged into an matrix multiplication form:</p>
+\[
+\begin{aligned}
+T(\ket{a}, \ket{b}) = \\
+& a_0 b_0 T(\ket{0}, \ket{0}) + a_0b_1 T(\ket{0}, \ket{1}) \\
++ & a_1b_0 T(\ket{1}, \ket{0}) + a_1b_1 T(\ket{1}, \ket{1})
+\end{aligned}
+\]
+<p>for better visualization, we just rename function application such as \(T(\ket{0}, \ket{0})\), \(T(\ket{0}, \ket{1})\) ... into \(T_{00}\), \(T_{01}\) ...</p>
+\[
+T(\ket{a}, \ket{b}) = 
+\begin{bmatrix}
+ a_0 & a_1 \\
+\end{bmatrix}
+\begin{bmatrix}
+T_{00} & T_{01} \\
+T_{10} & T_{11}
+\end{bmatrix}
+\begin{bmatrix}
+b_0 \\ b_1 \\
+\end{bmatrix}
+\]
+<p>We can easily see the matrix</p>
+\[
+\begin{bmatrix}
+T_{00} & T_{01} \\
+T_{10} & T_{11}
+\end{bmatrix}
+\]
+<p>is the expansion of our tensor onto the computational basis.</p>
+<p>And we can define tensor in such case&#40;two variable&#41; to be a <code>matrix multiplication operation</code> of a <code>row vector</code>, a <code>2d matrix</code> and a <code>column vector</code> on the computational basis. This kind of view can be generalized to be <code>NDarray</code> with multiply broadcast and sum reduce operation given more than 2 variables. </p>
+<p>Conventionally, we say a tensor with <code>N</code> variables&#40;like <code>a</code>, <code>b</code> in the case above&#41; to be a <code>rank N tensor</code>. We also say a <code>rank N tensor</code> to be tensor with <code>N</code> indices&#40;i.e. variables can also be refered as indices&#41;. </p>
+<h3 id="tensor_on_dual_space"><a href="#tensor_on_dual_space" class="header-anchor">tensor on dual space</a></h3>
+<p>tensor can also be defined with variables on dual space, which means the joint space is </p>
+\[
+V \times ... \times V \times V^* \times ... \times V^*
+\]
+<p>&#40;remind that our tensor is a function:&#41;</p>
+\[
+T : V \times ... \times V \times V^* \times ... \times V^* \mapsto \mathbb{F}
+\]
+<p>And conventionally, we use lower indices to represent prim space and use upper indices to represent dual space, which means our tensor could be represented as </p>
+\[
+T_{ijk...}^{lmn...} = T(\ket{i}\ket{j}\ket{k}...\bra{l}\bra{m}\bra{n}...)
+\]
+<h3 id="tensor_is_invariant_under_change_of_basis"><a href="#tensor_is_invariant_under_change_of_basis" class="header-anchor">tensor is invariant under change of basis </a></h3>
+<p>from the example above, we can easily expect that, given a change of basis&#40;rotation for example&#41;, the specific form of </p>
+\[
+\begin{bmatrix}
+T_{00} & T_{01} \\
+T_{10} & T_{11}
+\end{bmatrix}
+\]
+<p>may change, however, the value of \(T(a,b)\) for any <code>a</code> and <code>b</code> still remain the same, which indicate that tensor&#40;as a multilinear function&#41; is invariant with the change of basis on vector space.</p>
+<h3 id="probability_distribution_as_tensor"><a href="#probability_distribution_as_tensor" class="header-anchor">probability distribution as tensor </a></h3>
+<p>Now let&#39;s go to our main topic, understanding probability distribution and quantum computing with the concept of tensor. Let&#39;s start with probability distribution.</p>
+<p>For simplicity, we mainly focus on discrete probability distribution, continuous distribution is more complex and may not fit into our discussion.</p>
+<p>... to be continued</p>
+<div class="page-foot">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: November 16, 2024.
+    Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/contrib/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+  </body>
+</html>

@@ -52,7 +52,7 @@ sym &#123;x &#61; x&#125; &#123;y &#61; .x&#125; refl &#61; refl</code></pre>
 <p>To prove this, we firstly build a term of assumption <code>x&#61;&#61;y</code>. This is constructed by <code>&#123;x &#61; x&#125; &#123;y &#61; .x&#125; refl</code>, that is, we set x and y to be the same item, and build the equality using <code>refl</code> constructor. </p>
 <p>Then we immediately has the term of second type <code>y &#61;&#61; x</code> by using <code>refl</code> constructor&#33; Note that we can do so because the term we put into <code>&#123;&#125;</code> is implicit, meaning that we can allow <code>agda</code> to do the type inference for us. And remember <code>sym</code> is indeed a function, which given a term of the assumption type, return a term of the correspondence type.</p>
 <div class="page-foot">
-    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: October 04, 2024.
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: May 28, 2024.
     Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
 </div>
 </div><!-- CONTENT ENDS HERE -->

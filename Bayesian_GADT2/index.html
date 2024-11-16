@@ -98,7 +98,7 @@ resample xs &#61; sequence &#36; replicate n &#36; fmap &#40;,1&#41; &#36; categ
 <p>It is not clearly how the fmap would work for it by looking at it directly. However, if remind that <code>fmap</code> here is just about registering, it is clear. Since by calling trigger function such as <code>sample</code>, the <code>Primitive &#40;Explicit &#123;toList&#61;xs :: Sample a&#125;&#41;</code> data will certainly give us a value of type <code>a</code>, and all the link is now connected&#33;</p>
 <p>This is the beauty of GADT&#33;</p>
 <div class="page-foot">
-    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: October 04, 2024.
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: May 28, 2024.
     Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
 </div>
 </div><!-- CONTENT ENDS HERE -->

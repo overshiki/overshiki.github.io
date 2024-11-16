@@ -34,7 +34,7 @@
 
 <!-- Content appended here -->
 <div class="franklin-content"><h2 id="theoretical_background"><a href="#theoretical_background" class="header-anchor">theoretical background</a></h2>
-<p>For a quantum two-energy system, we can have the following set of operations &#40;satisfying a specific mutation relation&#41;:</p>
+<p>For a quantum two-energy system, we have the following set of operations &#40;satisfying a specific mutation relation&#41;:</p>
 \[
 \hat{X}^2 = - \hat{Y}^2 = \hat{Z}^2 = \hat{I}
 \]
@@ -50,7 +50,7 @@
 \[
 [\hat{Z}, \hat{X}] = 2\hat{Y}
 \]
-<p>It constitutes a group of Pauli operators</p>
+<p>This set of operations constitutes a group of Pauli operators</p>
 <p>where we define:</p>
 \[
 \hat{X}\ket{0} = \ket{1}
@@ -60,11 +60,13 @@
 \]
 <p>where \(\ket{0}\), \(\ket{1}\) are the two quantum states of this two-energy system.</p>
 <h3 id="computational_basis_versus_pauli_operators"><a href="#computational_basis_versus_pauli_operators" class="header-anchor">Computational basis versus Pauli operators</a></h3>
-<p>The Computational basis of a qubit and Pauli operators possess a correspondence, which can also be interpreted as a mutually defining relationship, namely:</p>
-<pre><code class="language-julia">We can determine a qubit&#39;s pauli operator by defining its computational basis, or we can determine the corresponding computational basis by defining the pauli operator</code></pre>
-<p>In the following analysis, we implement the definition of a qubit by defining the pauli operator corresponding to a logical quantum bit</p>
+<p>There exists a correspondence between the computational basis of a qubit and the Pauli operators we defined above, which can also be interpreted as a mutually defining relationship, namely:</p>
+<pre><code class="language-julia">We can determine a qubit&#39;s pauli operator by defining 
+its computational basis, or, equivently we can determine the 
+corresponding computational basis by defining the pauli operator</code></pre>
+<p>In the remaining part of this post, we will take advantage of this correspondence to provide the definition of a local qubit in error correction scheme.</p>
 <h3 id="recall_matrix_representation_of_pauli_operator"><a href="#recall_matrix_representation_of_pauli_operator" class="header-anchor">recall: matrix representation of pauli operator</a></h3>
-<p>The matrix representation of the pauli operator is summarized below:</p>
+<p>The matrix representation of the pauli operator is summarized as below:</p>
 \[
 \hat{I} := \ket{0}\bra{0} + \ket{1}\bra{1}
 \]
@@ -81,7 +83,7 @@
 <p>solovay-kitaev theorem is concluded as:</p>
 <p>In order to implement an arbitrary quantum algorithm, only the following collection of gate operations is needed: \(\hat{X}\), \(\hat{Z}\), \(\hat{H}\), \(\hat{S}\), \(\hat{S}^{\dagger}\), \(\hat{T}\), \(\hat{T}^{\dagger}\), \(CNOT\)</p>
 <h3 id="theoretical_background_-_projection_measurement_eigenstate_and_commute"><a href="#theoretical_background_-_projection_measurement_eigenstate_and_commute" class="header-anchor">Theoretical background - projection measurement, eigenstate and commute</a></h3>
-<p>The tensor corresponding to the Hamiltonian &#40;which, by definition, is Hermitian&#41; can be eigenvalue decomposed:</p>
+<p>The tensor representation of a Hamiltonian &#40;which, by definition, is Hermitian&#41; can be eigenvalue decomposed:</p>
 \[
 H = U \Lambda U ^{\dagger}
 \]
@@ -128,7 +130,7 @@ Z_0Z_1\alpha \ket{00} + \beta \ket{11} = \alpha \ket{00} + \beta \ket{11}
 <p>recall: \(Z := \ket{0}\bra{0} - \ket{1}\bra{1}\)</p>
 <p><strong>This is a key point: using the above encoding, we LIFT the quantum state to a higher dimensional Hilbert Space, the quantum state then SPANS the SPACE&#39;s SUBSPACE, and all the quantum states of this subspace can be \(Z_0Z_1\) \(X_0X_1\) stabilized</strong></p>
 <h4 id="continuous_quantum_noise"><a href="#continuous_quantum_noise" class="header-anchor">continuous quantum noise</a></h4>
-<p>Unlike classical bits, the quantum state of a qubit is continuous, so the Quantum Noise acting on the qubit is also continuous. Error correction for continuous quantum noise was once thought to be impossible, but fortunately this problem was solved by the quantum error correction scheme proposed by Peter Shor in 1995. The core principle of this scheme is to discretize the continuous Quantum Noise randomly through measurement operations, and then correct the discrete random errors.</p>
+<p>Unlike classical bits, the quantum state of a qubit is continuous, so the <strong>quantum noise</strong> acting on the qubit is also continuous. Error correction for continuous quantum noise was once thought to be impossible, but fortunately this problem was solved by the quantum error correction scheme proposed by Peter Shor in 1995. The core principle of this scheme is to discretize the continuous quantum noise randomly through measurement operations, and then correct the discrete random errors.</p>
 <p>We first consider a simple modeling of quantum noise:</p>
 <p>We rewrite the quantum state \(\ket{\phi}\) according to Euler&#39;s formula:</p>
 \[
@@ -148,6 +150,7 @@ U(\delta \theta, \delta \psi)\ket{\phi} = \alpha_I \mathcal{1} \ket{\phi} + \alp
 <p>Now, let&#39;s consider the following quantum circuit:</p>
 <img src="/assets/error_correction/syndrom_extraction.png" alt="">
 <p>If there is no noise \(E\), it is easily obtained that measurement does not affect the quantum state \(\ket{\phi}\).</p>
+<img src="/assets/error_correction/syndrom_extraction_detail.png" alt="">
 \[
 \ket{A} := \hat{H}_A \ket{0}_A = \frac{\sqrt{2}}{2} \ket{0} + \frac{\sqrt{2}}{2} \ket{1}
 \]
@@ -202,19 +205,39 @@ X_1Z_1\ket{\phi}_L = \alpha\ket{10} - \beta\ket{01}
 Z_1Z_2X_1Z_1\ket{\phi}_L = -\alpha\ket{10} + \beta \ket{01}
 \]
 \[\bar{\ket{P_2}} = \ket{1}(\alpha \ket{10} - \beta \ket{01})\]
+<p>Such that:</p>
+\[
+\begin{aligned}
+\bar{\ket{P_2}} = & \\
+  & \alpha_I \ket{0} (\alpha \ket{00} + \beta \ket{11}) \\
+  & \alpha_X \ket{1}(\alpha\ket{10} + \beta\ket{01}) \\
+  & \alpha_Z \ket{0}(\alpha\ket{00} - \beta \ket{11}) \\
+  & \alpha_{XZ} \ket{1}(\alpha \ket{10} - \beta \ket{01})
+\end{aligned}
+\]
 <p>It can be noticed that after a measurement</p>
-<p>The system is either at \(\alpha_I (\alpha \ket{00} + \beta \ket{11}) + \alpha_Z (\alpha \ket{00} - \beta \ket{11})\)</p>
-<p>Or at \(\alpha_X(\alpha\ket{10} + \beta\ket{01}) + \alpha_{XZ}(\alpha\ket{10} - \beta\ket{01})\).</p>
-<p>If we restrict the type of noise to X noise of arbitrary amplitude, we see that</p>
-<p>The system is either in \(\alpha\ket{00} + \beta \ket{11}\)</p>
-<p>or at \(\alpha\ket{10} + \beta \ket{01}\).</p>
+<p>The system is </p>
+<ul>
+<li><p>either at \(\alpha_I (\alpha \ket{00} + \beta \ket{11}) + \alpha_Z (\alpha \ket{00} - \beta \ket{11})\)</p>
+</li>
+<li><p>or at \(\alpha_X(\alpha\ket{10} + \beta\ket{01}) + \alpha_{XZ}(\alpha\ket{10} - \beta\ket{01})\).</p>
+</li>
+</ul>
+<p>If we restrict the type of noise to X noise of arbitrary amplitude&#40; i.e. \(\alpha_Z\) and \(\alpha_{XZ}\) terms do not exists&#41;, we see that</p>
+<p>The system is </p>
+<ul>
+<li><p>either in \(\alpha\ket{00} + \beta \ket{11}\)</p>
+</li>
+<li><p>or at \(\alpha\ket{10} + \beta \ket{01}\)</p>
+</li>
+</ul>
 <p>At this point the continuous noise is discretized: \(\alpha_X\) no longer exists&#33;</p>
-<p>As can be seen, the above encoding is flawed: it cannot handle arbitrary single-bit noise.</p>
-<p>The above circuit&#40;encoder&#41; is a simple demonstration that discretization through measurement is feasible. For better protection of quantum states, we more complete coding methods, such as surface code. An thoroughly introduction to the surface code may remain for future posts.</p>
+<p>As can be seen, the above encoding is not very practically useful: it cannot handle arbitrary single-bit noise, thus it can only serve as a simple demonstration of the idea that discretization through measurement is feasible. </p>
+<p>For better protection of quantum states, we need more complete coding methods, such as surface code. An thoroughly introduction to the surface code may remain for future posts.</p>
 <h2 id="reference"><a href="#reference" class="header-anchor">Reference:</a></h2>
 <p>&#91;1&#93; J. Roffe, “Quantum Error Correction: An Introductory Guide,” Jul. 25, 2019. doi: 10.1080/00107514.2019.1667078.</p>
 <div class="page-foot">
-    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: October 04, 2024.
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: November 16, 2024.
     Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
 </div>
 </div><!-- CONTENT ENDS HERE -->
