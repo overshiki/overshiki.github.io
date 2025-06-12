@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+  
+  <link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,400italic|Source+Code+Pro:400,700" type="text/css">
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/celeste.min.css">
+
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon.png">
+<link rel="shortcut icon" href="/assets/favicon.ico">
+<link rel="apple-touch-icon-precomposed" sizes="152x152" href="/assets/apple-touch-icon.png">
+
+   <title>introduction to cat qubits for dummies</title>  
+</head>
+<body>
+  <header>
+<nav class="nav-main">
+  <ul>
+    <li class="hvr-underline-reveal"><a href="/">Home</a></li>
+    <!-- <li class="logo"><a class="hvr-ripple-out" href="/">H</a></li> -->
+    <!-- <li class="hvr-underline-reveal"><a href="/menu1/">Code blocks</a></li>
+    <li class="hvr-underline-reveal"><a href="/menu2/">More goodies</a></li>
+    <li class="hvr-underline-reveal"><a href="/menu3/">Tags</a></li> -->
+  </ul>
+</nav>
+</header>
+
+
+<!-- Content appended here -->
+<div class="franklin-content"><h3 id="introduction_to_cat_qubits_for_dummies"><a href="#introduction_to_cat_qubits_for_dummies" class="header-anchor">introduction to cat qubits for dummies</a></h3>
+<h3 id="second_quantization"><a href="#second_quantization" class="header-anchor">second quantization</a></h3>
+<p>the schrodinger equation:</p>
+\[
+i\hbar \frac{\partial}{\partial t}\psi(x, t) = [-\frac{\hbar^2}{2m}\nabla^2 + V(x)]\psi(x, t)
+\]
+<p>assume we want wave function on multiple particles:</p>
+\[
+\psi(x_1, x_2, x_3, ...)
+\]
+<p>this can be linear combination of basis:</p>
+\[
+\psi_i(x_1)\otimes\psi_j(x_2)\otimes\psi_k(x_3)..., i,j,k \in [1 .. \infty]
+\]
+<p>which corresponds to </p>
+\[
+\mathcal{H} = \mathcal{H_1} \otimes \mathcal{H_2} \otimes \mathcal{H_3}...
+\]
+<p>but is this Hilbert space to large?</p>
+<p>particles are identical items:</p>
+\[
+\psi(x_1, x_2) = \pm \psi(x_1, x_2)
+\]
+<ul>
+<li><p>fermion: electron, sign -</p>
+</li>
+<li><p>boson: photon, sign &#43;</p>
+</li>
+</ul>
+<p>using this symmetry, we can restrict the original Hilbert space with the new basis:</p>
+\[
+\psi(x_1, x_2, .., x_N) = \frac{1}{\sqrt{N!}}\sum_{\sigma \in S_N} sgn(\sigma)\psi(x_{\sigma(1)}, x_{\sigma(2)}, x_{\sigma(3)}, ..)
+\]
+<p>the corresponding Hilbert space becomes:</p>
+\[
+\mathcal{H} = \mathcal{H}^{(0)} \oplus \mathcal{H}^{(1)} \oplus \mathcal{H}^{(2)} ..
+\]
+<p>for fermion:</p>
+<p>\(sgn(\sigma) = +1\) if we have even number of terms in \(\sigma\), otherwise \(sgn(\sigma) = -1\)</p>
+<p>for boson: \(sgn(\sigma) = +1\) </p>
+<p>then we get Fock space:</p>
+\[
+\psi(x_1, x_2, ..) = \sum_{n_1, n_2, ..} a_{(n_1, n_2, ..)} \ket{n_1, n_2, n_3, ..} 
+\]
+<p>and the Hamiltonian is composed of two operators:</p>
+<ul>
+<li><p>\(\hat{a}^\dagger\): add one particle for <code>i</code>th mode</p>
+</li>
+<li><p>\(\hat{a}\): minus one particle for <code>i</code>th mode</p>
+</li>
+</ul>
+<p>for fermion:</p>
+\[
+\{ a_i, a_j^\dagger \} = a_i a_j^\dagger + a_j a_i^\dagger =  \delta_{ij}
+\]
+\[
+\{ a_i, a_j \} = 0
+\]
+<p>for boson:</p>
+\[
+[ a_i, a_j^\dagger ] = a_i a_j^\dagger - a_j a_i^\dagger = \delta_{ij}
+\]
+\[
+[ a_i, a_j ] = 0
+\]
+<p>quantum chemistry:</p>
+\[
+\hat{H} = \sum_{p,q}h_{pq}\hat{a}_p^\dagger \hat{a}_q + \frac{1}{2}\sum_{p,q,r,s}h_{pqrs}\hat{a}_p^\dagger\hat{a}_q^\dagger \hat{a}_r \hat{a}_s
+\]
+<p>quantum optics:</p>
+\[
+\hat{H} = \sum_{p,q}h_{pq}\hat{a}_p^\dagger \hat{a}_q
+\]
+<h3 id="quantum_optics"><a href="#quantum_optics" class="header-anchor">quantum optics</a></h3>
+<h4 id="harmonic_oscillator"><a href="#harmonic_oscillator" class="header-anchor">harmonic oscillator</a></h4>
+<p>suppose we only consider single mode:</p>
+\[
+\hat{H} = \hbar \omega (\hat{n} + \frac{1}{2}) = \hbar \omega (a^\dagger a + \frac{1}{2})
+\]
+\[
+\hat{n}\ket{n} = n \ket{n}
+\]
+<h4 id="canonical_coherent_state"><a href="#canonical_coherent_state" class="header-anchor">canonical coherent state</a></h4>
+<p>suppose we only consider single mode:</p>
+\[
+\hat{a}\ket{\alpha} = \alpha\ket{\alpha}
+\]
+<p>\(\hat{a}\) is not hermitian, \(\alpha\) in general is a complex number, i.e. \(\alpha = |\alpha|e^{i\theta}\)</p>
+\[
+\ket{\alpha} = e^{-\frac{|\alpha|^2}{2}}\sum_{n=0}^{\infty}\frac{\alpha^n}{\sqrt{n!}}\ket{n}
+\]
+<p>the photon number distribution&#40;the probability of detecting n photons using \(\hat{n}\) operator&#41; of coherent state follows Poissonian distribution</p>
+\[
+P(n) = e^{-|\alpha|^2}\frac{\alpha^{2n}}{n!}
+\]
+\[
+\braket{\hat{n}} = \bra{\alpha} \hat{n} \ket{\alpha} = |\alpha|^2
+\]
+\[
+(\Delta n)^2 = \braket{\hat{n}} - \braket{\hat{n}}^2 = |\alpha|^2
+\]
+<p>the photon number distribution&#40;the probability of detecting n photons using \(\hat{n}\) operator&#41; of coherent state follows Poissonian distribution</p>
+<img src="/assets/cat/possion.png" alt="">
+<p>phase space plot of a coherent state</p>
+<img src="/assets/cat/coherent.png" alt="">
+<h3 id="cat_qubit"><a href="#cat_qubit" class="header-anchor">cat qubit</a></h3>
+<h4 id="reference"><a href="#reference" class="header-anchor">reference</a></h4>
+<p>R. Lescanne et al., “Exponential suppression of bit-flips in a qubit encoded in an oscillator,” Nat. Phys., vol. 16, no. 5, pp. 509–513, May 2020, doi: 10.1038/s41567-020-0824-x.</p>
+<h4 id="cat_state"><a href="#cat_state" class="header-anchor">cat state</a></h4>
+\[
+\ket{\pm}_{\alpha} = \frac{1}{\sqrt{2(1 \pm e^{-2|\alpha|^2})}}(\ket{\alpha} \pm \ket{-\alpha})
+\]
+\[
+\ket{0}_{\alpha} = \frac{1}{\sqrt{2}}(\ket{+}_{\alpha} + \ket{-}_{\alpha}) = \ket{+\alpha} + \mathcal{O}(e^{-2|\alpha|^2})
+\]
+\[
+\ket{1}_{\alpha} = \frac{1}{\sqrt{2}}(\ket{+}_{\alpha} - \ket{-}_{\alpha}) = \ket{-\alpha} + \mathcal{O}(e^{-2|\alpha|^2})
+\]
+<p>All these states contain an average number of photons \(\approx |\alpha|^2\) </p>
+<h4 id="two_photon_dissipation"><a href="#two_photon_dissipation" class="header-anchor">two photon dissipation</a></h4>
+\[
+\hat{L_2} = \sqrt{\kappa_2}(\hat{a}^2 - \alpha^2)
+\]
+<h4 id="two_photon_dissipation__2"><a href="#two_photon_dissipation__2" class="header-anchor">two photon dissipation</a></h4>
+<p>Under two-photon dissipation, the cat-qubit resonator state \(\rho\) undergoes the following dynamics</p>
+\[
+\frac{d}{dt}\rho = \kappa_2D[\hat{a}^2 - \alpha^2]\rho
+\]
+<p>Lindblad operator:</p>
+\[
+\forall \hat{O}, D[\hat{O}]\rho = \hat{O}\rho\hat{O}^{\dagger} - \frac{1}{2}\rho\hat{O}^{\dagger}\hat{O} - \frac{1}{2}\hat{O}^{\dagger}\hat{O}\rho
+\]
+<h4 id="two_photon_dissipation__3"><a href="#two_photon_dissipation__3" class="header-anchor">two photon dissipation</a></h4>
+<p>To gain insight, we restrict this dynamics to the set of coherent states</p>
+\[
+\rho(t) = \ket{\beta_t}\bra{\beta_t}
+\]
+\[
+- \nabla V(\beta) = \frac{d \beta}{dt}
+\]
+<h4 id="two_photon_dissipation__4"><a href="#two_photon_dissipation__4" class="header-anchor">two photon dissipation</a></h4>
+<img src="/assets/cat/potential.png" alt="">
+<h4 id="bit_flip_error_phase_flip_error"><a href="#bit_flip_error_phase_flip_error" class="header-anchor">bit flip error &amp;&amp; phase flip error</a></h4>
+<img src="/assets/cat/boat.png" alt="">
+<h4 id="two_photon_dissipation__5"><a href="#two_photon_dissipation__5" class="header-anchor">two photon dissipation</a></h4>
+<p>real dynamic</p>
+\[
+\hat{H}_i/\hbar = g_2 (\hat{a}^\dagger)^2 \hat{b} + g_2^*\hat{a}^2\hat{b}^{\dagger}
+\]
+<img src="/assets/cat/hw.png" alt="">
+<h4 id="experiment_-_bit_flip_error"><a href="#experiment_-_bit_flip_error" class="header-anchor">experiment - bit flip error</a></h4>
+<img src="/assets/cat/exp1.png" alt="">
+<h4 id="experiment_-_phase_flip_error"><a href="#experiment_-_phase_flip_error" class="header-anchor">experiment - phase flip error</a></h4>
+\[
+\Gamma_{phase flip} = 2 |\alpha|^2 / T_{1, eff}
+\]
+<img src="/assets/cat/exp2.png" alt="">
+<h4 id="reference__2"><a href="#reference__2" class="header-anchor">reference</a></h4>
+<p>&#91;1&#93; G. Grynberg, A. Aspect, and C. Fabre, “Introduction to Quantum Optics”.</p>
+<p>&#91;2&#93; R. Lescanne et al., “Exponential suppression of bit-flips in a qubit encoded in an oscillator,” Nat. Phys., vol. 16, no. 5, pp. 509–513, May 2020, doi: 10.1038/s41567-020-0824-x.</p>
+<p>&#91;3&#93; J. Guillaud, J. Cohen, and M. Mirrahimi, “Quantum computation with cat qubits,” SciPost Phys. Lect. Notes, p. 72, Jun. 2023, doi: 10.21468/SciPostPhysLectNotes.72.</p>
+<div class="page-foot">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: June 12, 2025.
+    Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/contrib/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+  </body>
+</html>
