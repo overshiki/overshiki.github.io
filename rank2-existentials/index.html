@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/libs/katex/katex.min.css">
+     
+   <link rel="stylesheet" href="/libs/highlight/styles/github.min.css">
+   
+  <link rel="stylesheet" href="/css/franklin.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,400italic|Source+Code+Pro:400,700" type="text/css">
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/celeste.min.css">
+
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon.png">
+<link rel="shortcut icon" href="/assets/favicon.ico">
+<link rel="apple-touch-icon-precomposed" sizes="152x152" href="/assets/apple-touch-icon.png">
+
+   <title>Rank-2 Polymorphism and Existential Quantification in Haskell</title>  
+</head>
+<body>
+  <header>
+<nav class="nav-main">
+  <ul>
+    <li class="hvr-underline-reveal"><a href="/">Home</a></li>
+    <!-- <li class="logo"><a class="hvr-ripple-out" href="/">H</a></li> -->
+    <!-- <li class="hvr-underline-reveal"><a href="/menu1/">Code blocks</a></li>
+    <li class="hvr-underline-reveal"><a href="/menu2/">More goodies</a></li>
+    <li class="hvr-underline-reveal"><a href="/menu3/">Tags</a></li> -->
+  </ul>
+</nav>
+</header>
+
+
+<!-- Content appended here -->
+<div class="franklin-content"><h1 id="rank-2_polymorphism_and_existential_quantification_in_haskell"><a href="#rank-2_polymorphism_and_existential_quantification_in_haskell" class="header-anchor">Rank-2 Polymorphism and Existential Quantification in Haskell</a></h1>
+<p><strong>From System F to Curry-Howard: Encoding ∃ with nothing but ∀.</strong></p>
+<hr />
+<h2 id="abstract"><a href="#abstract" class="header-anchor">Abstract</a></h2>
+<p>Rank-2 polymorphism is one of GHC’s most elegant extensions, bridging the gap between Hindley-Milner and System F. While its surface purpose is to allow functions to accept polymorphic arguments, its deeper significance lies in the Curry-Howard correspondence: with a simple continuation-passing-style &#40;CPS&#41; transformation, the universal quantifier <code>∀</code> can encode the existential quantifier <code>∃</code>. This article explores Rank-2 types in Haskell, their practical applications, and the logical duality that lets us pack and unpack existentials using nothing but nested <code>forall</code>s.</p>
+<hr />
+<h2 id="the_rank_of_a_type"><a href="#the_rank_of_a_type" class="header-anchor"><ol>
+<li><p>The Rank of a Type</p>
+</li>
+</ol>
+</a></h2>
+<p>In standard Haskell98, all polymorphism is <em>Rank-1</em> &#40;or <em>prenex</em>&#41;: every <code>∀</code> sits at the outermost level of the type signature. The rank of a type measures how deeply a polymorphic type is nested to the right of a function arrow.</p>
+<table><tr><th align="right">Rank</th><th align="right">Description</th><th align="right">Example</th></tr><tr><td align="right"><strong>Rank-0</strong></td><td align="right">Monomorphic &#40;no <code>∀</code>&#41;</td><td align="right"><code>Int</code>, <code>Bool -&gt; Int</code></td></tr><tr><td align="right"><strong>Rank-1</strong></td><td align="right">Standard Haskell98 polymorphism</td><td align="right"><code>∀a. a -&gt; a</code> &#40;written <code>a -&gt; a</code>&#41;</td></tr><tr><td align="right"><strong>Rank-2</strong></td><td align="right"><code>∀</code> appears to the right of an arrow</td><td align="right"><code>&#40;∀a. a -&gt; a&#41; -&gt; &#40;Int, Bool&#41;</code></td></tr><tr><td align="right"><strong>Rank-N</strong></td><td align="right"><code>∀</code> nested arbitrarily deep</td><td align="right"><code>&#40;∀a. a -&gt; a&#41; -&gt; &#40;∀b. b -&gt; b&#41;</code></td></tr></table>
+<h3 id="11_syntax_in_ghc"><a href="#11_syntax_in_ghc" class="header-anchor">1.1 Syntax in GHC</a></h3>
+<p>We enable higher-rank types with:</p>
+<pre><code class="language-haskell">&#123;-# LANGUAGE RankNTypes #-&#125;</code></pre>
+<p>This extension subsumes the older <code>Rank2Types</code>; it allows <code>∀</code> to appear anywhere in the type tree, not just at the top level.</p>
+<pre><code class="language-haskell">-- Rank-2: the parameter f itself is polymorphic
+rank2Example :: &#40;∀ a. a -&gt; a&#41; -&gt; &#40;Int, Bool&#41;
+rank2Example f &#61; &#40;f 42, f True&#41;
+
+-- Rank-1 &#40;fails&#41;: &#96;a&#96; is unified once by the caller
+badExample :: &#40;a -&gt; a&#41; -&gt; &#40;Int, Bool&#41;
+badExample f &#61; &#40;f 42, f True&#41;  -- ERROR: a cannot be both Int and Bool</code></pre>
+<p>The parentheses around <code>∀ a. a -&gt; a</code> are essential. Without them, the quantifier would scope over the entire arrow, yielding the same Rank-1 type as <code>badExample</code>.</p>
+<h3 id="12_who_chooses_the_type"><a href="#12_who_chooses_the_type" class="header-anchor">1.2 Who Chooses the Type?</a></h3>
+<p>The crucial difference between Rank-1 and Rank-2 is the <em>locus of control</em> for type instantiation:</p>
+<ul>
+<li><p><strong>Rank-1</strong> <code>∀a. a -&gt; a</code>: The <strong>caller</strong> instantiates <code>a</code>. The callee is polymorphic and must work for whatever type the caller supplies.</p>
+</li>
+<li><p><strong>Rank-2</strong> <code>&#40;∀a. a -&gt; a&#41; -&gt; &#40;Int, Bool&#41;</code>: The <strong>callee</strong> &#40;the function body&#41; instantiates <code>a</code>. The caller must supply a function that works for <em>all</em> types, and the callee may apply it at many different types.</p>
+</li>
+</ul>
+<table><tr><th align="right">Feature</th><th align="right">Rank-1 <code>&#40;a -&gt; a&#41;</code></th><th align="right">Rank-2 <code>&#40;∀a. a -&gt; a&#41;</code></th></tr><tr><td align="right">Type choice</td><td align="right">Caller chooses <code>a</code></td><td align="right">Callee chooses <code>a</code></td></tr><tr><td align="right">Applicability</td><td align="right">Applied at one type</td><td align="right">Applied at many types</td></tr><tr><td align="right">Actual argument</td><td align="right">Monomorphic function &#40;<code>Int -&gt; Int</code>&#41;</td><td align="right">Polymorphic function &#40;<code>id</code>&#41;</td></tr></table>
+<hr />
+<h2 id="ol_start2_practical_motivations_for_rank-2"><a href="#ol_start2_practical_motivations_for_rank-2" class="header-anchor"><ol start="2">
+<li><p>Practical Motivations for Rank-2</p>
+</li>
+</ol>
+</a></h2>
+<p>Before diving into the logical machinery, let us see why Rank-2 types are useful in practice.</p>
+<h3 id="21_requiring_polymorphic_behavior"><a href="#21_requiring_polymorphic_behavior" class="header-anchor">2.1 Requiring Polymorphic Behavior</a></h3>
+<p>Rank-1 polymorphism lets a function <em>produce</em> a polymorphic value. Rank-2 lets a function <em>consume</em> one:</p>
+<pre><code class="language-haskell">withUniversal :: &#40;∀ a. Show a &#61;&gt; a -&gt; String&#41; -&gt; String
+withUniversal showFunc &#61; showFunc 123 &#43;&#43; showFunc True
+
+main :: IO &#40;&#41;
+main &#61; putStrLn &#36; withUniversal show  -- OK: show :: ∀a. Show a &#61;&gt; a -&gt; String</code></pre>
+<p>Here the caller must hand over a genuinely polymorphic function. A monomorphic <code>Int -&gt; String</code> would be rejected.</p>
+<h3 id="22_the_st_monad_and_region-based_state"><a href="#22_the_st_monad_and_region-based_state" class="header-anchor">2.2 The ST Monad and Region-Based State</a></h3>
+<p>One of the most celebrated uses of Rank-2 is <code>runST</code>, which isolates mutable state:</p>
+<pre><code class="language-haskell">runST :: &#40;∀ s. ST s a&#41; -&gt; a</code></pre>
+<p>Because the <code>∀ s</code> sits in the argument position, the <em>caller</em> must produce an <code>ST</code> action valid for <strong>every</strong> possible state token <code>s</code>. Consequently, no reference of type <code>STRef s a</code> can escape the scope of <code>runST</code>—it would require a specific <code>s</code> to exist outside, which is impossible. This is the type-system guarantee that makes the pure-functional <code>ST</code> monad safe.</p>
+<h3 id="23_the_gateway_to_existentials"><a href="#23_the_gateway_to_existentials" class="header-anchor">2.3 The Gateway to Existentials</a></h3>
+<p>Rank-2 is also the theoretical foundation for <em>existential types</em>. In GHC we can write:</p>
+<pre><code class="language-haskell">&#123;-# LANGUAGE ExistentialQuantification #-&#125;
+data SomeShowable &#61; ∀ a. Show a &#61;&gt; MkSome a</code></pre>
+<p>This declaration says: &quot;there exists some type <code>a</code> such that we have a value of type <code>a</code> and a <code>Show</code> instance for it.&quot; The concrete type is hidden inside the constructor.</p>
+<p>What is less obvious is that we do not need a separate <code>exists</code> keyword at all. We can encode the very same abstraction using only <code>forall</code> and Rank-2.</p>
+<hr />
+<h2 id="ol_start3_the_logical_bridge_universals_and_existentials"><a href="#ol_start3_the_logical_bridge_universals_and_existentials" class="header-anchor"><ol start="3">
+<li><p>The Logical Bridge: Universals and Existentials</p>
+</li>
+</ol>
+</a></h2>
+<p>Under the Curry-Howard isomorphism, types are propositions and programs are proofs. The universal quantifier <code>∀</code> corresponds to parametric polymorphism. The existential quantifier <code>∃</code> corresponds to abstract data types, modules, and information hiding.</p>
+<p>In classical logic, <code>∃</code> and <code>∀</code> are dual:</p>
+\[\exists a. P(a) \quad \text{vs} \quad \forall a. P(a)\]
+<p>Classically one can relate them via double negation, but in <em>constructive</em> &#40;intuitionistic&#41; logic we use a CPS-style encoding:</p>
+\[\exists a. P(a) \quad \cong \quad \forall r. (\forall a. P(a) \to r) \to r\]
+<p>This is the <strong>Rank-2 encoding of existential types</strong>.</p>
+<h3 id="31_intuitive_reading"><a href="#31_intuitive_reading" class="header-anchor">3.1 Intuitive Reading</a></h3>
+<ul>
+<li><p><strong>Left side</strong>: &quot;There exists a type <code>a</code> and a proof/value of <code>P&#40;a&#41;</code>.&quot;</p>
+</li>
+<li><p><strong>Right side</strong>: &quot;For every possible result type <code>r</code>, if you give me a handler that can consume a <code>P&#40;a&#41;</code> for <em>any</em> type <code>a</code>, I will produce an <code>r</code>.&quot;</p>
+</li>
+</ul>
+<p>Why are these equivalent? Because the only way the implementation can fulfill its promise of producing an arbitrary <code>r</code> is to invoke the handler with some concrete, hidden <code>P&#40;a&#41;</code>. The existence of that hidden <code>a</code> is forced by the type.</p>
+<hr />
+<h2 id="ol_start4_existentials_as_rank-2_cps_in_haskell"><a href="#ol_start4_existentials_as_rank-2_cps_in_haskell" class="header-anchor"><ol start="4">
+<li><p>Existentials as Rank-2 CPS in Haskell</p>
+</li>
+</ol>
+</a></h2>
+<p>Let us make the encoding concrete.</p>
+<h3 id="41_direct_existentials_ghc_extension"><a href="#41_direct_existentials_ghc_extension" class="header-anchor">4.1 Direct Existentials &#40;GHC Extension&#41;</a></h3>
+<pre><code class="language-haskell">&#123;-# LANGUAGE ExistentialQuantification #-&#125;
+data SomeP &#61; forall a. MkSome &#40;P a&#41;</code></pre>
+<h3 id="42_equivalent_rank-2_encoding"><a href="#42_equivalent_rank-2_encoding" class="header-anchor">4.2 Equivalent Rank-2 Encoding</a></h3>
+<pre><code class="language-haskell">&#123;-# LANGUAGE RankNTypes #-&#125;
+
+type SomeP&#39; &#61; forall r. &#40;forall a. P a -&gt; r&#41; -&gt; r
+
+-- Construction &#40;packing&#41;
+mkSome :: P a -&gt; SomeP&#39;
+mkSome pa &#61; \k -&gt; k pa        -- k :: forall a. P a -&gt; r
+
+-- Elimination &#40;unpacking&#41;
+runSome :: SomeP&#39; -&gt; &#40;forall a. P a -&gt; r&#41; -&gt; r
+runSome some k &#61; some k</code></pre>
+<p>Notice that <strong><code>forall</code> itself never changes its meaning</strong>. Both occurrences of <code>forall</code> still mean &quot;for all.&quot; What changes is the <strong>polarity</strong> &#40;the position in the type tree&#41; and the <strong>CPS structure</strong> built around them.</p>
+<h3 id="43_the_two_roles_of_forall"><a href="#43_the_two_roles_of_forall" class="header-anchor">4.3 The Two Roles of <code>forall</code></a></h3>
+<table><tr><th align="right">Position</th><th align="right">Type Fragment</th><th align="right">Role</th><th align="right">Control</th></tr><tr><td align="right"><strong>Inner</strong> <code>forall a</code></td><td align="right"><code>P a -&gt; r</code></td><td align="right">Forces the handler <code>k</code> to be parametric in <code>a</code>. The eliminator cannot know what <code>a</code> is.</td><td align="right">Caller &#40;eliminator&#41; must be generic.</td></tr><tr><td align="right"><strong>Outer</strong> <code>forall r</code></td><td align="right"><code>&#40;… -&gt; r&#41; -&gt; r</code></td><td align="right">Quantifies the result type, making the encoding independent of any specific return type.</td><td align="right">Caller chooses <code>r</code>; the box promises to deliver it.</td></tr></table>
+<p>The inner <code>forall a</code> is the engine of <strong>information hiding</strong>. Because <code>k</code> must work for <em>all</em> <code>a</code>, it cannot perform any type-specific operation &#40;like <code>&#43;1</code> on an <code>Int</code> or <code>length</code> on a list&#41;. It can only use the interface provided by <code>P</code>.</p>
+<p>The outer <code>forall r</code> is the engine of <strong>logical completeness</strong>. It guarantees that the existential can be eliminated to <em>any</em> conclusion that does not depend on the hidden witness.</p>
+<hr />
+<h2 id="ol_start5_why_the_encoding_works_proof_obligations_and_parametricity"><a href="#ol_start5_why_the_encoding_works_proof_obligations_and_parametricity" class="header-anchor"><ol start="5">
+<li><p>Why the Encoding Works: Proof Obligations and Parametricity</p>
+</li>
+</ol>
+</a></h2>
+<p>In constructive logic, to prove <code>∃a. P&#40;a&#41;</code> you must produce a <strong>witness</strong>—a concrete type <code>w</code> and a value <code>p : P&#40;w&#41;</code>. Let us walk through the two directions of the equivalence.</p>
+<h3 id="51_direction_1_cps"><a href="#51_direction_1_cps" class="header-anchor">5.1 Direction 1: ∃ → CPS</a></h3>
+<p>Assume we have a witness: a concrete type <code>w</code> and a value <code>p :: P w</code>.</p>
+<p>To prove <code>∀r. &#40;∀a. P a -&gt; r&#41; -&gt; r</code>, we must show that for any target type <code>r</code> and any handler <code>k :: ∀a. P a -&gt; r</code>, we can produce an <code>r</code>.</p>
+<p>Simply apply <code>k</code> at <code>w</code>:</p>
+<pre><code class="language-haskell">k w p   -- :: r</code></pre>
+<p>Because <code>k</code> is parametric, it accepts any type <code>a</code>, including our hidden <code>w</code>. This is exactly what <code>mkSome</code> does.</p>
+<h3 id="52_direction_2_cps"><a href="#52_direction_2_cps" class="header-anchor">5.2 Direction 2: CPS → ∃</a></h3>
+<p>Assume we hold a value of type <code>∀r. &#40;∀a. P a -&gt; r&#41; -&gt; r</code>. How do we know there is really some <code>P&#40;a&#41;</code> hidden inside?</p>
+<p>The key observation is that the implementation has <em>only one</em> way to produce an <code>r</code>: it must call the handler <code>k</code>. And when it calls <code>k</code>, it must supply some concrete <code>P&#40;a&#41;</code>. The choice of which <code>a</code> to use belongs to the implementation &#40;the &quot;proponent&quot; in game-semantics terms&#41;, not to the caller.</p>
+<p>If the implementation had nothing inside, it could not construct an arbitrary <code>r</code>. You, the caller, could demand <code>r &#61; Void</code> &#40;or any uninhabited type&#41;, and the implementation would be stuck. The very ability to answer every possible <code>r</code> forces the existence of a hidden witness.</p>
+<h3 id="53_game_semantics_who_moves"><a href="#53_game_semantics_who_moves" class="header-anchor">5.3 Game Semantics: Who Moves?</a></h3>
+<ul>
+<li><p><strong>Universal <code>∀</code></strong>: The <em>opponent</em> &#40;the environment, the caller&#41; chooses the type instance.</p>
+</li>
+<li><p><strong>Existential <code>∃</code></strong>: The <em>proponent</em> &#40;the program, the constructor&#41; chooses the type instance.</p>
+</li>
+</ul>
+<p>In the Rank-2 encoding, the inner <code>forall a</code> sits in a <strong>negative position</strong> &#40;to the left of an odd number of arrows&#41;. This flips the polarity: the caller must move first by supplying a generic <code>k</code>, and then the implementation gets to choose the concrete <code>a</code> when invoking <code>k</code>. The nested <code>forall</code> thereby transfers the choice of type from caller to callee, achieving existential behavior with universal syntax.</p>
+<hr />
+<h2 id="ol_start6_the_outer_forall_r_logical_completeness"><a href="#ol_start6_the_outer_forall_r_logical_completeness" class="header-anchor"><ol start="6">
+<li><p>The Outer <code>forall r</code>: Logical Completeness</p>
+</li>
+</ol>
+</a></h2>
+<p>A common question is: why do we need the outer quantifier? Why not simply:</p>
+<pre><code class="language-haskell">type BadExists P &#61; &#40;forall a. P a -&gt; Int&#41; -&gt; Int</code></pre>
+<p>The answer spans logic, abstraction, and practical expressiveness.</p>
+<h3 id="61_logical_perspective_constructive_-elimination"><a href="#61_logical_perspective_constructive_-elimination" class="header-anchor">6.1 Logical Perspective: Constructive ∃-Elimination</a></h3>
+<p>In natural deduction, the elimination rule for <code>∃</code> is:</p>
+\[\frac{\Gamma \vdash \exists a. P(a) \quad \Gamma, P(a) \vdash Q \quad (a \notin \text{FV}(Q))}{\Gamma \vdash Q}\]
+<p>Meaning: if you know <code>∃a. P&#40;a&#41;</code> and you can prove some conclusion <code>Q</code> from the assumption that you hold an arbitrary <code>P&#40;a&#41;</code>—provided <code>Q</code> does not mention <code>a</code>—then <code>Q</code> follows.</p>
+<p>Crucially, <code>Q</code> is <em>arbitrary</em> &#40;as long as it is independent of <code>a</code>&#41;. The outer <code>forall r</code> encodes exactly this: <code>r</code> plays the role of <code>Q</code>, and the condition <code>a ∉ FV&#40;Q&#41;</code> is enforced by the scope rules of the type system &#40;<code>r</code> is chosen outside the scope of <code>a</code>&#41;.</p>
+<h3 id="62_computational_perspective_decoupling_constructor_and_eliminator"><a href="#62_computational_perspective_decoupling_constructor_and_eliminator" class="header-anchor">6.2 Computational Perspective: Decoupling Constructor and Eliminator</a></h3>
+<p>The purpose of an existential is <strong>type abstraction</strong>.</p>
+<ul>
+<li><p>The <strong>constructor</strong> knows the witness type &#40;e.g., <code>Int</code>&#41;.</p>
+</li>
+<li><p>The <strong>eliminator</strong> does not.</p>
+</li>
+</ul>
+<p>If the eliminator could only unpack the box into a fixed type like <code>Int</code>, the abstraction boundary would leak information: the box would behave like a secret <code>Int</code>. By allowing the eliminator to choose any <code>r</code>, we ensure that the constructor’s choice of witness and the eliminator’s choice of result are completely decoupled. This is the hallmark of proper information hiding.</p>
+<h3 id="63_analogy_the_magic_safe"><a href="#63_analogy_the_magic_safe" class="header-anchor">6.3 Analogy: The Magic Safe</a></h3>
+<p>Imagine a safe that hides its contents.</p>
+<ul>
+<li><p><strong>Compiler CPS</strong> is like a courier who asks, &quot;Where should I drop this package?&quot; The destination &#40;<code>r</code>&#41; is fixed—your front door. The courier merely makes the delivery flow explicit.</p>
+</li>
+<li><p><strong>Existential CPS</strong> is like a magic safe. You say, &quot;I am ready to process whatever is inside, and I will tell you the destination.&quot; The safe can be opened at the office, at home, or in a warehouse—<em>any</em> <code>r</code>—and the safe’s owner &#40;the constructor&#41; decides what item &#40;<code>a</code>&#41; to hand over. The outer <code>forall r</code> makes the safe portable; the inner <code>forall a</code> makes its contents opaque.</p>
+</li>
+</ul>
+<hr />
+<h2 id="ol_start7_category-theoretic_perspective"><a href="#ol_start7_category-theoretic_perspective" class="header-anchor"><ol start="7">
+<li><p>Category-Theoretic Perspective</p>
+</li>
+</ol>
+</a></h2>
+<p>In category theory, quantifiers arise as adjoints to the &quot;diagonal&quot; or &quot;application&quot; functor:</p>
+<ul>
+<li><p><strong>Universal</strong> <code>∀</code> is the <strong>right adjoint</strong>.</p>
+</li>
+<li><p><strong>Existential</strong> <code>∃</code> is the <strong>left adjoint</strong>.</p>
+</li>
+</ul>
+<p>They are distinct, yet related through the <strong>co-Yoneda lemma</strong>:</p>
+\[\exists a. F(a) \times (a \to r) \cong F(r)\]
+<p>When <code>F</code> is the identity functor, this becomes:</p>
+\[\exists a. a \times (a \to r) \cong r\]
+<p>which is precisely the structural essence of our CPS encoding. The <code>forall</code> in Haskell behaves as a <em>categorical end</em> &#40;a limit&#41;, yet when placed in the negative position of a continuation, it encodes a <em>co-end</em> &#40;a colimit&#41;, i.e., an existential.</p>
+<p>This is the deep reason why no separate <code>exists</code> primitive is required in System F: the expressive power of parametric polymorphism &#40;<code>∀</code>&#41; is sufficient to simulate both limits and colimits.</p>
+<hr />
+<h2 id="ol_start8_distinguishing_two_common_rank-2_patterns"><a href="#ol_start8_distinguishing_two_common_rank-2_patterns" class="header-anchor"><ol start="8">
+<li><p>Distinguishing Two Common Rank-2 Patterns</p>
+</li>
+</ol>
+</a></h2>
+<p>Not every Rank-2 type is an existential in disguise. It is important to keep two patterns separate:</p>
+<table><tr><th align="right">Form</th><th align="right">Meaning</th><th align="right">Control</th></tr><tr><td align="right"><code>&#40;forall a. P a&#41; -&gt; Q</code></td><td align="right">Accept a polymorphic processor. The caller provides universal capability.</td><td align="right">Caller must be generic.</td></tr><tr><td align="right"><code>forall r. &#40;forall a. P a -&gt; r&#41; -&gt; r</code></td><td align="right">Encode an existential. The implementation hides a specific type.</td><td align="right">Callee chooses the witness.</td></tr></table>
+<p>The first is a &quot;genuine&quot; nested universal: the function demands a value that works for all types. The second uses the same <code>forall</code> keyword, but the CPS wrapping and the negative position turn it into an existential container.</p>
+<hr />
+<h2 id="ol_start9_putting_it_all_together_a_complete_example"><a href="#ol_start9_putting_it_all_together_a_complete_example" class="header-anchor"><ol start="9">
+<li><p>Putting It All Together: A Complete Example</p>
+</li>
+</ol>
+</a></h2>
+<pre><code class="language-haskell">&#123;-# LANGUAGE RankNTypes #-&#125;
+&#123;-# LANGUAGE ExistentialQuantification #-&#125;
+
+-- | A type constructor for our predicate P.
+type P a &#61; &#40;a, a -&gt; String&#41;
+
+-- &#61;&#61;&#61; Direct existential &#61;&#61;&#61;
+data Box &#61; forall a. MkBox &#40;P a&#41;
+
+-- &#61;&#61;&#61; Rank-2 CPS encoding &#61;&#61;&#61;
+type Box&#39; &#61; forall r. &#40;forall a. P a -&gt; r&#41; -&gt; r
+
+-- Packing
+mkBox :: P a -&gt; Box&#39;
+mkBox pa &#61; \k -&gt; k pa
+
+-- Unpacking
+runBox :: Box&#39; -&gt; &#40;forall a. P a -&gt; r&#41; -&gt; r
+runBox box k &#61; box k
+
+-- Usage
+example :: IO &#40;&#41;
+example &#61; do
+    let boxInt    &#61; mkBox &#40;42,      \x -&gt; &quot;Int: &quot;    &#43;&#43; show x&#41;
+    let boxBool   &#61; mkBox &#40;True,    \x -&gt; &quot;Bool: &quot;   &#43;&#43; show x&#41;
+
+    -- Eliminate to String
+    let s1 &#61; runBox boxInt  &#40;\&#40;x, f&#41; -&gt; f x&#41;
+    putStrLn s1  -- prints &quot;Int: 42&quot;
+
+    -- Eliminate to the *same* box, but to IO &#40;&#41;
+    runBox boxBool &#40;\&#40;x, f&#41; -&gt; putStrLn &#40;f x&#41;&#41;  -- prints &quot;Bool: True&quot;</code></pre>
+<p>Notice how <code>boxInt</code> and <code>boxBool</code> hide their internal types, yet can be eliminated to any result type <code>r</code> the caller desires.</p>
+<hr />
+<h2 id="ol_start10_conclusion"><a href="#ol_start10_conclusion" class="header-anchor"><ol start="10">
+<li><p>Conclusion</p>
+</li>
+</ol>
+</a></h2>
+<p>Rank-2 polymorphism is far more than a syntactic convenience. It is the doorway through which Haskell escapes the confines of Hindley-Milner and enters the full expressive power of System F.</p>
+<p>The key insights are:</p>
+<ol>
+<li><p><strong><code>forall</code> never changes its meaning.</strong> It always means &quot;for all.&quot;</p>
+</li>
+<li><p><strong>Polarity is what matters.</strong> When <code>forall</code> appears in a negative position &#40;as a function argument&#41;, control over type instantiation flips from caller to callee.</p>
+</li>
+<li><p><strong>CPS completes the picture.</strong> The outer <code>forall r</code> and the continuation structure <code>&#40;… -&gt; r&#41; -&gt; r</code> create a logically complete encoding of existential quantification.</p>
+</li>
+<li><p><strong>Information hiding is parametricity.</strong> The inner <code>forall a</code> forces the eliminator to be blind to the witness type, which is exactly the guarantee we need for abstract data types.</p>
+</li>
+</ol>
+<p>Whether you are using <code>runST</code> to isolate state, building heterogeneous containers, or reasoning about types through the Curry-Howard lens, Rank-2 polymorphism provides the essential bridge between the universal and the existential—proving once again that in the lambda calculus, everything is a function, even a hidden type.</p>
+<hr />
+<h2 id="references_further_reading"><a href="#references_further_reading" class="header-anchor">References &amp; Further Reading</a></h2>
+<ul>
+<li><p><em>Types and Programming Languages</em> &#40;Pierce&#41; — Chapters on System F and existential types.</p>
+</li>
+<li><p><em>The Implementation of Functional Programming Languages</em> &#40;Peyton Jones&#41; — Early discussion of Rank-2 and Rank-N types.</p>
+</li>
+<li><p>Reynolds, J. C. — <em>Polymorphism is not set-theoretic</em>.</p>
+</li>
+<li><p>Plotkin, G. D. — <em>Call-by-name, call-by-value and the λ-calculus</em> &#40;foundations of CPS&#41;.</p>
+</li>
+<li><p>GHC User’s Guide — <code>RankNTypes</code>, <code>ExistentialQuantification</code>, <code>ImpredicativeTypes</code>.</p>
+</li>
+</ul>
+<div class="page-foot">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> Septimia Zenobia. Last modified: April 13, 2026.
+    Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+</div>
+</div><!-- CONTENT ENDS HERE -->
+    
+        <script src="/libs/katex/katex.min.js"></script>
+<script src="/libs/katex/contrib/auto-render.min.js"></script>
+<script>renderMathInElement(document.body)</script>
+
+    
+    
+        <script src="/libs/highlight/highlight.min.js"></script>
+<script>hljs.highlightAll();hljs.configure({tabReplace: '    '});</script>
+
+    
+  </body>
+</html>
